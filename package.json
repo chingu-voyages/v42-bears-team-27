@@ -1,0 +1,53 @@
+{
+  "name": "v42-bears-team-27",
+  "private": true,
+  "homepage": "https://github.com/chingu-voyages/v42-bears-team-27#readme",
+  "bugs": {
+    "url": "https://github.com/chingu-voyages/v42-bears-team-27/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chingu-voyages/v42-bears-team-27.git"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "lerna run build --parallel",
+    "commit": "cz",
+    "dev": "lerna run dev --parallel",
+    "dev:backend": "lerna run dev --scope backend",
+    "dev:frontend": "lerna run dev --scope frontend",
+    "postinstall": "husky install",
+    "start": "lerna run start --parallel",
+    "start:backend": "lerna run start --scope backend",
+    "start:frontend": "lerna run start --scope frontend",
+    "test": "lerna run test --parallel"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.4.2",
+    "@commitlint/config-conventional": "^17.4.2",
+    "commitizen": "^4.2.6",
+    "cz-conventional-changelog": "3.3.0",
+    "husky": "^8.0.3",
+    "lerna": "^6.1.0",
+    "lint-staged": "^13.1.0",
+    "nx": "^15.4.6",
+    "prettier": "^2.8.2"
+  },
+  "packageManager": "yarn@3.3.1"
+}
