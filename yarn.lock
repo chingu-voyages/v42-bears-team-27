@@ -3641,7 +3641,6 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     dotenv: ^16.0.3
-    eslint: ^8.31.0
     eslint-config-airbnb-base: ^15.0.0
     eslint-config-prettier: ^8.6.0
     eslint-plugin-import: ^2.27.4
@@ -5725,7 +5724,6 @@ __metadata:
     "@types/react-dom": 18.0.10
     "@typescript-eslint/eslint-plugin": ^5.48.1
     "@typescript-eslint/parser": ^5.48.1
-    eslint: ^8.31.0
     eslint-config-airbnb: ^19.0.4
     eslint-config-airbnb-typescript: ^17.0.0
     eslint-config-next: ^13.1.1
@@ -10660,6 +10658,7 @@ __metadata:
     "@commitlint/config-conventional": ^17.4.2
     commitizen: ^4.2.6
     cz-conventional-changelog: 3.3.0
+    eslint: ^8.31.0
     husky: ^8.0.3
     lerna: ^6.1.0
     lint-staged: ^13.1.0
