@@ -1,14 +1,19 @@
-# voyage-tasks
+# RemoteClass
 
-Your project's `readme` is as important to success as your code. For 
-this reason you should put as much care into its creation and maintenance
-as you would any other component of the application.
+## Overview
 
-If you are unsure of what should go into the `readme` let this article,
-written by an experienced Chingu, be your starting point - 
-[Keys to a well written README](https://tinyurl.com/yk3wubft).
+The aim of this project is to deliver an education platform for both teachers and students, where students can progress outside of class via lessons, exercises and tests set by teachers, as well as provide an overall fun, learning experience for them.
 
-And before we go there's "one more thing"! Once you decide what to include
-in your `readme` feel free to replace the text we've provided here.
+## Features
 
-> Own it & Make it your Own!
+None at the moment :¬) but very soon!
+
+## Maintainers
+
+- [@TazDeCoder](https://github.com/TazDeCoder)
+- [@henokkh](https://github.com/henokkh)
+- [@Eloi-Perez](https://github.com/Eloi-Perez)
+- [@samad13](https://github.com/samad13)
+- [@Blackmile](https://github.com/Blackmile)
+
+**A special thanks to the team at Chingus for helping making this possible!**
