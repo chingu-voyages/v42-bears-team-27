@@ -13,10 +13,8 @@ As a [role]
 I want to [action to be performed]
 So I can [result to be achieved]
 
-**__Steps to Follow (optional)__**
-- [ ] Step #1
-- [ ] Step #2
-- [ ] Additional steps as necessary
+**__Steps to Follow__**
+- [ ] Please add your steps here
 
 **__Additional Considerations__**
-Any supplemental information including unresolved questions, links to external resources, screenshots, etc.
+Please add additional considerations here
