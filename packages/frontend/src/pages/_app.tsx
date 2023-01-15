@@ -4,6 +4,8 @@ import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import { ThemeProvider } from 'theme-ui';
 
+import { AuthProvider } from '../store/auth';
+
 import theme from '../theme';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -19,7 +21,7 @@ const App: React.FC<AppPropsWithLayout> = ({ Component, pageProps }) => {
 
   return (
     <ThemeProvider theme={theme}>
-      {getLayout(<Component {...pageProps} />)}
+      <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
     </ThemeProvider>
   );
 };
