@@ -3,8 +3,13 @@ const mongoose = require('mongoose');
 
 require('dotenv').config();
 
+const routes = require('./routes');
+
 const app = express();
 mongoose.set('strictQuery', false);
+
+app.use(express.json());
+app.use('/api/v0', routes);
 
 // Database
 mongoose
