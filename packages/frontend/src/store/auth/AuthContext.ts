@@ -1,11 +1,11 @@
 import { createContext } from 'react';
 
 import type {
-  ITeacherCrendentials,
-  IStudentCrendentials,
+  ITeacherCredentials,
+  IStudentCredentials,
 } from '../../interfaces';
 
-type UserCredentials = ITeacherCrendentials | IStudentCrendentials;
+type UserCredentials = ITeacherCredentials | IStudentCredentials;
 
 export interface IAuthContext {
   user: UserCredentials | null;

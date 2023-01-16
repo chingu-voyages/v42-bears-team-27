@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
 
 import type {
-  ITeacherCrendentials,
-  IStudentCrendentials,
+  ITeacherCredentials,
+  IStudentCredentials,
 } from '../../interfaces';
 import { AuthContext, type IAuthContext } from './AuthContext';
 
-type UserCredentials = ITeacherCrendentials | IStudentCrendentials;
+type UserCredentials = ITeacherCredentials | IStudentCredentials;
 
 type Props = {
   children: React.ReactNode;
@@ -16,8 +16,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<UserCredentials | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const loginHandler = (userCrendetials: UserCredentials) => {
-    setUser(userCrendetials);
+  const loginHandler = (userCredentials: UserCredentials) => {
+    setUser(userCredentials);
     setIsLoggedIn(true);
   };
 

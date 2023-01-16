@@ -1,9 +1,9 @@
-export interface ITeacherCrendentials {
+export interface ITeacherCredentials {
   username: string;
   password: string;
 }
 
-export interface IStudentCrendentials {
+export interface IStudentCredentials {
   email: string;
   password: string;
 }
