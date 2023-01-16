@@ -72,6 +72,20 @@ const theme: Theme = {
       lineHeight: 1.3,
     },
   },
+  buttons: {
+    primary: {
+      filled: {
+        bg: 'primary',
+        color: 'white',
+        border: 'none',
+      },
+      outlined: {
+        bg: 'white',
+        color: 'primary',
+        border: '2px solid currentColor ',
+      },
+    },
+  },
 };
 
 export default theme;
