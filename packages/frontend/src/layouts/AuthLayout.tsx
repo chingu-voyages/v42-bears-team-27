@@ -2,56 +2,32 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState, useContext, useEffect } from 'react';
-import type { ThemeUIStyleObject } from 'theme-ui';
-import {
-  MdOutlineInbox,
-  MdOutlineAccountCircle,
-  MdOutlineSettings,
-} from 'react-icons/md';
 
 import { AuthContext } from '../store/auth';
 
-type Props = {
+type LayoutProps = {
   children: React.ReactNode;
   title: string;
   description?: string;
 };
 
-const iconBtnStyles: ThemeUIStyleObject = {
-  width: 32,
-  height: 32,
-  bg: 'transparent',
-  border: 'none',
-  cursor: 'pointer',
+type HeaderProps = {
+  children: React.ReactNode;
 };
 
-export const AuthHeader: React.FC = () => (
+export const Header: React.FC<HeaderProps> = ({ children }) => (
   <header
     sx={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
       py: 3,
       px: 4,
       bg: '#f4f4f2',
     }}
   >
-    <h1 sx={{ m: 0 }}>Classroom: Bears Team 27</h1>
-    <div sx={{ display: 'flex', columnGap: 3 }}>
-      <button sx={iconBtnStyles} type="button">
-        <MdOutlineInbox size="inherit" />
-      </button>
-      <button sx={iconBtnStyles} type="button">
-        <MdOutlineAccountCircle size="inherit" />
-      </button>
-      <button sx={iconBtnStyles} type="button">
-        <MdOutlineSettings size="inherit" />
-      </button>
-    </div>
+    {children}
   </header>
 );
 
-export const AuthLayout: React.FC<Props> = ({
+export const AuthLayout: React.FC<LayoutProps> = ({
   children,
   title,
   description,
@@ -69,7 +45,19 @@ export const AuthLayout: React.FC<Props> = ({
   }, [authCtx?.isLoggedIn, router]);
 
   if (!isMounted) {
-    return <p>Loading...</p>;
+    return (
+      <p
+        sx={{
+          variant: 'text.h3',
+          position: 'absolute',
+          top: '40%',
+          left: '50%',
+          translate: '-50% -50%',
+        }}
+      >
+        Loading...
+      </p>
+    );
   }
 
   return (
@@ -83,7 +71,7 @@ export const AuthLayout: React.FC<Props> = ({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {children}
+      <main sx={{ height: '100vh' }}>{children}</main>
     </>
   );
 };
