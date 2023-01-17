@@ -9,7 +9,6 @@ import type { ThemeUIStyleObject } from 'theme-ui';
 
 export interface TextFieldProps
   extends HTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
-  sx?: ThemeUIStyleObject;
   /**
    * Label for the component
    */
@@ -24,6 +23,7 @@ export interface TextFieldProps
    * @default false
    */
   multiline?: boolean;
+  sx?: ThemeUIStyleObject;
 }
 
 export const TextField: ForwardRefExoticComponent<
