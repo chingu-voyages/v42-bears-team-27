@@ -2844,6 +2844,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@radix-ui/react-label@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@radix-ui/react-label@npm:2.0.0"
+  dependencies:
+    "@babel/runtime": ^7.13.10
+    "@radix-ui/react-primitive": 1.0.1
+  peerDependencies:
+    react: ^16.8 || ^17.0 || ^18.0
+    react-dom: ^16.8 || ^17.0 || ^18.0
+  checksum: 7ff57bd696d643c428425f4cdffcc54d1fa24b2e33a7a0f0fdc2ab0db10ddbe338fee22084db5706a2e27b7da75c40e11b8f4dde23546f78efcf2e53f83ec6d6
+  languageName: node
+  linkType: hard
+
 "@radix-ui/react-portal@npm:1.0.1":
   version: 1.0.1
   resolution: "@radix-ui/react-portal@npm:1.0.1"
@@ -5991,6 +6004,7 @@ __metadata:
     "@fontsource/nunito": ^4.5.11
     "@fontsource/roboto": ^4.5.8
     "@radix-ui/react-dialog": ^1.0.2
+    "@radix-ui/react-label": ^2.0.0
     "@types/node": 18.11.18
     "@types/react": 18.0.26
     "@types/react-calendar": ^3.9.0

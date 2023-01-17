@@ -6,6 +6,7 @@ import type {
 } from 'react';
 import { forwardRef } from 'react';
 import type { ThemeUIStyleObject } from 'theme-ui';
+import * as Label from '@radix-ui/react-label';
 
 export interface TextFieldProps
   extends HTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
@@ -29,7 +30,7 @@ export interface TextFieldProps
 export const TextField: ForwardRefExoticComponent<
 TextFieldProps & RefAttributes<any>
 > = forwardRef(
-  ({ label, type = 'text', multiline = false, sx, ...rest }, ref) => {
+  ({ id, label, type = 'text', multiline = false, sx, ...rest }, ref) => {
     const styles: ThemeUIStyleObject = {
       variant: 'text.label',
       width: 'inherit',
@@ -48,11 +49,13 @@ TextFieldProps & RefAttributes<any>
     };
 
     return (
-      // eslint-disable-next-line jsx-a11y/label-has-associated-control
-      <label sx={{ display: 'flex', flexDirection: 'column', rowGap: 3 }}>
-        <p sx={{ variant: 'text.label', fontFamily: 'heading', fontSize: 18 }}>
+      <div sx={{ display: 'flex', flexDirection: 'column', rowGap: 3, ...sx }}>
+        <Label.Root
+          htmlFor={id}
+          sx={{ variant: 'text.label', fontFamily: 'heading', fontSize: 18 }}
+        >
           {label}
-        </p>
+        </Label.Root>
         <div
           sx={{
             maxWidth: 430,
@@ -62,27 +65,12 @@ TextFieldProps & RefAttributes<any>
           }}
         >
           {multiline ? (
-            <textarea
-              ref={ref}
-              sx={{
-                ...styles,
-                ...sx,
-              }}
-              {...rest}
-            />
+            <textarea ref={ref} id={id} sx={styles} {...rest} />
           ) : (
-            <input
-              ref={ref}
-              type={type}
-              sx={{
-                ...styles,
-                ...sx,
-              }}
-              {...rest}
-            />
+            <input ref={ref} id="firstName" type={type} sx={styles} {...rest} />
           )}
         </div>
-      </label>
+      </div>
     );
   },
 );
