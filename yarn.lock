@@ -3690,6 +3690,7 @@ __metadata:
     eslint-config-prettier: ^8.6.0
     eslint-plugin-import: ^2.27.4
     express: ^4.18.2
+    express-validator: ^6.14.2
     mongoose: ^6.8.3
     nodemon: ^2.0.20
   languageName: unknown
@@ -5487,6 +5488,16 @@ __metadata:
   dependencies:
     homedir-polyfill: ^1.0.1
   checksum: 2efe6ed407d229981b1b6ceb552438fbc9e5c7d6a6751ad6ced3e0aa5cf12f0b299da695e90d6c2ac79191b5c53c613e508f7149e4573abfbb540698ddb7301a
+  languageName: node
+  linkType: hard
+
+"express-validator@npm:^6.14.2":
+  version: 6.14.2
+  resolution: "express-validator@npm:6.14.2"
+  dependencies:
+    lodash: ^4.17.21
+    validator: ^13.7.0
+  checksum: f19641a8f8bde39ebf9418e8798c22736ffe1c90081f97a4b66d6d0f185bce2c20cbcc170d21c5d10f8fd410bb8de38c31592021be4306b9936bc3c566741dc0
   languageName: node
   linkType: hard
 
@@ -10818,6 +10829,13 @@ __metadata:
   dependencies:
     builtins: ^5.0.0
   checksum: a32fd537bad17fcb59cfd58ae95a414d443866020d448ec3b22e8d40550cb585026582a57efbe1f132b882eea4da8ac38ee35f7be0dd72988a3cb55d305a20c1
+  languageName: node
+  linkType: hard
+
+"validator@npm:^13.7.0":
+  version: 13.7.0
+  resolution: "validator@npm:13.7.0"
+  checksum: 2b83283de1222ca549a7ef57f46e8d49c6669213348db78b7045bce36a3b5843ff1e9f709ebf74574e06223461ee1f264f8cc9a26a0060a79a27de079d8286ef
   languageName: node
   linkType: hard
 
