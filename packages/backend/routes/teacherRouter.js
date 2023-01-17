@@ -1,11 +1,8 @@
 const router = require('express').Router();
 
 const { validateTeacher } = require('../validators/teacherValidator');
+const { createTeacher } = require('../controllers/teacherController');
 
-router.route('/create').post(validateTeacher, function (req, res, _) {
-  const data = req.body;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ dataRecieved: data }));
-});
+router.route('/create').post(validateTeacher, createTeacher);
 
 module.exports = router;

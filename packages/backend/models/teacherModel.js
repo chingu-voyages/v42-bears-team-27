@@ -12,7 +12,7 @@ const TeacherSchema = new Schema({
     required: true,
     unique: true,
   },
-  password: {
+  passwordHash: {
     type: String,
     required: true,
   },
@@ -22,6 +22,4 @@ const TeacherSchema = new Schema({
   },
 });
 
-const Teacher = mongoose.model('Teacher', TeacherSchema);
-
-module.exports = { Teacher };
+module.exports = mongoose.model('Teacher', TeacherSchema);
