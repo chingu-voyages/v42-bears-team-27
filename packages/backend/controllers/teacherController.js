@@ -13,6 +13,21 @@ const createTeacher = async (req, res) => {
   const passwordHash = password;
 
   try {
+    const prevTeacher = await Teacher.findOne({ email });
+
+    if (prevTeacher) {
+      const errors = [
+        {
+          value: email,
+          msg: 'There is already an account with this email',
+          param: 'email',
+          location: 'body',
+        },
+      ];
+
+      return res.status(400).json({ errors });
+    }
+
     const created = await Teacher.create({
       name,
       email,
