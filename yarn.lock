@@ -3034,6 +3034,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-calendar@npm:^3.9.0":
+  version: 3.9.0
+  resolution: "@types/react-calendar@npm:3.9.0"
+  dependencies:
+    "@types/react": "*"
+  checksum: cddb6951c29c9adf96c38db2631d7b9d157aa65f5e4a45ba5bfc5657413839dfd7045a2e06b98e890b2285013a4777ca1e8317f6ee52c28284f1e47e58e0f8dd
+  languageName: node
+  linkType: hard
+
 "@types/react-dom@npm:18.0.10":
   version: 18.0.10
   resolution: "@types/react-dom@npm:18.0.10"
@@ -3211,6 +3220,13 @@ __metadata:
     "@typescript-eslint/types": 5.48.1
     eslint-visitor-keys: ^3.3.0
   checksum: 2bda10cf4e6bc48b0d463767617e48a832d708b9434665dff6ed101f7d33e0d592f02af17a2259bde1bd17e666246448ae78d0fe006148cb93d897fff9b1d134
+  languageName: node
+  linkType: hard
+
+"@wojtekmaj/date-utils@npm:^1.0.2":
+  version: 1.0.3
+  resolution: "@wojtekmaj/date-utils@npm:1.0.3"
+  checksum: 70b7152160529295319ead97e070f85a50c0eab7973b5845e3a58eab9b0c999023975d2739b5e2a059d27b108ce7cdbf14da99737d6fa3e3822d4dafb76b06f0
   languageName: node
   linkType: hard
 
@@ -4075,6 +4091,13 @@ __metadata:
   version: 1.0.4
   resolution: "clone@npm:1.0.4"
   checksum: d06418b7335897209e77bdd430d04f882189582e67bd1f75a04565f3f07f5b3f119a9d670c943b6697d0afb100f03b866b3b8a1f91d4d02d72c4ecf2bb64b5dd
+  languageName: node
+  linkType: hard
+
+"clsx@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "clsx@npm:1.2.1"
+  checksum: 30befca8019b2eb7dbad38cff6266cf543091dae2825c856a62a8ccf2c3ab9c2907c4d12b288b73101196767f66812365400a227581484a05f968b0307cfaf12
   languageName: node
   linkType: hard
 
@@ -5737,6 +5760,7 @@ __metadata:
     "@fontsource/roboto": ^4.5.8
     "@types/node": 18.11.18
     "@types/react": 18.0.26
+    "@types/react-calendar": ^3.9.0
     "@types/react-dom": 18.0.10
     "@typescript-eslint/eslint-plugin": ^5.48.1
     "@typescript-eslint/parser": ^5.48.1
@@ -5750,6 +5774,7 @@ __metadata:
     eslint-plugin-react-hooks: ^4.6.0
     next: 13.1.1
     react: 18.2.0
+    react-calendar: ^4.0.0
     react-dom: 18.2.0
     react-icons: ^4.7.1
     theme-ui: ^0.15.4
@@ -5935,6 +5960,15 @@ __metadata:
   version: 4.3.0
   resolution: "get-tsconfig@npm:4.3.0"
   checksum: 2597aab99aa3a24db209e192a3e5874ac47fc5abc71703ee26346e0c5816cb346ca09fc813c739db5862d3a2905d89aeca1b0cbc46c2b272398d672309aaf414
+  languageName: node
+  linkType: hard
+
+"get-user-locale@npm:^1.2.0":
+  version: 1.5.1
+  resolution: "get-user-locale@npm:1.5.1"
+  dependencies:
+    lodash.memoize: ^4.1.1
+  checksum: 4ab9ae83264c8b4f376b7690578ee3b332808d40f49e500469d476b832d4fddcf8477b7a01b60a242fd232b5a2ae8f6b7620f731d67350e89fd17ddd91fc8a0e
   languageName: node
   linkType: hard
 
@@ -7437,6 +7471,13 @@ __metadata:
   version: 4.6.0
   resolution: "lodash.map@npm:4.6.0"
   checksum: 7369a41d7d24d15ce3bbd02a7faa3a90f6266c38184e64932571b9b21b758bd10c04ffd117d1859be1a44156f29b94df5045eff172bf8a97fddf68bf1002d12f
+  languageName: node
+  linkType: hard
+
+"lodash.memoize@npm:^4.1.1":
+  version: 4.1.2
+  resolution: "lodash.memoize@npm:4.1.2"
+  checksum: 9ff3942feeccffa4f1fafa88d32f0d24fdc62fd15ded5a74a5f950ff5f0c6f61916157246744c620173dddf38d37095a92327d5fd3861e2063e736a5c207d089
   languageName: node
   linkType: hard
 
@@ -9059,7 +9100,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.8.1":
+"prop-types@npm:^15.6.0, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -9161,6 +9202,21 @@ __metadata:
     iconv-lite: 0.4.24
     unpipe: 1.0.0
   checksum: 5362adff1575d691bb3f75998803a0ffed8c64eabeaa06e54b4ada25a0cd1b2ae7f4f5ec46565d1bec337e08b5ac90c76eaa0758de6f72a633f025d754dec29e
+  languageName: node
+  linkType: hard
+
+"react-calendar@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "react-calendar@npm:4.0.0"
+  dependencies:
+    "@wojtekmaj/date-utils": ^1.0.2
+    clsx: ^1.2.1
+    get-user-locale: ^1.2.0
+    prop-types: ^15.6.0
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: a470ea1eab914cda9f76245060e15129a220c30f2942a28c20b3cb999fd994d0c0fadae849184ba123b3b78541fbb3301c5ac0c44e0bd2ab156bfba8cc587593
   languageName: node
   linkType: hard
 
