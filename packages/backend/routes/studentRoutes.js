@@ -1,11 +1,9 @@
-const express = require('express');
+const router = require('express').Router();
 
-const { createStudent } = require('../controllers/studentControllers');
 const { validateStudent } = require('../validators/studentValidator');
+const { createStudent } = require('../controllers/studentControllers');
 
-const router = express.Router();
-
-// "/student/create"
+// "http://localhost:5000/api/v0/student/create"
 router.post('/create', validateStudent, createStudent);
 
 module.exports = router;

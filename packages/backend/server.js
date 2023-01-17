@@ -4,7 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-const studentRouter = require('./routes/studentRoutes');
+const routes = require('./routes');
 
 const app = express();
 
@@ -25,7 +25,7 @@ mongoose
 app.use(cors()); // TODO options for production
 app.use(express.json());
 
-app.use('/student', studentRouter);
+app.use('/api/v0', routes);
 
 const PORT = process.env.PORT || 5000;
 
