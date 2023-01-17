@@ -78,11 +78,17 @@ const theme: Theme = {
         bg: 'primary',
         color: 'white',
         border: 'none',
+        '&:hover': {
+          bg: '#424c5a',
+        },
       },
       outlined: {
         bg: 'white',
         color: 'primary',
         border: '2px solid currentColor ',
+        '&:hover': {
+          bg: '#e6e6e6',
+        },
       },
     },
   },

@@ -9,9 +9,10 @@ import type { ThemeUIStyleObject } from 'theme-ui';
 
 export interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
   /**
-   * Label for the component
+   * Type of the button element
+   * @default 'button'
    */
-  label: string;
+  type?: 'button' | 'reset' | 'submit';
   /**
    * Size of the component
    * @default 'md'
@@ -22,17 +23,15 @@ export interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
    * @default 'filled'
    */
   variant?: 'filled' | 'outlined';
-
   /**
    * Add rounded edges for the component
    * @default true
    */
   rounded?: boolean;
   /**
-   * Type of the button element
-   * @default 'button'
+   * Icon for the component
    */
-  type?: 'button' | 'reset' | 'submit';
+  icon?: React.ReactNode;
   sx?: ThemeUIStyleObject;
 }
 
@@ -42,7 +41,7 @@ ButtonProps & RefAttributes<HTMLButtonElement>
   (
     {
       children,
-      label,
+      icon,
       size = 'md',
       variant = 'filled',
       rounded = true,
@@ -58,9 +57,6 @@ ButtonProps & RefAttributes<HTMLButtonElement>
       justifyContent: 'center',
       borderRadius: rounded ? 50 : 0,
       cursor: 'pointer',
-      '&:hover': {
-        bg: '#e6e6e6',
-      },
       ...(size === 'lg' && {
         columnGap: 10,
         height: 54,
@@ -92,8 +88,10 @@ ButtonProps & RefAttributes<HTMLButtonElement>
         sx={{ variant: `buttons.primary.${variant}`, ...styles, ...sx }}
         {...rest}
       >
-        <p sx={{ variant: 'text.label', m: 0, fontSize: 'inherit' }}>{label}</p>
-        {children}
+        <p sx={{ variant: 'text.label', m: 0, fontSize: 'inherit' }}>
+          {children}
+        </p>
+        {icon}
       </button>
     );
   },
