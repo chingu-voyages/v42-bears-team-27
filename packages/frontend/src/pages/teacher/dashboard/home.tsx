@@ -1,14 +1,36 @@
 /* eslint-disable react/destructuring-assignment */
 import type { ReactElement } from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
+import { createColumnHelper } from '@tanstack/react-table';
 
 import { AuthLayout, Header } from '../../../layouts/AuthLayout';
 import { TeacherNav } from '../../../components/dashboard/navs';
+import { TeacherCalendar } from '../../../components/dashboard/home/calendars';
+import StudentTable from '../../../components/dashboard/home/StudentTable';
 import { AuthContext } from '../../../store/auth';
 import type { ITeacherCredentials } from '../../../interfaces';
+import type { NextPageWithLayout } from '../../_app';
 
-const Home = () => {
+const columnHelper = createColumnHelper<any>();
+
+const columns = [
+  columnHelper.accessor('fullName', {
+    header: () => 'Full Name',
+    cell: (info) => info.renderValue(),
+  }),
+  columnHelper.accessor('tasks', {
+    header: () => 'Tasks',
+    cell: (info) => info.renderValue(),
+  }),
+];
+
+type Props = {
+  defaultData: any[];
+};
+
+const Home: NextPageWithLayout<Props> = ({ defaultData }) => {
   const authCtx = useContext(AuthContext);
+  const [data] = useState(() => [...defaultData]);
 
   if (!authCtx) {
     return (
@@ -27,10 +49,25 @@ const Home = () => {
   }
 
   return (
-    <p sx={{ variant: 'text.h3', color: 'primary', textAlign: 'center' }}>
-      {/* TODO: username should be replaced with last name (e.g. Mr.Jonathan) */}
-      {`Good Morning, ${(authCtx.user as ITeacherCredentials)?.username}`}
-    </p>
+    <>
+      <p sx={{ variant: 'text.h3', color: 'primary', textAlign: 'center' }}>
+        {/* TODO: username should be replaced with last name (e.g. Mr.Jonathan) */}
+        {`Good Morning, ${(authCtx.user as ITeacherCredentials)?.username}`}
+      </p>
+      <div
+        sx={{
+          display: 'flex',
+          flexDirection: ['column', null, 'row'],
+          alignItems: ['center', 'start', 'center'],
+          justifyContent: 'space-between',
+          columnGap: 3,
+          mt: [3, null, 4],
+        }}
+      >
+        <TeacherCalendar />
+        <StudentTable data={data} columns={columns} />
+      </div>
+    </>
   );
 };
 
@@ -48,5 +85,33 @@ Home.getLayout = function getLayout(page: ReactElement) {
     </AuthLayout>
   );
 };
+
+// Before rendering home page, ensure required students data is loaded in
+// export async function getStaticProps() {
+//   const defaultData: any[] = [
+//     {
+//       fullName: 'Smith, Lucas',
+//       tasks: 2,
+//     },
+//     {
+//       fullName: 'Miller, Amanda',
+//       tasks: 0,
+//     },
+//     {
+//       fullName: 'Adams, John',
+//       tasks: 1,
+//     },
+//     {
+//       fullName: 'Linsley, Karen',
+//       tasks: 4,
+//     },
+//   ];
+
+//   return {
+//     props: {
+//       defaultData,
+//     },
+//   };
+// }
 
 export default Home;
