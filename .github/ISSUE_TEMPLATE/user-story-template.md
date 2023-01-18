@@ -1,20 +1,21 @@
 ---
 name: User Story template
-about: User Stories are features supporting user requirements that can be completed
+about:
+  User Stories are features supporting user requirements that can be completed
   in a single sprint
 title: ''
 labels: user_story
 assignees: ''
-
 ---
 
-**__User Story Description__**
+****User Story Description****
 As a [role]
 I want to [action to be performed]
 So I can [result to be achieved]
 
-**__Steps to Follow__**
+****Steps to Follow****
+
 - [ ] Please add your steps here
 
-**__Additional Considerations__**
+****Additional Considerations****
 Please add additional considerations here

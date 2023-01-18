@@ -1,12 +1,15 @@
-const express = require('express');
-const mongoose = require('mongoose');
-
 require('dotenv').config();
 
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+
+const routes = require('./routes');
+
 const app = express();
-mongoose.set('strictQuery', false);
 
 // Database
+mongoose.set('strictQuery', false);
 mongoose
   .connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true,
@@ -18,6 +21,11 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+app.use(cors()); // TODO options for production
+app.use(express.json());
+
+app.use('/api/v0', routes);
 
 const PORT = process.env.PORT || 5000;
 
