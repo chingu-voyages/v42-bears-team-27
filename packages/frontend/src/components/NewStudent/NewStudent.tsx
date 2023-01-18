@@ -1,8 +1,10 @@
 import { useState } from 'react';
 
+import { Button, TextField } from '../UI';
+
 const NewStudent: React.FC = () => {
   const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('aaa');
   const [alert, setAlert] = useState('');
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
@@ -13,7 +15,7 @@ const NewStudent: React.FC = () => {
 
     try {
       const call = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/student/create`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/student/create`,
         {
           method: 'POST',
           headers: {
@@ -35,41 +37,76 @@ const NewStudent: React.FC = () => {
     }
   };
   return (
-    <>
-      <h1>Invite a Student</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="fullName">
-            Student’s Full Name:
-            <input
-              id="fullName"
-              type="text"
-              placeholder="FirstName, LastName"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-            />
-          </label>
+    <div
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+        color: 'primary',
+        backgroundColor: 'muted',
+      }}
+    >
+      <h1
+        sx={{
+          variant: 'text.h2',
+          fontWeight: 'medium',
+        }}
+      >
+        Invite a Student
+      </h1>
+      <form
+        sx={{
+          minWidth: '40%',
+        }}
+        onSubmit={handleSubmit}
+      >
+        <div
+          sx={{
+            py: '3',
+          }}
+        >
+          <TextField
+            placeholder="Surname, Name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            label="Student’s Full Name:"
+            type="text"
+          />
         </div>
-        <div>
-          <label htmlFor="email">
-            Student’s E-mail:
-            <input
-              id="email"
-              type="email"
-              placeholder="yourEmail@gmail.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </label>
+        <div
+          sx={{
+            py: '3',
+          }}
+        >
+          <TextField
+            placeholder="studentmail@gmail.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            label="Student’s E-mail:"
+            type="email"
+          />
         </div>
-        <div>
-          <button type="submit">Send Invite</button>
+        <div
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            mt: '2rem',
+            mb: '10rem',
+          }}
+        >
+          <Button
+            sx={{
+              width: '100%',
+            }}
+            rounded={false}
+            type="submit"
+          >
+            Send Invite
+          </Button>
         </div>
         <h3>{alert}</h3>
       </form>
-    </>
+    </div>
   );
 };
 
