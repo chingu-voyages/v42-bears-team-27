@@ -4,7 +4,7 @@ import { Button, TextField } from '../UI';
 
 const NewStudent: React.FC = () => {
   const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('aaa');
+  const [email, setEmail] = useState('');
   const [alert, setAlert] = useState('');
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
@@ -79,7 +79,7 @@ const NewStudent: React.FC = () => {
           }}
         >
           <TextField
-            placeholder="studentmail@gmail.com"
+            placeholder="student@mail.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             label="Student’s E-mail:"
