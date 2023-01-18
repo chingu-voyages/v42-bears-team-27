@@ -3660,6 +3660,7 @@ __metadata:
     eslint-plugin-import: ^2.27.4
     express: ^4.18.2
     mongoose: ^6.8.3
+    nodemailer: ^6.9.0
     nodemon: ^2.0.20
   languageName: unknown
   linkType: soft
@@ -8157,6 +8158,13 @@ __metadata:
   bin:
     node-gyp: bin/node-gyp.js
   checksum: b860e9976fa645ca0789c69e25387401b4396b93c8375489b5151a6c55cf2640a3b6183c212b38625ef7c508994930b72198338e3d09b9d7ade5acc4aaf51ea7
+  languageName: node
+  linkType: hard
+
+"nodemailer@npm:^6.9.0":
+  version: 6.9.0
+  resolution: "nodemailer@npm:6.9.0"
+  checksum: 152d38de71582436d8c6067dfa6a3ddae738437b6f9be9211bd22cf92b2f92786dbef4a4d2ca0282e76b18f0274a7fb6ec5a7acc22f57bdd05559a6ec379dd5c
   languageName: node
   linkType: hard
 
