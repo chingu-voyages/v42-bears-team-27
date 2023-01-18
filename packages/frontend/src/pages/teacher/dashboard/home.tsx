@@ -6,10 +6,15 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { AuthLayout, Header } from '../../../layouts/AuthLayout';
 import { TeacherNav } from '../../../components/dashboard/navs';
 import { TeacherCalendar } from '../../../components/dashboard/home/calendars';
+import {
+  BroadcastModal,
+  ClassroomModal,
+} from '../../../components/dashboard/home/modals';
 import StudentTable from '../../../components/dashboard/home/StudentTable';
-import { AuthContext } from '../../../store/auth';
-import type { ITeacherCredentials } from '../../../interfaces';
+import ViewClassroom from '../../../components/dashboard/home/ViewClassroom';
 import type { NextPageWithLayout } from '../../_app';
+import type { ITeacherCredentials } from '../../../interfaces';
+import { AuthContext } from '../../../store/auth';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -49,11 +54,24 @@ const Home: NextPageWithLayout<Props> = ({ defaultData }) => {
   }
 
   return (
-    <>
+    <div sx={{ pt: 1, pb: 4, px: 2 }}>
       <p sx={{ variant: 'text.h3', color: 'primary', textAlign: 'center' }}>
         {/* TODO: username should be replaced with last name (e.g. Mr.Jonathan) */}
         {`Good Morning, ${(authCtx.user as ITeacherCredentials)?.username}`}
       </p>
+      <div
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          columnGap: 3,
+          mb: [4, null, 0],
+        }}
+      >
+        <BroadcastModal />
+        <ClassroomModal>
+          <ViewClassroom teacher={authCtx.user as ITeacherCredentials} />
+        </ClassroomModal>
+      </div>
       <div
         sx={{
           display: 'flex',
@@ -67,7 +85,7 @@ const Home: NextPageWithLayout<Props> = ({ defaultData }) => {
         <TeacherCalendar />
         <StudentTable data={data} columns={columns} />
       </div>
-    </>
+    </div>
   );
 };
 
