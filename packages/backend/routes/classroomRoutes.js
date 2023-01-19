@@ -2,30 +2,35 @@ const express = require('express');
 
 const router = express.Router();
 
-const dasbaordController = require('../controllers/teacherDashboardController');
+const {
+  deleteClassroom,
+  updateClassroom,
+  getClassroom,
+  addClassroom,
+} = require('../controllers/classroomController');
 
 router.post(
   '/create',
-  dasbaordController.addclass,
+  addClassroom,
   // create classroom data
   // return success message
 );
 router.get(
   '/:id',
-  dasbaordController.getClassroom,
+  getClassroom,
   // return classroom data
 );
 
 router.delete(
   '/:id',
-  dasbaordController.deleteClassroom,
+  deleteClassroom,
   // delete classroom
   // return success message
 );
 
 router.put(
   '/:id',
-  dasbaordController.updateClassroom,
+  updateClassroom,
   // delete classroom
   // return success message
 );

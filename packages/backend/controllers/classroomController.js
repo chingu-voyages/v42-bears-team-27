@@ -1,4 +1,4 @@
-const Classroom = require('../models/teacherDashboardModel');
+const Classroom = require('../models/classroomModel');
 /* eslint no-underscore-dangle: 0 */
 
 const getClassroom = async (req, res) => {
@@ -15,7 +15,7 @@ const getClassroom = async (req, res) => {
   res.json(classroom);
 };
 
-const addclass = async (req, res) => {
+const addClassroom = async (req, res) => {
   const classroom = await Classroom.findOne({ teacher: req.user._id });
   if (classroom) {
     res.status(400).json({ error: 'Teacher already belongs to a classroom' });
@@ -61,5 +61,5 @@ module.exports = {
   deleteClassroom,
   updateClassroom,
   getClassroom,
-  addclass,
+  addClassroom,
 };
