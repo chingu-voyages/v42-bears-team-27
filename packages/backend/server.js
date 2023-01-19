@@ -21,11 +21,7 @@ mongoose
     console.log(err);
   });
 
-app.use(
-  cors({
-    origin: '*',
-  }),
-);
+app.use(cors()); // TODO options for production
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
