@@ -8,7 +8,6 @@ const routes = require('./routes');
 
 const app = express();
 
-// Database
 mongoose.set('strictQuery', false);
 mongoose
   .connect(process.env.CONNECTION_STRING, {
@@ -24,6 +23,7 @@ mongoose
 
 app.use(cors()); // TODO options for production
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/v0', routes);
 

@@ -8,14 +8,14 @@ labels: user_story
 assignees: ''
 ---
 
-****User Story Description****
+\***\*User Story Description\*\***
 As a [role]
 I want to [action to be performed]
 So I can [result to be achieved]
 
-****Steps to Follow****
+\***\*Steps to Follow\*\***
 
 - [ ] Please add your steps here
 
-****Additional Considerations****
+\***\*Additional Considerations\*\***
 Please add additional considerations here
