@@ -14,8 +14,12 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "jsxImportSource": "theme-ui",
-    "incremental": true
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "test-utils": ["test/test-utils"]
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "coverage"]
 }
