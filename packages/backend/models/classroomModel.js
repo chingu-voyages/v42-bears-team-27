@@ -5,7 +5,6 @@ const classroomSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      unique: true,
       trim: true,
     },
     students: [
@@ -14,12 +13,10 @@ const classroomSchema = new mongoose.Schema(
         ref: 'Student',
       },
     ],
-    teacher: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Teacher',
-      },
-    ],
+    teacher: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Teacher',
+    },
     subject: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -27,7 +24,9 @@ const classroomSchema = new mongoose.Schema(
       },
     ],
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  },
 );
 
 const Classroom = mongoose.model('Classroom', classroomSchema);
