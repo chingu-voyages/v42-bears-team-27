@@ -1,8 +1,8 @@
 const Student = require('../models/studentModel');
-const generatePassword = require('../utils/generatePassword');
+const { generatePassword, generateJWT } = require('../utils');
 
 const createStudent = async (req, res) => {
-  /*  fullName: 'FirstName, LastName',
+  /*  fullName: 'LastName, FirstName',
       email: '123@123.com
       classroom: '63c339704aa8be1b4851e7b5'  */
   const { fullName, email, classroom } = req.body;
@@ -36,6 +36,25 @@ const createStudent = async (req, res) => {
     .catch((err) => res.status(500).json({ message: err }));
 };
 
+const loginStudent = async (req, res) => {
+  const { user } = res.locals;
+  req.login(user, { session: false }, (error) => {
+    if (error) {
+      res.json({ Error: error });
+    }
+    const payload = {
+      _id: user._id,
+      email: user.email,
+    };
+    const token = generateJWT(payload);
+    return res.json({ email: user.email, token });
+  });
+};
+
+const testStudent = async (req, res) => res.json({ message: 'authorized!' });
+
 module.exports = {
   createStudent,
+  loginStudent,
+  testStudent,
 };
