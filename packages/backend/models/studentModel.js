@@ -1,3 +1,4 @@
+/* eslint func-names: 0 */
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -16,7 +17,8 @@ const StudentSchema = new mongoose.Schema(
 StudentSchema.statics.hashPassword = (password) =>
   bcrypt.hashSync(password, 10);
 
-StudentSchema.methods.validatePassword = (password) =>
-  bcrypt.compareSync(password, this.password);
+StudentSchema.methods.validatePassword = function (password) {
+  return bcrypt.compareSync(password, this.password);
+};
 
 module.exports = mongoose.model('Student', StudentSchema);
