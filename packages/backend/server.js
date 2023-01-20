@@ -1,8 +1,10 @@
+/* eslint no-console: 0 */
 require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const passport = require('passport');
 
 const routes = require('./routes');
 
@@ -15,7 +17,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log('database connected...');
+    console.log('database connected!');
   })
   .catch((err) => {
     console.log(err);
@@ -24,6 +26,7 @@ mongoose
 app.use(cors()); // TODO options for production
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(passport.initialize());
 
 app.use('/api/v0', routes);
 
