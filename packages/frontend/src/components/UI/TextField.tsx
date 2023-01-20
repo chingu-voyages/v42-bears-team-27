@@ -25,7 +25,6 @@ export interface TextFieldProps
    */
   multiline?: boolean;
   sx?: ThemeUIStyleObject;
-  value?: string;
 }
 
 export const TextField: ForwardRefExoticComponent<
@@ -59,7 +58,7 @@ TextFieldProps & RefAttributes<any>
         </Label.Root>
         <div
           sx={{
-            // maxWidth: 430,
+            maxWidth: 430,
             width: '100%',
             height: multiline ? 174 : 50,
             bg: 'background',
