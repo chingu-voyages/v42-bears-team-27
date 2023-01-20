@@ -2,6 +2,7 @@ const passport = require('passport');
 
 require('../utils/auth');
 
+// Student Auth middlewares
 const studentLocalAuth = (req, res, next) => {
   passport.authenticate(
     'student-local',
@@ -26,7 +27,34 @@ const studentJwtAuth = (req, res, next) => {
   })(req, res);
 };
 
+// Teacher Auth middlewares
+// const teacherLocalAuth = (req, res, next) => {
+//   passport.authenticate(
+//     'teacher-local',
+//     { session: false },
+//     (error, user, info) => {
+//       if (error || !user) {
+//         return res.status(400).json(info);
+//       }
+//       res.locals.user = user;
+//       return next();
+//     },
+//   )(req, res);
+// };
+
+// const teacherJwtAuth = (req, res, next) => {
+//   passport.authenticate('teacher-jwt', { session: false }, (error, user) => {
+//     if (error || !user) {
+//       return res.status(400).json({ message: 'not authorized' });
+//     }
+//     res.locals.user = user;
+//     return next();
+//   })(req, res);
+// };
+
 module.exports = {
   studentLocalAuth,
   studentJwtAuth,
+  // teacherLocalAuth,
+  // teacherJwtAuth,
 };
