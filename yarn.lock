@@ -3856,6 +3856,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/react-table@npm:^8.7.6":
+  version: 8.7.6
+  resolution: "@tanstack/react-table@npm:8.7.6"
+  dependencies:
+    "@tanstack/table-core": 8.7.6
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: 20b10ace9ff32bab79e7fa6cedbde44b74b1760b510e3b67766eaec6d4f55a741b77f3ec458fa5908119397d3ee1e37b0628653a71aa25cb45a7787349b4b392
+  languageName: node
+  linkType: hard
+
+"@tanstack/table-core@npm:8.7.6":
+  version: 8.7.6
+  resolution: "@tanstack/table-core@npm:8.7.6"
+  checksum: edba55731245a5a1a46a9a69a1ca2a7d7ae24377ed478f6622d043b80b6f8fbcb19605843e0feb85b99b4a7d5407633be4e440e71c82a4bf876f05a62e8005ae
+  languageName: node
+  linkType: hard
+
 "@theme-ui/color-modes@npm:^0.15.4":
   version: 0.15.4
   resolution: "@theme-ui/color-modes@npm:0.15.4"
@@ -7380,6 +7399,7 @@ __metadata:
     "@fontsource/roboto": ^4.5.8
     "@radix-ui/react-dialog": ^1.0.2
     "@radix-ui/react-label": ^2.0.0
+    "@tanstack/react-table": ^8.7.6
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.4.0
     "@testing-library/user-event": ^14.4.3
