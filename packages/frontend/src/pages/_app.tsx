@@ -4,6 +4,7 @@ import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import { ThemeProvider } from 'theme-ui';
 
+import ErrorBoundary from '../components/ErrorBoundary';
 import { AuthProvider } from '../store/auth';
 
 import theme from '../theme';
@@ -21,7 +22,13 @@ const App: React.FC<AppPropsWithLayout> = ({ Component, pageProps }) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
+      <AuthProvider>
+        {getLayout(
+          <ErrorBoundary>
+            <Component {...pageProps} />
+          </ErrorBoundary>,
+        )}
+      </AuthProvider>
     </ThemeProvider>
   );
 };
