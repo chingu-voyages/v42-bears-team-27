@@ -17,7 +17,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log('database connected...');
+    console.log('database connected!');
   })
   .catch((err) => {
     console.log(err);
@@ -25,6 +25,7 @@ mongoose
 
 app.use(cors()); // TODO options for production
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
 app.use('/api/v0', routes);
