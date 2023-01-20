@@ -1,7 +1,10 @@
 const router = require('express').Router();
 
 const { validateStudent } = require('../validators/studentValidator');
-const { studentLocalAuth, studentJwtAuth } = require('../middleware/auth');
+const {
+  authenticateStudent,
+  checkStudentAuthenticated,
+} = require('../middleware/auth');
 const {
   createStudent,
   loginStudent,
@@ -10,7 +13,7 @@ const {
 
 // "http://localhost:5000/api/v0/student/create"
 router.post('/create', validateStudent, createStudent);
-router.post('/login', studentLocalAuth, loginStudent);
-router.get('/test', studentJwtAuth, testStudent);
+router.post('/login', authenticateStudent, loginStudent);
+router.get('/test', checkStudentAuthenticated, testStudent);
 
 module.exports = router;

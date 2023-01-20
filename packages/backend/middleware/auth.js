@@ -3,7 +3,7 @@ const passport = require('passport');
 require('../utils/auth');
 
 // Student Auth middlewares
-const studentLocalAuth = (req, res, next) => {
+const authenticateStudent = (req, res, next) => {
   passport.authenticate(
     'student-local',
     { session: false },
@@ -17,7 +17,7 @@ const studentLocalAuth = (req, res, next) => {
   )(req, res);
 };
 
-const studentJwtAuth = (req, res, next) => {
+const checkStudentAuthenticated = (req, res, next) => {
   passport.authenticate('student-jwt', { session: false }, (error, user) => {
     if (error || !user) {
       return res.status(400).json({ message: 'not authorized' });
@@ -53,8 +53,8 @@ const studentJwtAuth = (req, res, next) => {
 // };
 
 module.exports = {
-  studentLocalAuth,
-  studentJwtAuth,
+  authenticateStudent,
+  checkStudentAuthenticated,
   // teacherLocalAuth,
   // teacherJwtAuth,
 };
