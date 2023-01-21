@@ -3,7 +3,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const passportJWT = require('passport-jwt');
 
 const Student = require('../models/studentModel');
-// const Teacher = require('../models/teacherModel');
+const Teacher = require('../models/teacherModel');
 
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
@@ -55,47 +55,47 @@ passport.use(
 );
 
 // Teacher Auth Strategies
-// passport.use(
-//   'teacher-local',
-//   new LocalStrategy(
-//     {
-//       usernameField: 'email',
-//       passwordField: 'password',
-//     },
-//     (email, password, callback) => {
-//       Teacher.findOne({ email }, (error, teacher) => {
-//         if (error) {
-//           return callback(error);
-//         }
+passport.use(
+  'teacher-local',
+  new LocalStrategy(
+    {
+      usernameField: 'email',
+      passwordField: 'password',
+    },
+    (email, password, callback) => {
+      Teacher.findOne({ email }, (error, teacher) => {
+        if (error) {
+          return callback(error);
+        }
 
-//         if (!teacher) {
-//           return callback(null, false, { message: 'incorrect user' });
-//         }
+        if (!teacher) {
+          return callback(null, false, { message: 'incorrect user' });
+        }
 
-//         if (!teacher.validatePassword(password)) {
-//           return callback(null, false, { message: 'incorrect password' });
-//         }
+        if (!teacher.validatePassword(password)) {
+          return callback(null, false, { message: 'incorrect password' });
+        }
 
-//         return callback(null, teacher);
-//       });
-//     },
-//   ),
-// );
+        return callback(null, teacher);
+      });
+    },
+  ),
+);
 
-// passport.use(
-//   'teacher-jwt',
-//   new JWTStrategy(
-//     {
-//       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-//       secretOrKey: process.env.JWT_KEY,
-//     },
-//     (jwtPayload, callback) =>
-//       Teacher.findById(jwtPayload._id, (error, teacher) => {
-//         if (error) {
-//           return callback(error);
-//         }
+passport.use(
+  'teacher-jwt',
+  new JWTStrategy(
+    {
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_KEY,
+    },
+    (jwtPayload, callback) =>
+      Teacher.findById(jwtPayload._id, (error, teacher) => {
+        if (error) {
+          return callback(error);
+        }
 
-//         return callback(null, teacher);
-//       }),
-//   ),
-// );
+        return callback(null, teacher);
+      }),
+  ),
+);

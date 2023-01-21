@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { Button, TextField } from '../../../UI';
 
-const FORM_SUBMIT_URL = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/teachers/create`;
+const FORM_SUBMIT_URL = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/teacher/create`;
 
 const TeacherSignUp: React.FC = () => {
   const [title, setTitle] = useState('');
