@@ -1,11 +1,11 @@
 import type { ReactElement } from 'react';
 
 import Layout from '../layouts/Layout';
-import SignUp from '../components/teacher/forms/sign-up';
+import TeacherSignUp from '../components/teacher/forms/sign-up';
 
 const Home = () => (
   <div>
-    <SignUp />
+    <TeacherSignUp />
   </div>
 );
 
