@@ -1,13 +1,13 @@
 import { MdAdd } from 'react-icons/md';
 
 import { IconButton } from '../../../UI';
-import type { ITeacherCredentials } from '../../../../interfaces';
+import type { IUserData } from '../../../../interfaces';
 
 type Props = {
-  teacher: ITeacherCredentials;
+  user: IUserData;
 };
 
-const ViewClassroom: React.FC<Props> = ({ teacher }) => (
+const ViewClassroom: React.FC<Props> = ({ user }) => (
   <div sx={{ color: 'primary', textAlign: 'center' }}>
     <div>
       <p sx={{ variant: 'text.h3', mt: 0, mb: 2 }}>Teacher</p>
@@ -36,7 +36,7 @@ const ViewClassroom: React.FC<Props> = ({ teacher }) => (
             }}
           />
           {/* TODO: username should be replaced with last name (e.g. Mr.Jonathan) */}
-          <p sx={{ variant: 'text.h4' }}>{teacher.username}</p>
+          <p sx={{ variant: 'text.h4' }}>{user.fullname}</p>
         </div>
       </div>
     </div>

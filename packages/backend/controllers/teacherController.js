@@ -33,16 +33,24 @@ const createTeacher = async (req, res) => {
       return res.status(400).json({ errors });
     }
 
-    const created = await Teacher.create({
+    const teacher = await Teacher.create({
       title,
       fullname,
       email,
       passwordHash,
     });
 
-    if (created) {
-      return res.status(201).json({
-        message: 'Account created successfully',
+    if (teacher) {
+      const payload = {
+        _id: teacher._id,
+        email: teacher.email,
+      };
+      const token = generateJWT(payload);
+      return res.json({
+        title: teacher.title,
+        fullname: teacher.fullname,
+        email: teacher.email,
+        token,
       });
     }
   } catch (error) {
@@ -64,7 +72,12 @@ const loginTeacher = async (req, res) => {
       email: user.email,
     };
     const token = generateJWT(payload);
-    return res.json({ userType: 'teacher', token });
+    return res.json({
+      email: user.email,
+      title: user.title,
+      fullname: user.fullname,
+      token,
+    });
   });
 };
 

@@ -56,9 +56,9 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       return 'Error: Failed to login!';
     }
 
-    const { email, token }: any = await res.json();
+    const { token, ...userData }: any = await res.json();
 
-    setUser({ role: userRole, email });
+    setUser({ role: userRole, ...userData });
     setIsLoggedIn(true);
     setJSONToken(token);
 
