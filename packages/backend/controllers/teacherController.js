@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const teacherModel = require('../models/teacherModel');
 const Teacher = require('../models/teacherModel');
 const { generateJWT } = require('../utils');

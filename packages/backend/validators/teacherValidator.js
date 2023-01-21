@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const { check, validationResult } = require('express-validator');
 
 exports.validateTeacher = [
