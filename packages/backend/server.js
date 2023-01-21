@@ -1,8 +1,7 @@
 /* eslint no-console: 0 */
 require('dotenv').config();
-
-const express = require('express');
 const cors = require('cors');
+const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
 
@@ -10,6 +9,12 @@ const routes = require('./routes');
 
 const app = express();
 
+app.use(cors());
+app.use(express.json());
+
+app.use('/api/v0', routes);
+
+// Database
 mongoose.set('strictQuery', false);
 mongoose
   .connect(process.env.CONNECTION_STRING, {
