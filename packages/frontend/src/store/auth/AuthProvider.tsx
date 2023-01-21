@@ -12,6 +12,31 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [jsonToken, setJSONToken] = useState<string | null>(null);
 
+  const signupHandler = async (userCredentials: any) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/teacher/create`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userCredentials),
+      },
+    );
+
+    if (!res.ok) {
+      return 'Error: Failed to signup!';
+    }
+
+    const { token, ...userData }: any = await res.json();
+
+    setUser({ role: 'teacher', ...userData });
+    setIsLoggedIn(true);
+    setJSONToken(token);
+
+    return 'Success: Signed up!';
+  };
+
   const loginHandler = async (
     userCredentials: IUserCredentials,
     userRole: 'student' | 'teacher',
@@ -51,6 +76,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       user,
       isLoggedIn,
       jsonToken,
+      onSignup: signupHandler,
       onLogin: loginHandler,
       onLogout: logoutHandler,
     }),
