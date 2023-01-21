@@ -1,3 +1,4 @@
+const teacherModel = require('../models/teacherModel');
 const Teacher = require('../models/teacherModel');
 
 const createTeacher = async (req, res) => {
@@ -12,7 +13,7 @@ const createTeacher = async (req, res) => {
   const { title, fullname, email, password } = req.body;
 
   // TODO: hash the password
-  const passwordHash = password;
+  const passwordHash = teacherModel.hashPassword(password);
 
   try {
     const prevTeacher = await Teacher.findOne({ email });
