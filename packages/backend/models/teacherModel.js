@@ -31,7 +31,7 @@ TeacherSchema.statics.hashPassword = (password) =>
   bcrypt.hashSync(password, 10);
 
 TeacherSchema.methods.validatePassword = function (password) {
-  return bcrypt.compareSync(password, this.password);
+  return bcrypt.compareSync(password, this.passwordHash);
 };
 
 module.exports = mongoose.model('Teacher', TeacherSchema);

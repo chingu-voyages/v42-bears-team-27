@@ -1,8 +1,19 @@
 const router = require('express').Router();
 
 const { validateTeacher } = require('../validators/teacherValidator');
-const { createTeacher } = require('../controllers/teacherController');
+const {
+  authenticateTeacher,
+  checkTeacherAuthenticated,
+} = require('../middleware/auth');
+
+const {
+  createTeacher,
+  loginTeacher,
+  testTeacher,
+} = require('../controllers/teacherController');
 
 router.route('/create').post(validateTeacher, createTeacher);
+router.post('/login', authenticateTeacher, loginTeacher);
+router.get('/test', checkTeacherAuthenticated, testTeacher);
 
 module.exports = router;

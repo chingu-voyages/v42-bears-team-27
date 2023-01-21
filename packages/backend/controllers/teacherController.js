@@ -1,5 +1,6 @@
 const teacherModel = require('../models/teacherModel');
 const Teacher = require('../models/teacherModel');
+const { generateJWT } = require('../utils');
 
 const createTeacher = async (req, res) => {
   /* 
@@ -51,4 +52,22 @@ const createTeacher = async (req, res) => {
   }
 };
 
-module.exports = { createTeacher };
+const loginTeacher = async (req, res) => {
+  const { user } = res.locals;
+  req.login(user, { session: false }, (error) => {
+    if (error) {
+      res.json({ Error: error });
+    }
+    const payload = {
+      _id: user._id,
+      email: user.email,
+    };
+    const token = generateJWT(payload);
+    return res.json({ userType: 'teacher', token });
+  });
+};
+
+const testTeacher = async (req, res) =>
+  res.json({ message: 'authenticated teacher!' });
+
+module.exports = { createTeacher, loginTeacher, testTeacher };
