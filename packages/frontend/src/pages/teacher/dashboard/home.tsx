@@ -13,7 +13,7 @@ import {
 import StudentTable from '../../../components/dashboard/home/StudentTable';
 import ViewClassroom from '../../../components/dashboard/home/ViewClassroom';
 import type { NextPageWithLayout } from '../../_app';
-import type { ITeacherCredentials } from '../../../interfaces';
+import type { IUserData } from '../../../interfaces';
 import { AuthContext } from '../../../store/auth';
 
 const columnHelper = createColumnHelper<any>();
@@ -35,7 +35,12 @@ type Props = {
 
 const Home: NextPageWithLayout<Props> = ({ defaultData }) => {
   const authCtx = useContext(AuthContext);
-  const [data] = useState(() => [...defaultData]);
+  const [data] = useState(() => {
+    if (!defaultData) {
+      return [];
+    }
+    return [...defaultData];
+  });
 
   if (!authCtx) {
     return (
@@ -57,7 +62,7 @@ const Home: NextPageWithLayout<Props> = ({ defaultData }) => {
     <div sx={{ pt: 1, pb: 4, px: 2 }}>
       <p sx={{ variant: 'text.h3', color: 'primary', textAlign: 'center' }}>
         {/* TODO: username should be replaced with last name (e.g. Mr.Jonathan) */}
-        {`Good Morning, ${(authCtx.user as ITeacherCredentials)?.username}`}
+        {`Good Morning, ${(authCtx.user as IUserData)?.fullname}`}
       </p>
       <div
         sx={{
@@ -69,7 +74,7 @@ const Home: NextPageWithLayout<Props> = ({ defaultData }) => {
       >
         <BroadcastModal />
         <ClassroomModal>
-          <ViewClassroom teacher={authCtx.user as ITeacherCredentials} />
+          <ViewClassroom user={authCtx?.user as IUserData} />
         </ClassroomModal>
       </div>
       <div

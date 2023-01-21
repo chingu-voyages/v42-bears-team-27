@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Modal } from '../../UI';
 import Login from './Login';
 
@@ -29,7 +30,7 @@ const MainHeader: React.FC = () => (
         <Modal title="Login">
           <Login />
         </Modal>
-        <a
+        <Link
           sx={{
             variant: 'text.label',
             display: 'flex',
@@ -53,7 +54,7 @@ const MainHeader: React.FC = () => (
           href="/signup"
         >
           Sign up
-        </a>
+        </Link>
       </div>
     </nav>
   </header>
