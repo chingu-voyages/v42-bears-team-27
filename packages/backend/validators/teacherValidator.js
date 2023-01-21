@@ -1,7 +1,15 @@
 const { check, validationResult } = require('express-validator');
 
 exports.validateTeacher = [
-  check('name')
+  check('title')
+    .trim()
+    .escape()
+
+    .isLength({ max: 10 })
+    .withMessage('Title can be at most 10 characters')
+    .bail(),
+
+  check('fullname')
     .trim()
     .escape()
 

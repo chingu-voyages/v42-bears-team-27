@@ -1,13 +1,15 @@
 const Teacher = require('../models/teacherModel');
 
 const createTeacher = async (req, res) => {
-  /*  
-    name: 'Jane Doe',
+  /* 
+    title: 'Mrs', 
+    fullname: 'Jane Doe',
     email: 'janedoe@example.com'
     password: '123456'
+    confirmPassword: '123456'
   */
 
-  const { name, email, password } = req.body;
+  const { title, fullname, email, password } = req.body;
 
   // TODO: hash the password
   const passwordHash = password;
@@ -29,7 +31,8 @@ const createTeacher = async (req, res) => {
     }
 
     const created = await Teacher.create({
-      name,
+      title,
+      fullname,
       email,
       passwordHash,
     });
@@ -42,7 +45,7 @@ const createTeacher = async (req, res) => {
   } catch (error) {
     // TODO: more robust logging (morgan?)
     // TODO: log other events too? not just errors?
-    console.log(`Error while saving teacher to database${error}`);
+    console.log(`Error while saving teacher to database ${error}`);
     return res.status(500).json({ message: 'Inetrnal server error' });
   }
 };

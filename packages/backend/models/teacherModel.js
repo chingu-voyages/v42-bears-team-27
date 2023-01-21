@@ -3,7 +3,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const TeacherSchema = new Schema({
-  name: {
+  title: {
+    type: String,
+  },
+  fullname: {
     type: String,
     required: true,
   },

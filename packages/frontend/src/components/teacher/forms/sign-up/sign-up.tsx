@@ -13,7 +13,7 @@ const TeacherSignUp: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const data = { name: fullname, email, password, confirmPassword };
+    const data = { title, fullname, email, password, confirmPassword };
 
     try {
       const call = await fetch(FORM_SUBMIT_URL, {
