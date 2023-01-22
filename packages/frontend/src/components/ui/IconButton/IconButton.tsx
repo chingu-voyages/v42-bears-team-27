@@ -26,6 +26,7 @@ IconButtonProps & RefAttributes<HTMLButtonElement>
       variant: 'text.label',
       width: size,
       height: size,
+      p: 0,
       bg: 'transparent',
       border: 'none',
       cursor: 'pointer',

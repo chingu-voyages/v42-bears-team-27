@@ -9,8 +9,8 @@ import type { ThemeUIStyleObject } from 'theme-ui';
 import * as Dialog from '@radix-ui/react-dialog';
 import { MdClose } from 'react-icons/md';
 
-import { Button } from './Button';
-import { IconButton } from './IconButton';
+import { Button } from '../Button';
+import { IconButton } from '../IconButton';
 
 export interface ModalProps extends HTMLAttributes<HTMLDivElement> {
   /**

@@ -67,7 +67,7 @@ TextFieldProps & RefAttributes<any>
           {multiline ? (
             <textarea ref={ref} id={id} sx={styles} {...rest} />
           ) : (
-            <input ref={ref} id="firstName" type={type} sx={styles} {...rest} />
+            <input ref={ref} id={id} type={type} sx={styles} {...rest} />
           )}
         </div>
       </div>
