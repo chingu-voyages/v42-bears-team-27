@@ -8,7 +8,7 @@ const TeacherSchema = new Schema({
   title: {
     type: String,
   },
-  fullname: {
+  fullName: {
     type: String,
     required: true,
   },
