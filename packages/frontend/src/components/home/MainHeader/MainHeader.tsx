@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Modal } from '../../UI';
+
+import { Modal } from 'components/ui';
 import Login from './Login';
 
 const MainHeader: React.FC = () => (

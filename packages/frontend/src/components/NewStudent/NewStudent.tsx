@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, TextField } from '../UI';
+import { Button, TextField } from 'components/ui';
 
 const NewStudent: React.FC = () => {
   const [fullName, setFullName] = useState('');

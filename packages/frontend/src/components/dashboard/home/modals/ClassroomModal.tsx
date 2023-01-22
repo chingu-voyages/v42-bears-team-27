@@ -1,4 +1,4 @@
-import { Modal, Button } from '../../../UI';
+import { Modal, Button } from 'components/ui';
 
 type Props = {
   children: React.ReactNode;

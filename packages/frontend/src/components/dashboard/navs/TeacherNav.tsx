@@ -7,7 +7,7 @@ import {
   MdOutlineClose,
 } from 'react-icons/md';
 
-import { IconButton } from '../../UI';
+import { IconButton } from 'components/ui';
 
 type Props = {
   heading: string;

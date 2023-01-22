@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState, useContext, useEffect } from 'react';
 
-import { AuthContext } from '../store/auth';
+import { AuthContext } from 'store/auth';
 
 type LayoutProps = {
   children: React.ReactNode;

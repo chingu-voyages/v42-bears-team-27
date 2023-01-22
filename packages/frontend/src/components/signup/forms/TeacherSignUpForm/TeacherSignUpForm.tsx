@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 
-import { Button, TextField } from '../../../UI';
-import { AuthContext } from '../../../../store/auth';
+import { Button, TextField } from 'components/ui';
+import { AuthContext } from 'store/auth';
 
 const TeacherSignUp: React.FC = () => {
   const [title, setTitle] = useState('');

@@ -3,10 +3,10 @@ import type { ReactElement } from 'react';
 import { useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 
-import Layout from '../layouts/Layout';
-import { TeacherSignUpForm } from '../components/signup/forms';
-import type { IUserData } from '../interfaces';
-import { AuthContext } from '../store/auth';
+import Layout from 'layouts/Layout';
+import { TeacherSignUpForm } from 'components/signup/forms';
+import type { IUserData } from 'interfaces';
+import { AuthContext } from 'store/auth';
 
 const Signup = () => {
   const authCtx = useContext(AuthContext);

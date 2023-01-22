@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Calendar, type CalendarProps } from '../../../UI';
+import { Calendar, type CalendarProps } from 'components/ui';
 
 type Props = CalendarProps;
 

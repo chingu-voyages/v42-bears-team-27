@@ -1,4 +1,4 @@
-import { Button } from '../UI';
+import { Button } from 'components/ui';
 
 type Props = {
   message: string;

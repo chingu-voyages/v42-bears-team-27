@@ -1,6 +1,6 @@
 import { MdSend } from 'react-icons/md';
 
-import { Modal, Button, TextField } from '../../../UI';
+import { Modal, Button, TextField } from 'components/ui';
 
 const BroadcastModal: React.FC = () => (
   <Modal

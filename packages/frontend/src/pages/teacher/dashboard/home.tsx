@@ -3,18 +3,19 @@ import type { ReactElement } from 'react';
 import { useContext, useState } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
 
-import { AuthLayout, Header } from '../../../layouts/AuthLayout';
-import { TeacherNav } from '../../../components/dashboard/navs';
-import { TeacherCalendar } from '../../../components/dashboard/home/calendars';
+import { AuthLayout, Header } from 'layouts/AuthLayout';
+import { TeacherNav } from 'components/dashboard/navs';
+import { TeacherCalendar } from 'components/dashboard/home/calendars';
 import {
   BroadcastModal,
   ClassroomModal,
-} from '../../../components/dashboard/home/modals';
-import StudentTable from '../../../components/dashboard/home/StudentTable';
-import ViewClassroom from '../../../components/dashboard/home/ViewClassroom';
+} from 'components/dashboard/home/modals';
+import StudentTable from 'components/dashboard/home/StudentTable';
+import ViewClassroom from 'components/dashboard/home/ViewClassroom';
+import type { IUserData } from 'interfaces';
+import { AuthContext } from 'store/auth';
+
 import type { NextPageWithLayout } from '../../_app';
-import type { IUserData } from '../../../interfaces';
-import { AuthContext } from '../../../store/auth';
 
 const columnHelper = createColumnHelper<any>();
 
