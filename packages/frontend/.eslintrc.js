@@ -39,6 +39,9 @@ module.exports = {
     'react/jsx-props-no-spreading': 'warn',
     // enforces react hook rules
     'react-hooks/rules-of-hooks': 'error',
+    // there are instances where destruction isn't "ideal"
+    // such class components - use your own wisdom for this
+    'react/destructuring-assignment': 'off',
 
     // rule may produce incorrect errors
     '@typescript-eslint/indent': 'warn',
@@ -61,6 +64,13 @@ module.exports = {
     {
       files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
       extends: ['plugin:testing-library/react'],
+    },
+    // Use some rules for developing UI components
+    {
+      files: ['**/ui/**/*.[jt]s?(x)'],
+      rules: {
+        'react/jsx-props-no-spreading': 'off',
+      },
     },
   ],
 };
