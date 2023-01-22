@@ -1,4 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState, useContext, useEffect } from 'react';

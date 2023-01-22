@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable react/destructuring-assignment */
 import { useState, useContext } from 'react';
 
 import { Button, TextField } from 'components/ui';

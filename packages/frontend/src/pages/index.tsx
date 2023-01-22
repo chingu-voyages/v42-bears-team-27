@@ -1,4 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
 import type { ReactElement } from 'react';
 import { useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
