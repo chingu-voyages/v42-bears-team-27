@@ -7,6 +7,8 @@ type Props = {
 const ClassroomModal: React.FC<Props> = ({ children }) => (
   <Modal
     title="Classroom"
+    width="95%"
+    height="90vh"
     btn={<Button variant="outlined">View Classroom</Button>}
   >
     {children}

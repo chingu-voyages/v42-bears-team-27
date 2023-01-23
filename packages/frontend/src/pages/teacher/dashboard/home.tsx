@@ -1,4 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
 import type { ReactElement } from 'react';
 import { useContext, useState } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';

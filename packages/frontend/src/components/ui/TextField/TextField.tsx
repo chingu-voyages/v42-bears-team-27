@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import type {
   HTMLAttributes,
   RefAttributes,
@@ -26,12 +25,24 @@ export interface TextFieldProps
   multiline?: boolean;
   sx?: ThemeUIStyleObject;
   value?: string;
+  required?: boolean;
 }
 
 export const TextField: ForwardRefExoticComponent<
 TextFieldProps & RefAttributes<any>
 > = forwardRef(
-  ({ id, label, type = 'text', multiline = false, sx, ...rest }, ref) => {
+  (
+    {
+      id,
+      label,
+      type = 'text',
+      multiline = false,
+      required = false,
+      sx,
+      ...rest
+    },
+    ref,
+  ) => {
     const styles: ThemeUIStyleObject = {
       variant: 'text.label',
       width: 'inherit',
@@ -65,9 +76,22 @@ TextFieldProps & RefAttributes<any>
           }}
         >
           {multiline ? (
-            <textarea ref={ref} id={id} sx={styles} {...rest} />
+            <textarea
+              ref={ref}
+              id={id}
+              required={required}
+              sx={styles}
+              {...rest}
+            />
           ) : (
-            <input ref={ref} id="firstName" type={type} sx={styles} {...rest} />
+            <input
+              ref={ref}
+              id={id}
+              type={type}
+              required={required}
+              sx={styles}
+              {...rest}
+            />
           )}
         </div>
       </div>

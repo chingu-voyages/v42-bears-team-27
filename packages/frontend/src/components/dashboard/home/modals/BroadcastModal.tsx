@@ -5,6 +5,8 @@ import { Modal, Button, TextField } from 'components/ui';
 const BroadcastModal: React.FC = () => (
   <Modal
     title="Broadcast Message To Classroom"
+    width="95%"
+    height="90vh"
     btn={<Button variant="outlined">Broadcast Message</Button>}
   >
     <div sx={{ display: 'flex', justifyContent: 'center' }}>

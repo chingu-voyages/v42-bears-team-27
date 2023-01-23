@@ -68,7 +68,7 @@ const NewStudent: React.FC = () => {
           <TextField
             placeholder="Surname, Name"
             value={fullName}
-            onChange={(e) => setFullName((e.target as HTMLInputElement).value)}
+            onChange={(e) => setFullName(e.currentTarget.value)}
             label="Student’s Full Name:"
             type="text"
           />
@@ -81,7 +81,7 @@ const NewStudent: React.FC = () => {
           <TextField
             placeholder="student@mail.com"
             value={email}
-            onChange={(e) => setEmail((e.target as HTMLInputElement).value)}
+            onChange={(e) => setEmail(e.currentTarget.value)}
             label="Student’s E-mail:"
             type="email"
           />

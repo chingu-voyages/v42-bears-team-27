@@ -37,7 +37,7 @@ const TeacherSignUp: React.FC = () => {
         label="Title"
         placeholder="Mr/Mrs."
         value={title}
-        onChange={(e) => setTitle((e.target as HTMLInputElement).value)}
+        onChange={(e) => setTitle(e.currentTarget.value)}
       />
       <TextField
         id="full-name"
@@ -45,7 +45,7 @@ const TeacherSignUp: React.FC = () => {
         label="Full Name"
         placeholder="Firstname, Lastname"
         value={fullName}
-        onChange={(e) => setFullName((e.target as HTMLInputElement).value)}
+        onChange={(e) => setFullName(e.currentTarget.value)}
       />
       <TextField
         id="email"
@@ -53,7 +53,7 @@ const TeacherSignUp: React.FC = () => {
         label="E-mail:"
         placeholder="yourmail@mail.com"
         value={email}
-        onChange={(e) => setEmail((e.target as HTMLInputElement).value)}
+        onChange={(e) => setEmail(e.currentTarget.value)}
       />
       <TextField
         id="new-password"
@@ -61,7 +61,7 @@ const TeacherSignUp: React.FC = () => {
         label="New Password"
         placeholder="••••••"
         value={password}
-        onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
+        onChange={(e) => setPassword(e.currentTarget.value)}
       />
       <TextField
         id="confirm-password"
@@ -69,9 +69,7 @@ const TeacherSignUp: React.FC = () => {
         label="Confirm Password"
         placeholder="••••••"
         value={confirmPassword}
-        onChange={(e) =>
-          setConfirmPassword((e.target as HTMLInputElement).value)
-        }
+        onChange={(e) => setConfirmPassword(e.currentTarget.value)}
       />
       <Button sx={{ width: '100%', fontSize: 3 }} type="submit" rounded={false}>
         Join
