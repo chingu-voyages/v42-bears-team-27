@@ -21,7 +21,8 @@ const StudentSchema = new mongoose.Schema(
       trim: true,
     },
     classroom: {
-      type: mongoose.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Classroom',
       required: true,
     },
   },

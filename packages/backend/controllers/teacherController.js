@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
-const teacherModel = require('../models/teacherModel');
 const Teacher = require('../models/teacherModel');
+const Classroom = require('../models/classroomModel');
 const { generateJWT } = require('../utils');
 
 const createTeacher = async (req, res) => {
@@ -14,8 +14,7 @@ const createTeacher = async (req, res) => {
 
   const { title, fullName, email, password } = req.body;
 
-  // TODO: hash the password
-  const passwordHash = teacherModel.hashPassword(password);
+  const passwordHash = Teacher.hashPassword(password);
 
   try {
     const prevTeacher = await Teacher.findOne({ email });
@@ -33,29 +32,38 @@ const createTeacher = async (req, res) => {
       return res.status(400).json({ errors });
     }
 
-    const teacher = await Teacher.create({
-      title,
-      fullName,
-      email,
-      passwordHash,
-    });
+    const classroom = await Classroom.create({});
 
-    if (teacher) {
-      const payload = {
-        _id: teacher._id,
-        email: teacher.email,
-      };
-      const token = generateJWT(payload);
-      return res.json({
-        title: teacher.title,
-        fullName: teacher.fullName,
-        email: teacher.email,
-        token,
+    if (classroom) {
+      const teacher = await Teacher.create({
+        title,
+        fullName,
+        email,
+        passwordHash,
+        classroom: classroom._id,
       });
+
+      if (teacher) {
+        classroom.teacher = teacher._id;
+        await classroom.save();
+
+        const payload = {
+          _id: teacher._id,
+          email: teacher.email,
+        };
+        const token = generateJWT(payload);
+        return res.json({
+          title: teacher.title,
+          fullName: teacher.fullName,
+          email: teacher.email,
+          token,
+        });
+      }
     }
   } catch (error) {
     // TODO: more robust logging (morgan?)
     // TODO: log other events too? not just errors?
+    // not all errors are being catch
     // console.log(`Error while saving teacher to database ${error}`);
     return res.status(500).json({ message: 'Internal server error' });
   }
