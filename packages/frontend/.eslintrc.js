@@ -56,4 +56,11 @@ module.exports = {
     '@typescript-eslint/return-await': 'off',
     'no-return-await': 'error',
   },
+  overrides: [
+    // Only uses Testing Library lint rules in test files
+    {
+      files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+      extends: ['plugin:testing-library/react'],
+    },
+  ],
 };

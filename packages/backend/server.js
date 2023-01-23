@@ -1,23 +1,34 @@
+/* eslint no-console: 0 */
+require('dotenv').config();
+const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
+const passport = require('passport');
 
-require('dotenv').config();
+const routes = require('./routes');
 
 const app = express();
-mongoose.set('strictQuery', false);
 
 // Database
+mongoose.set('strictQuery', false);
 mongoose
   .connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log('database connected...');
+    console.log('database connected!');
   })
   .catch((err) => {
     console.log(err);
   });
+
+app.use(cors()); // TODO options for production
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(passport.initialize());
+
+app.use('/api/v0', routes);
 
 const PORT = process.env.PORT || 5000;
 
