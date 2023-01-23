@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Checkbox /> Snapshots should match snapshot 1`] = `
+.emotion-0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  color: var(--theme-ui-colors-primary);
+}
+
+.emotion-1 {
+  background-color: white;
+  color: var(--theme-ui-colors-primary);
+  border: 2px solid currentColor;
+  padding: 0;
+  width: calc(18px + 4px);
+  height: calc(18px + 4px);
+  cursor: pointer;
+}
+
+.emotion-1:hover {
+  background-color: #e6e6e6;
+}
+
+<div>
+  <div
+    class="emotion-0"
+  >
+    <button
+      aria-checked="false"
+      class="emotion-1"
+      data-state="unchecked"
+      role="checkbox"
+      type="button"
+      value="on"
+    />
+  </div>
+</div>
+`;
+
+exports[`<Checkbox /> Snapshots should match snapshot with label prop equals Foo 1`] = `
+.emotion-0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  color: var(--theme-ui-colors-primary);
+}
+
+.emotion-1 {
+  background-color: white;
+  color: var(--theme-ui-colors-primary);
+  border: 2px solid currentColor;
+  padding: 0;
+  width: calc(18px + 4px);
+  height: calc(18px + 4px);
+  cursor: pointer;
+}
+
+.emotion-1:hover {
+  background-color: #e6e6e6;
+}
+
+.emotion-2 {
+  font-family: "Roboto",sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+  margin-left: 8px;
+}
+
+<div>
+  <div
+    class="emotion-0"
+  >
+    <button
+      aria-checked="false"
+      class="emotion-1"
+      data-state="unchecked"
+      role="checkbox"
+      type="button"
+      value="on"
+    />
+    <label
+      class="emotion-2"
+    >
+      Foo
+    </label>
+  </div>
+</div>
+`;
