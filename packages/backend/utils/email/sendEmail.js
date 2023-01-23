@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-// const html = require('./html-template')
+const html = require('./htmlTemplate');
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.zoho.eu',
@@ -18,18 +18,15 @@ const sendEmail = async (email) => {
   const mailData = {
     from: `Remote Class<${process.env.EMAIL_SENDER}>`,
     to: email.to,
-    // replyTo: {
-    //     name: name,
-    //     address: email,
-    // },
     subject: email.subject,
-    text: email.message, // plain text version of the message
-    // html: html(email.subject, email.message, safe)
+    // plain text version of the message
+    text: email.message,
+    html: html(email.subject, email.message),
   };
 
   return new Promise((resolve, reject) => {
     transporter.sendMail(mailData, (err) => {
-      // err, info
+      // (err, info)
       if (err) {
         reject(new Error(err));
       } else {
@@ -39,4 +36,4 @@ const sendEmail = async (email) => {
   });
 };
 
-module.exports = sendEmail;
+module.exports = { sendEmail };

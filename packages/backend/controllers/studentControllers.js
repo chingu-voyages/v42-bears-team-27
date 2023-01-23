@@ -1,5 +1,6 @@
 const Student = require('../models/studentModel');
 const { generatePassword, generateJWT } = require('../utils');
+// const { sendEmail } = require('../utils');
 
 const createStudent = async (req, res) => {
   /*  fullName: 'LastName, FirstName',
@@ -21,15 +22,32 @@ const createStudent = async (req, res) => {
         password: hashedPassword,
         classroom,
       })
-        .then(() =>
-          // TODO? send email to student with the password
+        .then(() => {
+          // TODO conditional if in production
+          // send email to student with the password
+          // const content = () => /*html*/`You have been registered into
+          // Remote Class! Please use your email and this password to
+          // login.<br>Password: ${password}`;
+          // const emailWrap = {
+          //   to: email,
+          //   subject: 'Welcome to Remote Class',
+          //   message: content(),
+          // };
+          // sendEmail(emailWrap)
+          //   .then((message) => {
+          //     res.status(201).json({
+          //       message: 'Created Successfully',
+          //       fullName
+          //     });
+          //   })
+          //   .catch((err) => res.status(400).json({ message: err }));
           res.status(201).json({
             message: 'Created Successfully',
             fullName,
             // TODO remove once is sent by email
             password,
-          }),
-        )
+          });
+        })
         .catch((err) => res.status(400).json({ message: err }));
       return false;
     })

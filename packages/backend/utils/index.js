@@ -2,4 +2,5 @@
 module.exports = {
   ...require('./generatePassword'),
   ...require('./generateJWT'),
+  ...require('./email/sendEmail'),
 };
