@@ -5,7 +5,7 @@ import { AuthContext } from 'store/auth';
 
 const TeacherSignUp: React.FC = () => {
   const [title, setTitle] = useState('');
-  const [fullname, setFullname] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -15,7 +15,7 @@ const TeacherSignUp: React.FC = () => {
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const credentials = { title, fullname, email, password, confirmPassword };
+    const credentials = { title, fullName, email, password, confirmPassword };
     const msg = await authCtx!.onSignup(credentials);
     setAlert(msg);
   };
@@ -44,8 +44,8 @@ const TeacherSignUp: React.FC = () => {
         type="text"
         label="Full Name"
         placeholder="Firstname, Lastname"
-        value={fullname}
-        onChange={(e) => setFullname(e.currentTarget.value)}
+        value={fullName}
+        onChange={(e) => setFullName(e.currentTarget.value)}
       />
       <TextField
         id="email"

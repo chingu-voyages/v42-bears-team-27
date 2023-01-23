@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 const { check, validationResult } = require('express-validator');
 
 exports.validateTeacher = [
@@ -10,7 +9,7 @@ exports.validateTeacher = [
     .withMessage('Title can be at most 10 characters')
     .bail(),
 
-  check('fullname')
+  check('fullName')
     .trim()
     .escape()
 
@@ -33,10 +32,11 @@ exports.validateTeacher = [
     .withMessage('Email cannot be empty')
     .bail()
 
-    .normalizeEmail()
     .isEmail()
     .withMessage('Invalid email address')
-    .bail(),
+    .bail()
+
+    .normalizeEmail(),
 
   check('password')
     .trim()
@@ -65,6 +65,6 @@ exports.validateTeacher = [
     const errors = validationResult(req);
     if (!errors.isEmpty())
       return res.status(422).json({ errors: errors.array() });
-    next();
+    return next();
   },
 ];

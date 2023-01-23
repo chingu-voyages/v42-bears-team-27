@@ -6,13 +6,13 @@ const { generateJWT } = require('../utils');
 const createTeacher = async (req, res) => {
   /* 
     title: 'Mrs', 
-    fullname: 'Jane Doe',
+    fullName: 'Jane Doe',
     email: 'janedoe@example.com'
     password: '123456'
     confirmPassword: '123456'
   */
 
-  const { title, fullname, email, password } = req.body;
+  const { title, fullName, email, password } = req.body;
 
   // TODO: hash the password
   const passwordHash = teacherModel.hashPassword(password);
@@ -35,7 +35,7 @@ const createTeacher = async (req, res) => {
 
     const teacher = await Teacher.create({
       title,
-      fullname,
+      fullName,
       email,
       passwordHash,
     });
@@ -48,7 +48,7 @@ const createTeacher = async (req, res) => {
       const token = generateJWT(payload);
       return res.json({
         title: teacher.title,
-        fullname: teacher.fullname,
+        fullName: teacher.fullName,
         email: teacher.email,
         token,
       });
@@ -56,8 +56,8 @@ const createTeacher = async (req, res) => {
   } catch (error) {
     // TODO: more robust logging (morgan?)
     // TODO: log other events too? not just errors?
-    console.log(`Error while saving teacher to database ${error}`);
-    return res.status(500).json({ message: 'Inetrnal server error' });
+    // console.log(`Error while saving teacher to database ${error}`);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -75,7 +75,7 @@ const loginTeacher = async (req, res) => {
     return res.json({
       email: user.email,
       title: user.title,
-      fullname: user.fullname,
+      fullName: user.fullName,
       token,
     });
   });

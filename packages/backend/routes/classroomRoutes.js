@@ -1,6 +1,4 @@
-const express = require('express');
-
-const router = express.Router();
+const router = require('express').Router();
 
 const {
   deleteClassroom,
@@ -12,7 +10,6 @@ const {
 router.post(
   '/create',
   addClassroom,
-  // create classroom data
   // return success message
 );
 router.get(
@@ -24,14 +21,12 @@ router.get(
 router.delete(
   '/:id',
   deleteClassroom,
-  // delete classroom
   // return success message
 );
 
 router.put(
   '/:id',
   updateClassroom,
-  // delete classroom
   // return success message
 );
 
