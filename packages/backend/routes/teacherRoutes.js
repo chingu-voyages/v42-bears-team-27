@@ -1,10 +1,10 @@
 const router = require('express').Router();
 
-const { validateTeacher } = require('../validators/teacherValidator');
 const {
+  validateTeacher,
   authenticateTeacher,
   checkTeacherAuthenticated,
-} = require('../middleware/auth');
+} = require('../middlewares');
 
 const {
   createTeacher,
@@ -12,7 +12,7 @@ const {
   testTeacher,
 } = require('../controllers/teacherController');
 
-router.route('/create').post(validateTeacher, createTeacher);
+router.post('/create', validateTeacher, createTeacher);
 router.post('/login', authenticateTeacher, loginTeacher);
 router.get('/test', checkTeacherAuthenticated, testTeacher);
 

@@ -1,10 +1,11 @@
 const router = require('express').Router();
 
-const { validateStudent } = require('../validators/studentValidator');
 const {
+  validateStudent,
   authenticateStudent,
   checkStudentAuthenticated,
-} = require('../middleware/auth');
+} = require('../middlewares');
+
 const {
   createStudent,
   loginStudent,

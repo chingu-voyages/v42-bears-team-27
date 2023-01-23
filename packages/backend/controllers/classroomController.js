@@ -1,5 +1,4 @@
 const Classroom = require('../models/classroomModel');
-/* eslint no-underscore-dangle: 0 */
 
 const getClassroom = async (req, res) => {
   const classroom = await Classroom.findById(req.params.id);
