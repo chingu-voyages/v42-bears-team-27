@@ -3418,6 +3418,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@radix-ui/react-avatar@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@radix-ui/react-avatar@npm:1.0.1"
+  dependencies:
+    "@babel/runtime": ^7.13.10
+    "@radix-ui/react-context": 1.0.0
+    "@radix-ui/react-primitive": 1.0.1
+    "@radix-ui/react-use-callback-ref": 1.0.0
+    "@radix-ui/react-use-layout-effect": 1.0.0
+  peerDependencies:
+    react: ^16.8 || ^17.0 || ^18.0
+    react-dom: ^16.8 || ^17.0 || ^18.0
+  checksum: 88f2367340685912da1dcf7ab95b0055271a3909bef0f7d51edead7be3fb77e019b9aa2db5c51df5f47c9fa8a1eb116893c48594bf03a3bd2d9920477fa16f44
+  languageName: node
+  linkType: hard
+
 "@radix-ui/react-checkbox@npm:^1.0.1":
   version: 1.0.1
   resolution: "@radix-ui/react-checkbox@npm:1.0.1"
@@ -7460,6 +7476,7 @@ __metadata:
     "@emotion/react": ^11.10.5
     "@fontsource/nunito": ^4.5.11
     "@fontsource/roboto": ^4.5.8
+    "@radix-ui/react-avatar": ^1.0.1
     "@radix-ui/react-checkbox": ^1.0.1
     "@radix-ui/react-dialog": ^1.0.2
     "@radix-ui/react-label": ^2.0.0
