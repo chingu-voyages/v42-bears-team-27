@@ -7,4 +7,4 @@ const generateJWT = (payload) =>
     algorithm: 'HS256',
   });
 
-module.exports = generateJWT;
+module.exports = { generateJWT };
