@@ -6,8 +6,8 @@ const getClassroom = async (req, res) => {
     res.status(404).json({ error: 'Classroom not found' });
   }
   if (
-    !classroom.teacher.equals(req.user._id) ||
-    !classroom.students.some((student) => student.equals(req.user._id))
+    !classroom.teacher.equals(res.locals.user.id) ||
+    !classroom.students.some((student) => student.equals(res.locals.user.id))
   ) {
     res.status(401).json({ error: 'Unauthorized access' });
   }
@@ -15,14 +15,14 @@ const getClassroom = async (req, res) => {
 };
 
 const addClassroom = async (req, res) => {
-  const classroom = await Classroom.findOne({ teacher: req.user._id });
+  const classroom = await Classroom.findOne({ teacher: res.locals.user.id });
   if (classroom) {
     res.status(400).json({ error: 'Teacher already belongs to a classroom' });
   }
   const newClassroom = new Classroom({
     name: req.body.name,
     students: req.body.students,
-    teacher: req.user._id,
+    teacher: res.locals.user.id,
     subjects: req.body.subjects,
   });
   await newClassroom.save();
@@ -34,7 +34,7 @@ const updateClassroom = async (req, res) => {
   if (!classroom) {
     res.status(404).json({ error: 'Classroom not found' });
   }
-  if (!classroom.teacher.equals(req.user._id)) {
+  if (!classroom.teacher.equals(res.locals.user.id)) {
     res.status(401).json({ error: 'Unauthorized access' });
   }
   classroom.name = req.body.name;
@@ -49,7 +49,7 @@ const deleteClassroom = async (req, res) => {
   if (!classroom) {
     res.status(404).json({ error: 'Classroom not found' });
   }
-  if (!classroom.teacher.equals(req.user._id)) {
+  if (!classroom.teacher.equals(res.locals.user.id)) {
     res.status(401).json({ error: 'Unauthorized access' });
   }
   await classroom.remove();
