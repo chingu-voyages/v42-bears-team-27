@@ -7,27 +7,11 @@ const {
   addClassroom,
 } = require('../controllers/classroomController');
 
-router.post(
-  '/create',
-  addClassroom,
-  // return success message
-);
-router.get(
-  '/:id',
-  getClassroom,
-  // return classroom data
-);
+const { checkTeacherAuthenticated } = require('../middlewares');
 
-router.delete(
-  '/:id',
-  deleteClassroom,
-  // return success message
-);
-
-router.put(
-  '/:id',
-  updateClassroom,
-  // return success message
-);
+router.post('/create', checkTeacherAuthenticated, addClassroom);
+router.get('/:id', checkTeacherAuthenticated, getClassroom);
+router.delete('/:id', checkTeacherAuthenticated, deleteClassroom);
+router.put('/:id', checkTeacherAuthenticated, updateClassroom);
 
 module.exports = router;
