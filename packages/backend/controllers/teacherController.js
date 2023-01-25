@@ -59,9 +59,9 @@ const createTeacher = async (req, res) => {
           })
           .json({
             id: teacher._id,
+            email: teacher.email,
             title: teacher.title,
             fullName: teacher.fullName,
-            email: teacher.email,
           });
       }
     }
