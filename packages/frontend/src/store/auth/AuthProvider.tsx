@@ -9,7 +9,7 @@ type Props = {
 
 const AuthProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<IUserData | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [jsonToken, setJSONToken] = useState<string | null>(null);
 
   const signupHandler = async (userCredentials: any) => {
