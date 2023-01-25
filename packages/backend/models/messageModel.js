@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const messageSchema = new mongoose.Schema(
   {
     /**
-     *  For messages sent to individual students, isBroadcast will be fase
+     *  For messages sent to individual students, isBroadcast will be false
      *  and toStudent will be a foreign key to a student
      */
     isBroadcast: {
