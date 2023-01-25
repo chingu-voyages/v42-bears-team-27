@@ -4,9 +4,8 @@ const {
   validateStudent,
   authenticateStudent,
   checkStudentAuthenticated,
+  checkTeacherAuthenticated,
 } = require('../middlewares');
-
-const { checkTeacherAuthenticated } = require('../middlewares');
 
 const {
   createStudent,
