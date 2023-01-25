@@ -52,9 +52,21 @@ const checkTeacherAuthenticated = (req, res, next) => {
   })(req, res);
 };
 
+// Compare JWT User and body or params User id, so users can't see other users details
+const checkSameUser = (req, res, next) => {
+  if (res.locals.user._id.toString() === req.body.id) {
+    return next();
+  }
+  if (res.locals.user._id.toString() === req.params.id) {
+    return next();
+  }
+  return res.status(401).json({ message: 'not authorized' });
+};
+
 module.exports = {
   authenticateStudent,
   checkStudentAuthenticated,
   authenticateTeacher,
   checkTeacherAuthenticated,
+  checkSameUser,
 };
