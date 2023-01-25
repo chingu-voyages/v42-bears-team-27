@@ -37,7 +37,10 @@ const createStudent = async (req, res) => {
         password: hashedPassword,
         classroom: teachersClassroom,
       })
-      })
+        .then(async (newStudent) => {
+          teachersClassroom.students.push(newStudent._id);
+          await teachersClassroom.save();
+        })
         .then(() => {
           if (process.env.NODE_ENV === 'production') {
             // send email to student with the password
