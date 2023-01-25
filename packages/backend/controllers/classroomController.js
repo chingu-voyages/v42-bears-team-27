@@ -31,10 +31,10 @@ const getClassroom = async (req, res) => {
 // };
 
 const updateNameClassroom = async (req, res) => {
-  // id -> teacher id for Auth
-  const { idClassroom, name } = req.body;
+  const { user } = res.locals;
+  const { name } = req.body;
   try {
-    const classroom = await Classroom.findById(idClassroom);
+    const classroom = await Classroom.findById(user.classroom);
     if (classroom) {
       classroom.name = name;
       await classroom.save();
@@ -51,7 +51,7 @@ const updateNameClassroom = async (req, res) => {
 //   try {
 //     const classroom = await Classroom.findById(id)
 //     if (classroom) {
-//       classroom.name = name;
+//       classroom.students.push(add)
 //       await classroom.save();
 //       return res.json(classroom);
 //     }

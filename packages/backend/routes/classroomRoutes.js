@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const { checkTeacherAuthenticated, checkSameUser } = require('../middlewares');
+const { checkTeacherAuthenticated } = require('../middlewares');
 
 const {
   updateNameClassroom,
@@ -10,24 +10,26 @@ const {
   // addClassroom,
 } = require('../controllers/classroomController');
 
-router.put(
-  '/newname',
+router.put('/name', checkTeacherAuthenticated, updateNameClassroom);
+router.get(
+  '/',
   checkTeacherAuthenticated,
-  checkSameUser,
-  updateNameClassroom,
+  getClassroom,
+  // return classroom data
 );
+
 // router.post(
 //   '/create',
 //   addClassroom,
 //   // return success message
 // );
-router.get(
-  '/:id',
-  getClassroom,
-  checkTeacherAuthenticated,
-  checkSameUser,
-  // return classroom data
-);
+// router.get(
+//   '/:id',
+//   getClassroom,
+//   checkTeacherAuthenticated,
+//   checkSameUser,
+//   // return classroom data
+// );
 
 // router.delete(
 //   '/:id',
