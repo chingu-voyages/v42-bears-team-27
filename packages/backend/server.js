@@ -4,6 +4,7 @@ const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const cookieParser = require('cookie-parser');
 
 const routes = require('./routes');
 
@@ -26,6 +27,7 @@ mongoose
 app.use(cors()); // TODO options for production
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser(process.env.SIGN_COOKIE_KEY));
 app.use(passport.initialize());
 
 app.use('/api/v0', routes);

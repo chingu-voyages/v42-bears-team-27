@@ -18,7 +18,7 @@ const authenticateStudent = (req, res, next) => {
 };
 
 const checkStudentAuthenticated = (req, res, next) => {
-  passport.authenticate('student-jwt', { session: false }, (error, user) => {
+  passport.authenticate('student-cookie', { session: false }, (error, user) => {
     if (error || !user) {
       return res.status(400).json({ message: 'not authorized' });
     }
@@ -43,7 +43,7 @@ const authenticateTeacher = (req, res, next) => {
 };
 
 const checkTeacherAuthenticated = (req, res, next) => {
-  passport.authenticate('teacher-jwt', { session: false }, (error, user) => {
+  passport.authenticate('teacher-cookie', { session: false }, (error, user) => {
     if (error || !user) {
       return res.status(400).json({ message: 'not authorized' });
     }
