@@ -9,9 +9,7 @@ const NewStudent: React.FC = () => {
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    // mockData classroom
-    const classroom = '63c339704aa8be1b4851e7b5';
-    const data = { fullName, email, classroom };
+    const data = { fullName, email };
 
     try {
       const call = await fetch(

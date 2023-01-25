@@ -4,9 +4,11 @@ const { generatePassword, generateJWT } = require('../utils');
 
 const createStudent = async (req, res) => {
   /*  fullName: 'LastName, FirstName',
-      email: '123@123.com
+      email: '123@123.com,
+      From Teacher Auth:
       classroom: '63c339704aa8be1b4851e7b5'  */
-  const { fullName, email, classroom } = req.body;
+  const { fullName, email } = req.body;
+  const { classroom } = res.locals.user;
   const password = generatePassword(6);
   const hashedPassword = await Student.hashPassword(password);
 
