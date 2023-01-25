@@ -6,12 +6,13 @@ const { generatePassword, generateJWT, sendEmail } = require('../utils');
 const createStudent = async (req, res) => {
   /*  fullName: 'LastName, FirstName',
       email: '123@123.com
-      classroom: '63c339704aa8be1b4851e7b5'  */
-  const { fullName, email, classroom } = req.body;
+  */
+  const { fullName, email } = req.body;
 
   const teacherId = res.locals.user.id;
-  const teachersClassroom = await Classroom.findById(classroom);
+  const teachersClassroom = await Classroom.findOne({ teacher: teacherId });
   if (!teachersClassroom) {
+    // TODO: Remove this because it cannot happen in the future
     return res.status(400).json({ error: 'Classroom not found' });
   }
   if (!teachersClassroom.teacher.equals(teacherId)) {
@@ -29,11 +30,13 @@ const createStudent = async (req, res) => {
           message: `Student: ${fullName} is already in your classroom`,
         });
       }
+
       Student.create({
         fullName,
         email,
         password: hashedPassword,
-        classroom,
+        classroom: teachersClassroom,
+      })
       })
         .then(() => {
           if (process.env.NODE_ENV === 'production') {
