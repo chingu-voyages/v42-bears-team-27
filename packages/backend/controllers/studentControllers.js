@@ -1,4 +1,5 @@
 /* eslint spaced-comment: 0 */
+const Classroom = require('../models/classroomModel');
 const Student = require('../models/studentModel');
 const { generatePassword, generateJWT, sendEmail } = require('../utils');
 
@@ -7,6 +8,18 @@ const createStudent = async (req, res) => {
       email: '123@123.com
       classroom: '63c339704aa8be1b4851e7b5'  */
   const { fullName, email, classroom } = req.body;
+
+  const teacherId = res.locals.user.id;
+  const teachersClassroom = await Classroom.findById(classroom);
+  if (!teachersClassroom) {
+    return res.status(400).json({ error: 'Classroom not found' });
+  }
+  if (!teachersClassroom.teacher.equals(teacherId)) {
+    return res.status(403).json({
+      error: 'Unauthorized! You cannot add students to this classroom.',
+    });
+  }
+
   const password = generatePassword(6);
   const hashedPassword = await Student.hashPassword(password);
   Student.findOne({ email })
