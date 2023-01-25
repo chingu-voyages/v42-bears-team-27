@@ -1,6 +1,6 @@
 /* eslint spaced-comment: 0 */
 const Student = require('../models/studentModel');
-const { generatePassword, generateJWT, sendEmail } = require('../utils');
+const { generatePassword, sendEmail } = require('../utils');
 
 const createStudent = async (req, res) => {
   /*  fullName: 'LastName, FirstName',
@@ -42,7 +42,7 @@ const createStudent = async (req, res) => {
               )
               .catch((err) => res.status(400).json({ message: err }));
           } else {
-            // development code:
+            // development only code:
             return res.status(201).json({
               message: 'Created Successfully',
               fullName,
@@ -67,8 +67,19 @@ const loginStudent = async (req, res) => {
       _id: user._id,
       email: user.email,
     };
-    const token = generateJWT(payload);
-    return res.json({ email: user.email, token });
+    res
+      .cookie('auth', JSON.stringify(payload), {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        signed: true,
+        expires: new Date(Date.now() + 2592000), // 30 days
+      })
+      .status(200)
+      .json({
+        id: user._id,
+        email: user.email,
+        fullName: user.fullName,
+      });
   });
 };
 
