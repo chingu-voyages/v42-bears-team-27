@@ -62,7 +62,7 @@ const Home: NextPageWithLayout<Props> = ({ defaultData }) => {
     <div sx={{ pt: 1, pb: 4, px: 2 }}>
       <p sx={{ variant: 'text.h3', color: 'primary', textAlign: 'center' }}>
         {/* TODO: username should be replaced with last name (e.g. Mr.Jonathan) */}
-        {`Good Morning, ${(authCtx.user as IUserData)?.fullname}`}
+        {`Good Morning, ${(authCtx.user as IUserData)?.fullName}`}
       </p>
       <div
         sx={{
