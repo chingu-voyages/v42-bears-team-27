@@ -3,14 +3,15 @@ const router = require('express').Router();
 const { checkTeacherAuthenticated } = require('../middlewares');
 
 const {
-  updateNameClassroom,
+  createClassroom,
+  // updateNameClassroom,
   // deleteClassroom,
   // updateClassroom,
   getClassroom,
   // addClassroom,
 } = require('../controllers/classroomController');
 
-router.put('/name', checkTeacherAuthenticated, updateNameClassroom);
+router.put('/create', checkTeacherAuthenticated, createClassroom);
 router.get(
   '/',
   checkTeacherAuthenticated,
