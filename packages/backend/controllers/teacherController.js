@@ -1,6 +1,8 @@
 /* eslint-disable consistent-return */
-const teacherModel = require('../models/teacherModel');
 const Teacher = require('../models/teacherModel');
+const Message = require('../models/messageModel');
+const Student = require('../models/studentModel');
+const Classroom = require('../models/classroomModel');
 
 const createTeacher = async (req, res) => {
   /* 
@@ -13,7 +15,7 @@ const createTeacher = async (req, res) => {
 
   const { title, fullName, email, password } = req.body;
 
-  const passwordHash = teacherModel.hashPassword(password);
+  const passwordHash = Teacher.hashPassword(password);
 
   try {
     const prevTeacher = await Teacher.findOne({ email });
@@ -92,7 +94,52 @@ const loginTeacher = async (req, res) => {
   });
 };
 
+const sendDirectMessageToStudent = async (req, res) => {
+  const { messageHeader, messageBody, studentID } = req.body;
+
+  const teacherID = res.locals.user;
+
+  try {
+    const student = await Student.findById(studentID);
+    const classroom = await Classroom.findOne({ teacher: teacherID });
+
+    if (!student) {
+      return res.status(400).json({ message: 'This student does not exist' });
+    }
+
+    if (!student.classroom.equals(classroom._id)) {
+      return res
+        .status(400)
+        .json({ message: 'This student is not in your classroom' });
+    }
+
+    const newMessage = await Message.create({
+      isBroadcast: false,
+      fromTeacher: teacherID,
+      toStudent: student.id,
+      messageHeader,
+      messageBody,
+    });
+
+    student.inbox.push({
+      messageID: newMessage._id,
+      hasBeenRead: false,
+    });
+    await student.save();
+
+    return res.status(200).json({ message: 'message sent!' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 const testTeacher = async (req, res) =>
   res.json({ message: 'authenticated teacher!' });
 
-module.exports = { createTeacher, loginTeacher, testTeacher };
+module.exports = {
+  createTeacher,
+  loginTeacher,
+  sendDirectMessageToStudent,
+  testTeacher,
+};
