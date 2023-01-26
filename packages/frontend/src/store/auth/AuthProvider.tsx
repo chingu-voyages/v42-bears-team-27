@@ -17,6 +17,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/teacher/create`,
       {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -45,6 +46,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/${userRole}/login`,
       {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
