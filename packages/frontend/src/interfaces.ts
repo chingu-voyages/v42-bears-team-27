@@ -19,10 +19,9 @@ export interface ITask {
 }
 
 export interface IEvent {
-  isSchedule: boolean;
   dueDate: string;
-  tasks: ITask[];
   setAt: string;
+  tasks: ITask[];
 }
 
 export interface IStudent {
