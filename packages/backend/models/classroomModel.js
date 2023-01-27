@@ -4,7 +4,6 @@ const classroomSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
       trim: true,
     },
     students: [
@@ -18,7 +17,7 @@ const classroomSchema = new mongoose.Schema(
       ref: 'Teacher',
       unique: true,
     },
-    subject: [
+    subjects: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Subject',

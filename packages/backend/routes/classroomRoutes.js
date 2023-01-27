@@ -1,20 +1,20 @@
 const router = require('express').Router();
 
 const {
-  deleteClassroom,
-  updateClassroom,
-  getClassroom,
-  addClassroom,
-  broadcastMessage,
-} = require('../controllers/classroomController');
-
-const {
   checkTeacherAuthenticated,
   validateMessage,
 } = require('../middlewares');
 
-router.post('/create', checkTeacherAuthenticated, addClassroom);
-router.get('/:id', checkTeacherAuthenticated, getClassroom);
+const {
+  createClassroom,
+  getClassroom,
+  updateClassroom,
+  deleteClassroom,
+  broadcastMessage,
+} = require('../controllers/classroomController');
+
+router.post('/create', checkTeacherAuthenticated, createClassroom);
+router.get('/', checkTeacherAuthenticated, getClassroom);
 router.delete('/:id', checkTeacherAuthenticated, deleteClassroom);
 router.put('/:id', checkTeacherAuthenticated, updateClassroom);
 router.post(
