@@ -71,7 +71,7 @@ const TeacherCalendar: React.FC<Props> = ({
           <CreateEventForm
             subjects={subjects}
             onSubmit={(data) =>
-              onCreateEvent({ ...data, setAt: value?.toString() })
+              onCreateEvent({ ...data, setAt: (value as Date).toISOString() })
             }
           />
         </Modal>
