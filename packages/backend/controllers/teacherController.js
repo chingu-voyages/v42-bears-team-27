@@ -100,7 +100,17 @@ const loginTeacher = async (req, res) => {
   });
 };
 
+const getTeacher = async (req, res) => {
+  const { user } = res.locals;
+  return res.json({
+    id: user._id,
+    email: user.email,
+    title: user.title,
+    fullName: user.fullName,
+  });
+};
+
 const testTeacher = async (req, res) =>
   res.json({ message: 'authenticated teacher!' });
 
-module.exports = { createTeacher, loginTeacher, testTeacher };
+module.exports = { createTeacher, loginTeacher, getTeacher, testTeacher };
