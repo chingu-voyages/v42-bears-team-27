@@ -97,11 +97,11 @@ const loginTeacher = async (req, res) => {
 const sendDirectMessageToStudent = async (req, res) => {
   const { messageHeader, messageBody, studentID } = req.body;
 
-  const teacherID = res.locals.user;
+  const teacher = res.locals.user;
 
   try {
     const student = await Student.findById(studentID);
-    const classroom = await Classroom.findOne({ teacher: teacherID });
+    const classroom = await Classroom.findOne({ teacher });
 
     if (!student) {
       return res.status(400).json({ message: 'This student does not exist' });
@@ -115,7 +115,7 @@ const sendDirectMessageToStudent = async (req, res) => {
 
     const newMessage = await Message.create({
       isBroadcast: false,
-      fromTeacher: teacherID,
+      fromTeacher: teacher.id,
       toStudent: student.id,
       messageHeader,
       messageBody,
