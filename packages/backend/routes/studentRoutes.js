@@ -16,8 +16,8 @@ const {
 // "http://localhost:5000/api/v0/student/create"
 router.post(
   '/create',
-  validateStudent,
   checkTeacherAuthenticated,
+  validateStudent,
   createStudent,
 );
 router.post('/login', authenticateStudent, loginStudent);

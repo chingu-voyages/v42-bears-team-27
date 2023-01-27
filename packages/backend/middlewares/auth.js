@@ -20,7 +20,7 @@ const authenticateStudent = (req, res, next) => {
 const checkStudentAuthenticated = (req, res, next) => {
   passport.authenticate('student-cookie', { session: false }, (error, user) => {
     if (error || !user) {
-      return res.status(400).json({ message: 'not authorized' });
+      return res.status(401).json({ message: 'You are not authenticated' });
     }
     res.locals.user = user;
     return next();
@@ -45,7 +45,7 @@ const authenticateTeacher = (req, res, next) => {
 const checkTeacherAuthenticated = (req, res, next) => {
   passport.authenticate('teacher-cookie', { session: false }, (error, user) => {
     if (error || !user) {
-      return res.status(400).json({ message: 'not authorized' });
+      return res.status(401).json({ message: 'You are not authenticated' });
     }
     res.locals.user = user;
     return next();
