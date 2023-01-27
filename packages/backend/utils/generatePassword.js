@@ -8,4 +8,4 @@ const generatePassword = (
     .map((x) => wishlist[x % wishlist.length])
     .join('');
 
-module.exports = generatePassword;
+module.exports = { generatePassword };
