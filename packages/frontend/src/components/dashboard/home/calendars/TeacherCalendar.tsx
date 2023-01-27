@@ -1,40 +1,105 @@
 /* eslint-disable no-nested-ternary */
-/* eslint-disable react/jsx-props-no-spreading */
-import { useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import useSWR from 'swr';
 import { isSameDay, format } from 'date-fns';
 import { MdAdd } from 'react-icons/md';
 
 import { Calendar, type CalendarProps, Modal, IconButton } from 'components/ui';
 import type { IEvent, ISubject } from 'interfaces';
 import { titleCase } from 'src/utils';
+import { putClassroom, getClassroomEvents } from 'src/services';
 
 import CreateEventForm from './CreateEventForm';
 
+// const DUMMY_EVENTS_DATA: IEvent[] = [
+//   {
+//     dueDate: new Date('December 21, 2023').toISOString(),
+//     setAt: new Date().toISOString(),
+//     tasks: [
+//       {
+//         id: 0,
+//         subject: 'english',
+//         topic: 'punctuation',
+//         type: 'lesson',
+//         sourceUrl: '/',
+//       },
+//       {
+//         id: 2,
+//         subject: 'history',
+//         topic: 'cold war',
+//         type: 'test',
+//         sourceUrl: '/',
+//       },
+//     ],
+//   },
+// ];
+
 interface Props extends CalendarProps {
-  events: IEvent[];
   subjects: ISubject[];
-  onCreateEvent: (newEvent: IEvent) => void;
 }
 
-const TeacherCalendar: React.FC<Props> = ({
-  sx,
-  value,
-  events,
-  subjects,
-  onCreateEvent,
-  ...props
-}) => {
-  const activeDayEvent = useMemo<IEvent | null>(() => {
-    const foundEventIdx = events.findIndex((event) =>
-      isSameDay(value as Date, new Date(event.setAt)),
-    );
+const TeacherCalendar: React.FC<Props> = ({ sx, subjects }) => {
+  const [shouldFetch, setShouldFetch] = useState(true);
+  const [activeDay, setActiveDay] = useState<Date>(new Date());
 
-    if (foundEventIdx === -1) {
+  const { data: eventsData } = useSWR(
+    shouldFetch ? '/api/v0/classroom/events' : null,
+    getClassroomEvents,
+  );
+
+  useEffect(() => {
+    if (eventsData) {
+      setShouldFetch(false);
+    }
+  }, [eventsData]);
+
+  const activeDayEvent = useMemo<IEvent | null>(() => {
+    if (!eventsData) {
       return null;
     }
 
-    return { ...events[foundEventIdx] };
-  }, [value, events]);
+    const foundEventIdx = eventsData.findIndex((event) =>
+      isSameDay(activeDay as Date, new Date(event.setAt)),
+    );
+
+    if (foundEventIdx !== -1) {
+      return { ...eventsData[foundEventIdx] };
+    }
+
+    return null;
+  }, [activeDay, eventsData]);
+
+  const changedActiveDayHandler = (date: Date) => {
+    setActiveDay(date);
+  };
+
+  const createEventHandler = (newEvent: Omit<IEvent, 'setAt'>) => {
+    const transformedEvent = {
+      ...newEvent,
+      setAt: (activeDay as Date).toISOString(),
+    };
+    const currEvents = eventsData ? [...eventsData] : [];
+
+    const foundExistingEventIdx = currEvents.findIndex((event) =>
+      isSameDay(new Date(transformedEvent.setAt), new Date(event.setAt)),
+    );
+
+    if (foundExistingEventIdx !== -1) {
+      currEvents[foundExistingEventIdx] = {
+        ...currEvents[foundExistingEventIdx],
+        tasks: [
+          ...currEvents[foundExistingEventIdx].tasks,
+          ...transformedEvent.tasks,
+        ],
+      };
+
+      putClassroom(currEvents);
+    } else {
+      putClassroom([...currEvents, transformedEvent]);
+    }
+
+    setShouldFetch(true);
+  };
 
   return (
     <div
@@ -46,7 +111,11 @@ const TeacherCalendar: React.FC<Props> = ({
         ...sx,
       }}
     >
-      <Calendar sx={{ width: '100%' }} value={value} {...props} />
+      <Calendar
+        sx={{ width: '100%' }}
+        value={activeDay}
+        onClickDay={changedActiveDayHandler}
+      />
       <div
         sx={{
           variant: 'text.label',
@@ -68,12 +137,7 @@ const TeacherCalendar: React.FC<Props> = ({
             </IconButton>
           }
         >
-          <CreateEventForm
-            subjects={subjects}
-            onSubmit={(data) =>
-              onCreateEvent({ ...data, setAt: (value as Date).toISOString() })
-            }
-          />
+          <CreateEventForm subjects={subjects} onSubmit={createEventHandler} />
         </Modal>
 
         <h2 sx={{ variant: 'text.h4', textAlign: 'center' }}>
