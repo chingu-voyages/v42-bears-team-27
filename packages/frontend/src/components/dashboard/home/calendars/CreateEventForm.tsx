@@ -1,26 +1,30 @@
 import { useState } from 'react';
+import { format } from 'date-fns';
 
 import { Button, TextField } from 'components/ui';
-import type { ISubject } from 'interfaces';
+import type { IEvent, ISubject } from 'interfaces';
 
 type Props = {
   subjects: ISubject[];
-  onSubmit: (data: any) => void;
+  onSubmit: (data: Omit<IEvent, 'setAt'>) => void;
 };
 
 const CreateEventForm: React.FC<Props> = ({ subjects, onSubmit }) => {
   const [subject, setSubject] = useState('');
   const [topic, setTopic] = useState('');
   const [type, setType] = useState<'lesson' | 'exercise' | 'test'>('lesson');
-  const [dueDate, setDueDate] = useState(new Date().toISOString());
+  const [dueDate, setDueDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [alert, setAlert] = useState<string | null>(null);
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setAlert(null);
 
+    const sanitizedSubjectInput = subject.toLowerCase();
+    const sanitizedTopicInput = topic.toLowerCase();
+
     const foundSubjectIdx = subjects.findIndex(
-      (item) => item.title === subject,
+      (item) => item.title === sanitizedSubjectInput,
     );
 
     if (foundSubjectIdx === -1) {
@@ -29,7 +33,7 @@ const CreateEventForm: React.FC<Props> = ({ subjects, onSubmit }) => {
     }
 
     const foundTopicIdx = subjects[foundSubjectIdx].topics.findIndex(
-      (item) => item.title === topic,
+      (item) => item.title === sanitizedTopicInput,
     );
 
     if (foundTopicIdx === -1) {
@@ -50,14 +54,13 @@ const CreateEventForm: React.FC<Props> = ({ subjects, onSubmit }) => {
       subjects[foundSubjectIdx].topics[foundTopicIdx].types[foundTypeIdx];
 
     const data = {
-      isSchedule: true,
-      dueDate,
+      dueDate: new Date(dueDate).toISOString(),
       tasks: [
         {
           id,
           type,
-          subject: subject.toLowerCase(),
-          topic: topic.toLowerCase(),
+          subject: sanitizedSubjectInput,
+          topic: sanitizedTopicInput,
           sourceUrl: url,
         },
       ],
