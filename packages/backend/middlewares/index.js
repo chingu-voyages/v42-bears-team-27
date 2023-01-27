@@ -3,4 +3,5 @@ module.exports = {
   ...require('./auth'),
   ...require('./studentValidator'),
   ...require('./teacherValidator'),
+  ...require('./directMessageValidator'),
 };

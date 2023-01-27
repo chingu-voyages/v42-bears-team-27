@@ -24,6 +24,19 @@ const StudentSchema = new mongoose.Schema(
       type: mongoose.ObjectId,
       required: true,
     },
+    inbox: [
+      {
+        messageID: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Message',
+          required: true,
+        },
+        hasBeenRead: {
+          type: Boolean,
+          required: true,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
