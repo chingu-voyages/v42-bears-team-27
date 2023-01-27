@@ -2,19 +2,31 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { useMemo } from 'react';
 import { isSameDay, format } from 'date-fns';
+import { MdAdd } from 'react-icons/md';
 
-import { Calendar, type CalendarProps } from 'components/ui';
-import type { IEvent } from 'interfaces';
+import { Calendar, type CalendarProps, Modal, IconButton } from 'components/ui';
+import type { IEvent, ISubject } from 'interfaces';
 import { titleCase } from 'src/utils';
+
+import CreateEventForm from './CreateEventForm';
 
 interface Props extends CalendarProps {
   events: IEvent[];
+  subjects: ISubject[];
+  onCreateEvent: (newEvent: IEvent) => void;
 }
 
-const TeacherCalendar: React.FC<Props> = ({ sx, value, events, ...props }) => {
+const TeacherCalendar: React.FC<Props> = ({
+  sx,
+  value,
+  events,
+  subjects,
+  onCreateEvent,
+  ...props
+}) => {
   const activeDayEvent = useMemo<IEvent | null>(() => {
     const foundEventIdx = events.findIndex((event) =>
-      isSameDay(value as Date, event.createdAt),
+      isSameDay(value as Date, new Date(event.setAt)),
     );
 
     if (foundEventIdx === -1) {
@@ -38,6 +50,7 @@ const TeacherCalendar: React.FC<Props> = ({ sx, value, events, ...props }) => {
       <div
         sx={{
           variant: 'text.label',
+          position: 'relative',
           height: 320,
           color: 'primary',
           border: '1px solid',
@@ -45,18 +58,40 @@ const TeacherCalendar: React.FC<Props> = ({ sx, value, events, ...props }) => {
           p: 3,
         }}
       >
+        <Modal
+          title="Create New Event"
+          width="50%"
+          height="80vh"
+          btn={
+            <IconButton sx={{ position: 'absolute', top: 3, right: 3 }}>
+              <MdAdd size="inherit" />
+            </IconButton>
+          }
+        >
+          <CreateEventForm
+            subjects={subjects}
+            onSubmit={(data) =>
+              onCreateEvent({ ...data, setAt: value?.toString() })
+            }
+          />
+        </Modal>
+
         <h2 sx={{ variant: 'text.h4', textAlign: 'center' }}>
           Tasks Assigned:
         </h2>
         <p sx={{ textAlign: 'center' }}>{`${
           activeDayEvent
-            ? `Due Date: ${format(activeDayEvent.dueDate, 'PP')}`
+            ? `Due Date: ${format(new Date(activeDayEvent.dueDate), 'PP')}`
             : 'No tasks'
         }`}</p>
+
         {activeDayEvent && (
           <div sx={{ height: '60%', mt: 3, mx: 5, overflowY: 'auto' }}>
             {activeDayEvent.tasks.map(({ id, type, subject, topic }) => (
-              <div key={id} sx={{ display: 'flex', columnGap: 1 }}>
+              <div
+                key={id}
+                sx={{ display: 'flex', alignItems: 'center', columnGap: 1 }}
+              >
                 <p sx={{ width: '40%' }}>
                   {`
                   ${
