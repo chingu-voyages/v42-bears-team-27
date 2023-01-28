@@ -1,16 +1,26 @@
 const router = require('express').Router();
 
 const {
-  deleteClassroom,
-  updateClassroom,
+  checkTeacherAuthenticated,
+  validateMessage,
+} = require('../middlewares');
+
+const {
+  createClassroom,
   getClassroom,
-  addClassroom,
+  updateClassroom,
+  deleteClassroom,
+  broadcastMessage,
   broadcastMessage,
   deleteClassroomEvent,
   addClassroomEvent,
   updateClassroomEvent,
 } = require('../controllers/classroomController');
 
+router.post('/create', checkTeacherAuthenticated, createClassroom);
+router.get('/', checkTeacherAuthenticated, getClassroom);
+router.delete('/:id', checkTeacherAuthenticated, deleteClassroom);
+router.put('/:id', checkTeacherAuthenticated, updateClassroom);
 const {
   checkTeacherAuthenticated,
   validateMessage,
@@ -26,8 +36,5 @@ router.post(
   validateMessage,
   broadcastMessage,
 );
-router.post('/events', checkTeacherAuthenticated, addClassroomEvent);
-router.delete('/events', checkTeacherAuthenticated, deleteClassroomEvent);
-router.put('/events/:id', checkTeacherAuthenticated, updateClassroomEvent);
 
 module.exports = router;

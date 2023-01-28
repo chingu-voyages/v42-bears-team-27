@@ -20,6 +20,11 @@ const TeacherSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    classroom: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Classroom',
+      required: true,
+    },
   },
   {
     timestamps: true,

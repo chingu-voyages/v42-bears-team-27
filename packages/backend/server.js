@@ -36,7 +36,7 @@ const corsOptions = () => {
     credentials: true,
   };
 };
-app.use(cors(corsOptions())); // TODO options for production
+app.use(cors(corsOptions()));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.SIGN_COOKIE_KEY));

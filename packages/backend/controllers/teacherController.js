@@ -1,6 +1,8 @@
 /* eslint-disable consistent-return */
-const teacherModel = require('../models/teacherModel');
 const Teacher = require('../models/teacherModel');
+const Message = require('../models/messageModel');
+const Student = require('../models/studentModel');
+const Classroom = require('../models/classroomModel');
 
 const createTeacher = async (req, res) => {
   /* 
@@ -13,7 +15,7 @@ const createTeacher = async (req, res) => {
 
   const { title, fullName, email, password } = req.body;
 
-  const passwordHash = teacherModel.hashPassword(password);
+  const passwordHash = Teacher.hashPassword(password);
 
   try {
     const prevTeacher = await Teacher.findOne({ email });
@@ -31,36 +33,44 @@ const createTeacher = async (req, res) => {
       return res.status(400).json({ errors });
     }
 
-    const teacher = await Teacher.create({
-      title,
-      fullName,
-      email,
-      passwordHash,
-    });
+    const classroom = await Classroom.create({});
 
-    if (teacher) {
-      const payload = {
-        _id: teacher._id,
-        email: teacher.email,
-      };
-      // const token = generateJWT(payload);
-      return res
-        .cookie('auth', JSON.stringify(payload), {
-          secure: process.env.NODE_ENV === 'production',
-          httpOnly: true,
-          signed: true,
-          expires: new Date(Date.now() + 2592000), // 30 days
-        })
-        .json({
-          id: teacher._id,
-          title: teacher.title,
-          fullName: teacher.fullName,
+    if (classroom) {
+      const teacher = await Teacher.create({
+        title,
+        fullName,
+        email,
+        passwordHash,
+        classroom: classroom._id,
+      });
+
+      if (teacher) {
+        classroom.teacher = teacher._id;
+        await classroom.save();
+
+        const payload = {
+          _id: teacher._id,
           email: teacher.email,
-        });
+        };
+        return res
+          .cookie('auth', JSON.stringify(payload), {
+            secure: process.env.NODE_ENV === 'production',
+            httpOnly: true,
+            signed: true,
+            expires: new Date(Date.now() + 2592000), // 30 days
+          })
+          .json({
+            id: teacher._id,
+            email: teacher.email,
+            title: teacher.title,
+            fullName: teacher.fullName,
+          });
+      }
     }
   } catch (error) {
     // TODO: more robust logging (morgan?)
     // TODO: log other events too? not just errors?
+    // not all errors are being catch
     // console.log(`Error while saving teacher to database ${error}`);
     return res.status(500).json({ message: 'Internal server error' });
   }
@@ -92,7 +102,50 @@ const loginTeacher = async (req, res) => {
   });
 };
 
+const sendDirectMessageToStudent = async (req, res) => {
+  const { messageHeader, messageBody, studentID } = req.body;
+
+  const teacher = res.locals.user;
+
+  try {
+    const student = await Student.findById(studentID);
+
+    if (!student) {
+      return res.status(400).json({ message: 'This student does not exist' });
+    }
+
+    if (!student.classroom.equals(teacher.classroom)) {
+      return res
+        .status(400)
+        .json({ message: 'This student is not in your classroom' });
+    }
+
+    const newMessage = await Message.create({
+      isBroadcast: false,
+      fromTeacher: teacher.id,
+      toStudent: student.id,
+      messageHeader,
+      messageBody,
+    });
+
+    student.inbox.push({
+      messageID: newMessage._id,
+      hasBeenRead: false,
+    });
+    await student.save();
+
+    return res.status(200).json({ message: 'message sent!' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 const testTeacher = async (req, res) =>
   res.json({ message: 'authenticated teacher!' });
 
-module.exports = { createTeacher, loginTeacher, testTeacher };
+module.exports = {
+  createTeacher,
+  loginTeacher,
+  sendDirectMessageToStudent,
+  testTeacher,
+};
