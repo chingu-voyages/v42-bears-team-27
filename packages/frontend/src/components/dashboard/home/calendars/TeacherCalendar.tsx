@@ -18,7 +18,7 @@ import CreateEventForm from './CreateEventForm';
 // const DUMMY_EVENTS_DATA: IEvent[] = [
 //   {
 //     id: 0,
-//     dueDate: new Date('December 21, 2023').toISOString(),
+//     dueDate: new Date().toISOString(),
 //     setAt: new Date().toISOString(),
 //     tasks: [
 //       {
@@ -115,7 +115,8 @@ const TeacherCalendar: React.FC<Props> = ({ sx, subjects }) => {
     <div
       sx={{
         display: ['block', null, 'inline-block'],
-        width: [448, null, null, 520],
+        maxWidth: '95%',
+        width: [480, 544, 576, 640],
         ml: [null, null, 4],
         mx: 'auto',
         ...sx,
@@ -138,8 +139,8 @@ const TeacherCalendar: React.FC<Props> = ({ sx, subjects }) => {
         }}
       >
         <Modal
-          title="Create New Event"
-          width="50%"
+          title="Create New Task"
+          width="min(90%, 640px)"
           height="80vh"
           btn={
             <IconButton sx={{ position: 'absolute', top: 3, right: 3 }}>
@@ -160,13 +161,18 @@ const TeacherCalendar: React.FC<Props> = ({ sx, subjects }) => {
         }`}</p>
 
         {activeDayEvent && (
-          <div sx={{ height: '60%', mt: 3, mx: 5, overflowY: 'auto' }}>
+          <div sx={{ height: '60%', mx: 5, overflowY: 'auto' }}>
             {activeDayEvent.tasks.map(({ id, type, subject, topic }) => (
               <div
                 key={id}
-                sx={{ display: 'flex', alignItems: 'center', columnGap: 1 }}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  columnGap: 1,
+                }}
               >
-                <p sx={{ width: '40%' }}>
+                <p sx={{ width: 128 }}>
                   {`
                   ${
                     type === 'lesson' ? '🔵' : type === 'exercise' ? '🟡' : '🟣'
