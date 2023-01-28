@@ -21,7 +21,7 @@ export const getClassroomEvents: Fetcher<IEvent[]> = (endpoint: string) =>
   }).then((res) => res.json());
 
 // POST REQUESTS
-export const postClassroomEvent = (newEvent: IEvent) => {
+export const postClassroomEvent = (newEvent: Omit<IEvent, 'id'>) => {
   fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom`, {
     method: 'POST',
     credentials: 'include',
