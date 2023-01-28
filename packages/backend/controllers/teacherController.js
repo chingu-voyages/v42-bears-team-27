@@ -1,7 +1,6 @@
 /* eslint-disable consistent-return */
 const teacherModel = require('../models/teacherModel');
 const Teacher = require('../models/teacherModel');
-const { generateJWT } = require('../utils');
 
 const createTeacher = async (req, res) => {
   /* 
@@ -14,7 +13,6 @@ const createTeacher = async (req, res) => {
 
   const { title, fullName, email, password } = req.body;
 
-  // TODO: hash the password
   const passwordHash = teacherModel.hashPassword(password);
 
   try {
@@ -45,13 +43,20 @@ const createTeacher = async (req, res) => {
         _id: teacher._id,
         email: teacher.email,
       };
-      const token = generateJWT(payload);
-      return res.json({
-        title: teacher.title,
-        fullName: teacher.fullName,
-        email: teacher.email,
-        token,
-      });
+      // const token = generateJWT(payload);
+      return res
+        .cookie('auth', JSON.stringify(payload), {
+          secure: process.env.NODE_ENV === 'production',
+          httpOnly: true,
+          signed: true,
+          expires: new Date(Date.now() + 2592000), // 30 days
+        })
+        .json({
+          id: teacher._id,
+          title: teacher.title,
+          fullName: teacher.fullName,
+          email: teacher.email,
+        });
     }
   } catch (error) {
     // TODO: more robust logging (morgan?)
@@ -71,13 +76,19 @@ const loginTeacher = async (req, res) => {
       _id: user._id,
       email: user.email,
     };
-    const token = generateJWT(payload);
-    return res.json({
-      email: user.email,
-      title: user.title,
-      fullName: user.fullName,
-      token,
-    });
+    return res
+      .cookie('auth', JSON.stringify(payload), {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        signed: true,
+        expires: new Date(Date.now() + 2592000), // 30 days
+      })
+      .json({
+        id: user._id,
+        email: user.email,
+        title: user.title,
+        fullName: user.fullName,
+      });
   });
 };
 

@@ -1,12 +1,26 @@
 /* eslint spaced-comment: 0 */
+const Classroom = require('../models/classroomModel');
 const Student = require('../models/studentModel');
-const { generatePassword, generateJWT, sendEmail } = require('../utils');
+const { generatePassword, sendEmail } = require('../utils');
 
 const createStudent = async (req, res) => {
   /*  fullName: 'LastName, FirstName',
       email: '123@123.com
-      classroom: '63c339704aa8be1b4851e7b5'  */
-  const { fullName, email, classroom } = req.body;
+  */
+  const { fullName, email } = req.body;
+
+  const teacherId = res.locals.user.id;
+  const teachersClassroom = await Classroom.findOne({ teacher: teacherId });
+  if (!teachersClassroom) {
+    // TODO: Remove this because it cannot happen in the future
+    return res.status(400).json({ error: 'Classroom not found' });
+  }
+  if (!teachersClassroom.teacher.equals(teacherId)) {
+    return res.status(403).json({
+      error: 'Unauthorized! You cannot add students to this classroom.',
+    });
+  }
+
   const password = generatePassword(6);
   const hashedPassword = await Student.hashPassword(password);
   Student.findOne({ email })
@@ -16,12 +30,17 @@ const createStudent = async (req, res) => {
           message: `Student: ${fullName} is already in your classroom`,
         });
       }
+
       Student.create({
         fullName,
         email,
         password: hashedPassword,
-        classroom,
+        classroom: teachersClassroom,
       })
+        .then(async (newStudent) => {
+          teachersClassroom.students.push(newStudent._id);
+          await teachersClassroom.save();
+        })
         .then(() => {
           if (process.env.NODE_ENV === 'production') {
             // send email to student with the password
@@ -42,7 +61,7 @@ const createStudent = async (req, res) => {
               )
               .catch((err) => res.status(400).json({ message: err }));
           } else {
-            // development code:
+            // development only code:
             return res.status(201).json({
               message: 'Created Successfully',
               fullName,
@@ -67,8 +86,19 @@ const loginStudent = async (req, res) => {
       _id: user._id,
       email: user.email,
     };
-    const token = generateJWT(payload);
-    return res.json({ email: user.email, token });
+    res
+      .cookie('auth', JSON.stringify(payload), {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        signed: true,
+        expires: new Date(Date.now() + 2592000), // 30 days
+      })
+      .status(200)
+      .json({
+        id: user._id,
+        email: user.email,
+        fullName: user.fullName,
+      });
   });
 };
 

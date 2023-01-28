@@ -16,13 +16,20 @@ const classroomSchema = new mongoose.Schema(
     teacher: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Teacher',
+      unique: true,
     },
-    subject: [
+    subjects: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Subject',
       },
     ],
+    events: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Event',
+      },
+    ]
   },
   {
     timestamps: true,

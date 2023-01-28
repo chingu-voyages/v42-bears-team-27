@@ -1,12 +1,9 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const passportJWT = require('passport-jwt');
+const CookieStrategy = require('passport-cookie').Strategy;
 
 const Student = require('../models/studentModel');
 const Teacher = require('../models/teacherModel');
-
-const JWTStrategy = passportJWT.Strategy;
-const ExtractJWT = passportJWT.ExtractJwt;
 
 // Student Auth Strategies
 passport.use(
@@ -37,14 +34,15 @@ passport.use(
 );
 
 passport.use(
-  'student-jwt',
-  new JWTStrategy(
+  'student-cookie',
+  new CookieStrategy(
     {
-      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_KEY,
+      cookieName: 'auth',
+      signed: true,
+      passReqToCallback: true,
     },
-    (jwtPayload, callback) =>
-      Student.findById(jwtPayload._id, (error, student) => {
+    (req, token, callback) =>
+      Student.findById(JSON.parse(token)._id, (error, student) => {
         if (error) {
           return callback(error);
         }
@@ -83,18 +81,18 @@ passport.use(
 );
 
 passport.use(
-  'teacher-jwt',
-  new JWTStrategy(
+  'teacher-cookie',
+  new CookieStrategy(
     {
-      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_KEY,
+      cookieName: 'auth',
+      signed: true,
+      passReqToCallback: true,
     },
-    (jwtPayload, callback) =>
-      Teacher.findById(jwtPayload._id, (error, teacher) => {
+    (req, token, callback) =>
+      Teacher.findById(JSON.parse(token)._id, (error, teacher) => {
         if (error) {
           return callback(error);
         }
-
         return callback(null, teacher);
       }),
   ),

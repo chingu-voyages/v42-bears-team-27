@@ -4,6 +4,7 @@ const {
   validateStudent,
   authenticateStudent,
   checkStudentAuthenticated,
+  checkTeacherAuthenticated,
 } = require('../middlewares');
 
 const {
@@ -13,7 +14,12 @@ const {
 } = require('../controllers/studentControllers');
 
 // "http://localhost:5000/api/v0/student/create"
-router.post('/create', validateStudent, createStudent);
+router.post(
+  '/create',
+  checkTeacherAuthenticated,
+  validateStudent,
+  createStudent,
+);
 router.post('/login', authenticateStudent, loginStudent);
 router.get('/test', checkStudentAuthenticated, testStudent);
 
