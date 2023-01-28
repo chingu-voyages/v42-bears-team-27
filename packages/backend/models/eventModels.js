@@ -8,8 +8,8 @@ const eventSchema = new mongoose.Schema(
           trim: true,
         },
        
-        created_date: new Date(),
-        due_date: new Date(),
+        created_date: Date,
+        due_date: Date,
         task: [
             {
               type: mongoose.Schema.Types.ObjectId,

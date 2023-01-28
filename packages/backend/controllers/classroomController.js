@@ -1,6 +1,7 @@
 const Classroom = require('../models/classroomModel');
 const Student = require('../models/studentModel');
 const Message = require('../models/messageModel');
+const Event = require('../models/eventModels');
 
 
 
@@ -67,6 +68,62 @@ const deleteClassroom = async (req, res) => {
   return res.json({ message: 'Classroom deleted' });
 };
 
+// add event
+
+const addClassroomevent = async (req, res) => {
+  const classroom = await Classroom.findOne({ teacher: res.locals.user.id });
+  if (!classroom.teacher.equals(res.locals.user.id)) {
+    return res.status(401).json({ error: 'Unauthorized access' });
+  }
+  const newEvent = new Event({
+    
+    name: req.body.name,
+    created_date: new Date(req.body.created_date),
+    due_date: new Date(req.body.due_date),
+    task: req.body.task,
+  });
+  await newEvent.save();
+  return res.json(newEvent)
+  
+};
+
+// update event
+
+const updateClassroomevent = async (req, res) => {
+  const classroom = await Classroom.findOne({ teacher: res.locals.user.id });
+  if (!classroom.teacher.equals(res.locals.user.id)) {
+    return res.status(401).json({ error: 'Unauthorized access' });
+  }
+ 
+  const newEvent = await Event.findByIdAndUpdate(
+    req.params.id,
+    {
+    name: req.body.name,
+    created_date: new Date(req.body.created_date),
+    due_date: new Date(req.body.due_date),
+    task: req.body.task,
+  },
+  { new: true}
+  )
+  if(!newEvent)
+  return res.status(400).send('the event cannot be updated!')
+
+  return res.json(newEvent)
+  
+};
+
+// delete event
+const deleteClassroomEvent = async (req, res) => {
+  
+  const event = await Classroom.events.findById(req.params.id);
+  if (!event) {
+    return res.status(404).json({ error: 'classroom event not found' });
+  }
+
+  await event.remove();
+  return res.json({ message: 'classroom event deleted' });
+};
+
 const broadcastMessage = async (req, res) => {
   const { messageHeader, messageBody } = req.body;
 
@@ -110,4 +167,7 @@ module.exports = {
   getClassroom,
   addClassroom,
   broadcastMessage,
+  deleteClassroomEvent,
+  addClassroomevent,
+  updateClassroomevent,
 };
