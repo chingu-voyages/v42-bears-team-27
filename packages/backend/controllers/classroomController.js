@@ -1,126 +1,144 @@
 const Classroom = require('../models/classroomModel');
 const Student = require('../models/studentModel');
 const Message = require('../models/messageModel');
-const Event = require('../models/eventModels');
-
-
+const Event = require('../models/eventModel');
 
 const getClassroom = async (req, res) => {
-   const classroomId = res.locals.user.id
-  const classroom = await Classroom.findById( classroomId);
+  const classroomId = res.locals.user.id;
+  const classroom = await Classroom.findById(classroomId);
+
   if (!classroom) {
     return res.status(404).json({ error: 'Classroom not found' });
   }
+
   if (
     !classroom.teacher.equals(res.locals.user.id) ||
     !classroom.students.some((student) => student.equals(res.locals.user.id))
   ) {
     return res.status(401).json({ error: 'Unauthorized access' });
   }
+
   return res.json(classroom);
 };
 
 const addClassroom = async (req, res) => {
   const classroom = await Classroom.findOne({ teacher: res.locals.user.id });
+
   if (classroom) {
     return res
       .status(400)
       .json({ error: 'Teacher already belongs to a classroom' });
   }
+
   const newClassroom = new Classroom({
     name: req.body.name,
     students: req.body.students,
     teacher: res.locals.user.id,
     subjects: req.body.subjects,
-    events : req.body.events
+    events: req.body.events,
   });
+
   await newClassroom.save();
+
   return res.json(newClassroom);
 };
 
 const updateClassroom = async (req, res) => {
-  const classroomId = res.locals.user.id
-  const classroom = await Classroom.findById(classroomId);
+  const classroomId = res.locals.user.id;
+  let classroom = await Classroom.findById(classroomId);
+
   if (!classroom) {
     return res.status(404).json({ error: 'Classroom not found' });
   }
+
   if (!classroom.teacher.equals(res.locals.user.id)) {
     return res.status(401).json({ error: 'Unauthorized access' });
   }
-  classroom.name = req.body.name,
-  classroom.students = req.body.students,
-  classroom.subjects = req.body.subjects,
-  classroom.events = req.body.events
+
+  classroom = {
+    ...classroom,
+    name: req.body.name,
+    students: req.body.students,
+    subjects: req.body.subjects,
+    events: req.body.events,
+  };
+
   await classroom.save();
   return res.json(classroom);
 };
 
 const deleteClassroom = async (req, res) => {
-  const classroomId = res.locals.user.id
+  const classroomId = res.locals.user.id;
   const classroom = await Classroom.findById(classroomId);
+
   if (!classroom) {
     return res.status(404).json({ error: 'Classroom not found' });
   }
+
   if (!classroom.teacher.equals(res.locals.user.id)) {
     return res.status(401).json({ error: 'Unauthorized access' });
   }
+
   await classroom.remove();
+
   return res.json({ message: 'Classroom deleted' });
 };
 
-// add event
+/// Classroom Events
 
-const addClassroomevent = async (req, res) => {
+// TODO: It should return populated data for classroom events
+// const getClassroomEvents = async (req, res) => {};
+
+const addClassroomEvent = async (req, res) => {
   const classroom = await Classroom.findOne({ teacher: res.locals.user.id });
+
   if (!classroom.teacher.equals(res.locals.user.id)) {
     return res.status(401).json({ error: 'Unauthorized access' });
   }
+
   const newEvent = new Event({
-    
-    name: req.body.name,
-    created_date: new Date(req.body.created_date),
-    due_date: new Date(req.body.due_date),
-    task: req.body.task,
+    setAt: new Date(req.body.setAt),
+    dueDate: new Date(req.body.dueDate),
+    tasks: req.body.tasks,
   });
+
   await newEvent.save();
-  return res.json(newEvent)
-  
+
+  return res.json(newEvent);
 };
 
-// update event
-
-const updateClassroomevent = async (req, res) => {
+const updateClassroomEvent = async (req, res) => {
   const classroom = await Classroom.findOne({ teacher: res.locals.user.id });
+
   if (!classroom.teacher.equals(res.locals.user.id)) {
     return res.status(401).json({ error: 'Unauthorized access' });
   }
- 
-  const newEvent = await Event.findByIdAndUpdate(
+
+  const updatedEvent = await Event.findByIdAndUpdate(
     req.params.id,
     {
-    name: req.body.name,
-    created_date: new Date(req.body.created_date),
-    due_date: new Date(req.body.due_date),
-    task: req.body.task,
-  },
-  { new: true}
-  )
-  if(!newEvent)
-  return res.status(400).send('the event cannot be updated!')
+      setAt: new Date(req.body.setAt),
+      dueDate: new Date(req.body.dueDate),
+      tasks: req.body.tasks,
+    },
+    { new: true },
+  );
 
-  return res.json(newEvent)
-  
+  if (!updatedEvent)
+    return res.status(400).send('the event cannot be updated!');
+
+  return res.json(updatedEvent);
 };
 
-// delete event
 const deleteClassroomEvent = async (req, res) => {
-  
   const event = await Classroom.events.findById(req.params.id);
+
   if (!event) {
     return res.status(404).json({ error: 'classroom event not found' });
   }
 
   await event.remove();
+
   return res.json({ message: 'classroom event deleted' });
 };
 
@@ -168,6 +186,6 @@ module.exports = {
   addClassroom,
   broadcastMessage,
   deleteClassroomEvent,
-  addClassroomevent,
-  updateClassroomevent,
+  addClassroomEvent,
+  updateClassroomEvent,
 };

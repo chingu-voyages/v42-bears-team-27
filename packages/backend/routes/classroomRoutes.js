@@ -7,8 +7,8 @@ const {
   addClassroom,
   broadcastMessage,
   deleteClassroomEvent,
-  addClassroomevent,
-  updateClassroomevent
+  addClassroomEvent,
+  updateClassroomEvent,
 } = require('../controllers/classroomController');
 
 const {
@@ -26,8 +26,8 @@ router.post(
   validateMessage,
   broadcastMessage,
 );
-router.post('/events', checkTeacherAuthenticated, addClassroomevent)
-router.delete('/events', checkTeacherAuthenticated, deleteClassroomEvent)
-router.put('/events/:id', checkTeacherAuthenticated, updateClassroomevent)
+router.post('/events', checkTeacherAuthenticated, addClassroomEvent);
+router.delete('/events', checkTeacherAuthenticated, deleteClassroomEvent);
+router.put('/events/:id', checkTeacherAuthenticated, updateClassroomEvent);
 
 module.exports = router;
