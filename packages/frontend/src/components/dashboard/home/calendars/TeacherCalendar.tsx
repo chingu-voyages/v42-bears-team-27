@@ -7,12 +7,17 @@ import { MdAdd } from 'react-icons/md';
 import { Calendar, type CalendarProps, Modal, IconButton } from 'components/ui';
 import type { IEvent, ISubject } from 'interfaces';
 import { titleCase } from 'src/utils';
-import { putClassroom, getClassroomEvents } from 'src/services';
+import {
+  getClassroomEvents,
+  postClassroomEvent,
+  putClassroomEvent,
+} from 'src/services';
 
 import CreateEventForm from './CreateEventForm';
 
 // const DUMMY_EVENTS_DATA: IEvent[] = [
 //   {
+//     id: 0,
 //     dueDate: new Date('December 21, 2023').toISOString(),
 //     setAt: new Date().toISOString(),
 //     tasks: [
@@ -57,7 +62,7 @@ const TeacherCalendar: React.FC<Props> = ({ sx, subjects }) => {
     if (!eventsData) {
       return null;
     }
-
+    // Check if there is an event that exists for that day
     const foundEventIdx = eventsData.findIndex((event) =>
       isSameDay(activeDay as Date, new Date(event.setAt)),
     );
@@ -73,31 +78,36 @@ const TeacherCalendar: React.FC<Props> = ({ sx, subjects }) => {
     setActiveDay(date);
   };
 
-  const createEventHandler = (newEvent: Omit<IEvent, 'setAt'>) => {
-    const transformedEvent = {
-      ...newEvent,
-      setAt: (activeDay as Date).toISOString(),
-    };
+  const createEventHandler = (
+    newEvent: Omit<IEvent, 'id' | 'dueDate' | 'setAt'>,
+  ) => {
     const currEvents = eventsData ? [...eventsData] : [];
 
+    const transformedEvent = {
+      ...newEvent,
+      dueDate: (activeDay as Date).toISOString(),
+      setAt: (activeDay as Date).toISOString(),
+    };
+    // Check if similar event exists already
     const foundExistingEventIdx = currEvents.findIndex((event) =>
       isSameDay(new Date(transformedEvent.setAt), new Date(event.setAt)),
     );
 
+    // If similar event does exit, then update similar event with new form data
     if (foundExistingEventIdx !== -1) {
-      currEvents[foundExistingEventIdx] = {
+      const updatedEvent = {
         ...currEvents[foundExistingEventIdx],
         tasks: [
           ...currEvents[foundExistingEventIdx].tasks,
           ...transformedEvent.tasks,
         ],
       };
-
-      putClassroom(currEvents);
+      putClassroomEvent(updatedEvent);
     } else {
-      putClassroom([...currEvents, transformedEvent]);
+      // Or otherwise, add a new event using the form data
+      postClassroomEvent(transformedEvent);
     }
-
+    // Re-fetch for updated events
     setShouldFetch(true);
   };
 

@@ -1,46 +1,47 @@
 import { useState } from 'react';
-import { format } from 'date-fns';
 
 import { Button, TextField } from 'components/ui';
 import type { IEvent, ISubject } from 'interfaces';
 
 type Props = {
   subjects: ISubject[];
-  onSubmit: (data: Omit<IEvent, 'setAt'>) => void;
+  onSubmit: (data: Omit<IEvent, 'id' | 'dueDate' | 'setAt'>) => void;
 };
+
+// NOTE: File name to be renamed to CreateEventForm -> CreateTaskForm once refactored
+// All event-specific (not task related) changes would be made elsewhere
 
 const CreateEventForm: React.FC<Props> = ({ subjects, onSubmit }) => {
   const [subject, setSubject] = useState('');
   const [topic, setTopic] = useState('');
   const [type, setType] = useState<'lesson' | 'exercise' | 'test'>('lesson');
-  const [dueDate, setDueDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [alert, setAlert] = useState<string | null>(null);
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setAlert(null);
-
-    const sanitizedSubjectInput = subject.toLowerCase();
-    const sanitizedTopicInput = topic.toLowerCase();
-
+    // Sanitize inputs
+    const sanitizedEnteredSubject = subject.toLowerCase();
+    const sanitizedEnteredTopic = topic.toLowerCase();
+    // Check if entered subject exists
     const foundSubjectIdx = subjects.findIndex(
-      (item) => item.title === sanitizedSubjectInput,
+      (item) => item.title === sanitizedEnteredSubject,
     );
 
     if (foundSubjectIdx === -1) {
       setAlert('Warning: subject does not exist in your classroom');
       return;
     }
-
+    // Check if entered topic exists
     const foundTopicIdx = subjects[foundSubjectIdx].topics.findIndex(
-      (item) => item.title === sanitizedTopicInput,
+      (item) => item.title === sanitizedEnteredTopic,
     );
 
     if (foundTopicIdx === -1) {
       setAlert(`Warning: topic does not exist in ${subject}`);
       return;
     }
-
+    // Check if type of task exists for topic
     const foundTypeIdx = subjects[foundSubjectIdx].topics[
       foundTopicIdx
     ].types.findIndex((item) => item.title === type);
@@ -53,19 +54,18 @@ const CreateEventForm: React.FC<Props> = ({ subjects, onSubmit }) => {
     const { id, url } =
       subjects[foundSubjectIdx].topics[foundTopicIdx].types[foundTypeIdx];
 
-    const data = {
-      dueDate: new Date(dueDate).toISOString(),
+    const submissionData = {
       tasks: [
         {
           id,
           type,
-          subject: sanitizedSubjectInput,
-          topic: sanitizedTopicInput,
+          subject: sanitizedEnteredSubject,
+          topic: sanitizedEnteredTopic,
           sourceUrl: url,
         },
       ],
     };
-    onSubmit(data);
+    onSubmit(submissionData);
   };
 
   return (
@@ -132,16 +132,6 @@ const CreateEventForm: React.FC<Props> = ({ subjects, onSubmit }) => {
           />
         </label>
       </fieldset>
-      <label htmlFor="due-date">
-        <p sx={{ variant: 'text.label', mb: 1 }}>Due Date</p>
-        <input
-          type="date"
-          id="due-date"
-          value={dueDate}
-          required
-          onChange={(e) => setDueDate(e.currentTarget.value)}
-        />
-      </label>
       <Button sx={{ width: '100%', mt: 3 }} rounded={false} type="submit">
         Add Event
       </Button>
