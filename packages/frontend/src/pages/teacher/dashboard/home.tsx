@@ -10,6 +10,7 @@ import {
   BroadcastModal,
   ClassroomModal,
 } from 'components/dashboard/home/modals';
+import ClassroomCreation from 'components/dashboard/home/forms/teacher';
 import StudentTable from 'components/dashboard/home/StudentTable';
 import ViewClassroom from 'components/dashboard/home/ViewClassroom';
 
@@ -77,37 +78,45 @@ InferGetStaticPropsType<typeof getStaticProps>
         <TeacherNav heading={`Classroom: ${classroomData.name}`} />
       </Header>
       <div sx={{ pt: 1, pb: 4, px: 2 }}>
-        <p sx={{ variant: 'text.h3', color: 'primary', textAlign: 'center' }}>
-          {`Good Morning, ${(authCtx.user as IUserData)?.title}.${
-            (authCtx.user as IUserData)?.fullName
-          }`}
-        </p>
-        <div
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            columnGap: 3,
-            mb: [4, null, 0],
-          }}
-        >
-          <BroadcastModal />
-          <ClassroomModal>
-            <ViewClassroom user={authCtx?.user as IUserData} />
-          </ClassroomModal>
-        </div>
-        <div
-          sx={{
-            display: 'flex',
-            flexDirection: ['column', null, 'row'],
-            alignItems: ['center', 'start', 'center'],
-            justifyContent: 'space-between',
-            columnGap: 3,
-            mt: [3, null, 4],
-          }}
-        >
-          <TeacherCalendar subjects={subjects} />
-          <StudentTable data={students} columns={columns} />
-        </div>
+        {classroomData.length > 0 ? (
+          <ClassroomCreation />
+        ) : (
+          <>
+            <p
+              sx={{ variant: 'text.h3', color: 'primary', textAlign: 'center' }}
+            >
+              {`Good Morning, ${(authCtx.user as IUserData)?.title}.${
+                (authCtx.user as IUserData)?.fullName
+              }`}
+            </p>
+            <div
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                columnGap: 3,
+                mb: [4, null, 0],
+              }}
+            >
+              <BroadcastModal />
+              <ClassroomModal>
+                <ViewClassroom user={authCtx?.user as IUserData} />
+              </ClassroomModal>
+            </div>
+            <div
+              sx={{
+                display: 'flex',
+                flexDirection: ['column', null, 'row'],
+                alignItems: ['center', 'start', 'center'],
+                justifyContent: 'space-between',
+                columnGap: 3,
+                mt: [3, null, 4],
+              }}
+            >
+              <TeacherCalendar subjects={subjects} />
+              <StudentTable data={students} columns={columns} />
+            </div>
+          </>
+        )}
       </div>
     </>
   );
