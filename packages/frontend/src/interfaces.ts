@@ -19,12 +19,14 @@ export interface ITask {
 }
 
 export interface IEvent {
+  id: string | number;
   dueDate: string;
   setAt: string;
   tasks: ITask[];
 }
 
 export interface IStudent {
+  id: string | number;
   fullName: string;
   tasks: number;
 }
@@ -36,6 +38,7 @@ export interface IType {
 }
 
 export interface ITopic {
+  id: string | number;
   title: string;
   types: IType[];
 }
@@ -47,6 +50,7 @@ export interface ISubject {
 }
 
 export interface IClassroom {
+  id: string | number;
   name: string;
   students: IStudent[];
   subjects: ISubject[];
