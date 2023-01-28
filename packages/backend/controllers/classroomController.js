@@ -2,8 +2,11 @@ const Classroom = require('../models/classroomModel');
 const Student = require('../models/studentModel');
 const Message = require('../models/messageModel');
 
+
+
 const getClassroom = async (req, res) => {
-  const classroom = await Classroom.findById(req.params.id);
+   const classroomId = res.locals.user.id
+  const classroom = await Classroom.findById( classroomId);
   if (!classroom) {
     return res.status(404).json({ error: 'Classroom not found' });
   }
@@ -28,28 +31,32 @@ const addClassroom = async (req, res) => {
     students: req.body.students,
     teacher: res.locals.user.id,
     subjects: req.body.subjects,
+    events : req.body.events
   });
   await newClassroom.save();
   return res.json(newClassroom);
 };
 
 const updateClassroom = async (req, res) => {
-  const classroom = await Classroom.findById(req.params.id);
+  const classroomId = res.locals.user.id
+  const classroom = await Classroom.findById(classroomId);
   if (!classroom) {
     return res.status(404).json({ error: 'Classroom not found' });
   }
   if (!classroom.teacher.equals(res.locals.user.id)) {
     return res.status(401).json({ error: 'Unauthorized access' });
   }
-  classroom.name = req.body.name;
-  classroom.students = req.body.students;
-  classroom.subjects = req.body.subjects;
+  classroom.name = req.body.name,
+  classroom.students = req.body.students,
+  classroom.subjects = req.body.subjects,
+  classroom.events = req.body.events
   await classroom.save();
   return res.json(classroom);
 };
 
 const deleteClassroom = async (req, res) => {
-  const classroom = await Classroom.findById(req.params.id);
+  const classroomId = res.locals.user.id
+  const classroom = await Classroom.findById(classroomId);
   if (!classroom) {
     return res.status(404).json({ error: 'Classroom not found' });
   }

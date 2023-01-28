@@ -14,9 +14,9 @@ const {
 } = require('../middlewares');
 
 router.post('/create', checkTeacherAuthenticated, addClassroom);
-router.get('/:id', checkTeacherAuthenticated, getClassroom);
-router.delete('/:id', checkTeacherAuthenticated, deleteClassroom);
-router.put('/:id', checkTeacherAuthenticated, updateClassroom);
+router.get('/', checkTeacherAuthenticated, getClassroom);
+router.delete('/', checkTeacherAuthenticated, deleteClassroom);
+router.put('/', checkTeacherAuthenticated, updateClassroom);
 router.post(
   '/broadcast-message',
   checkTeacherAuthenticated,
