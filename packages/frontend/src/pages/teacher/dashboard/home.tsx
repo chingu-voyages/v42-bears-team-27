@@ -33,11 +33,11 @@ const columns = [
 
 // NOTE: Temporary function only used until no longer needed
 function extractArray<T, K extends keyof T>(obj: T, key: K) {
-  const extractedData = [...(obj[key] as any)];
-
-  if (!extractedData) {
+  if (!obj) {
     return [];
   }
+
+  const extractedData = [...(obj[key] as any)];
 
   return [...extractedData];
 }
@@ -133,6 +133,7 @@ export async function getStaticProps() {
   //     title: 'english',
   //     topics: [
   //       {
+  //         id: 0,
   //         title: 'punctuation',
   //         types: [{ id: 0, title: 'lesson', url: '/' }],
   //       },
@@ -143,6 +144,7 @@ export async function getStaticProps() {
   //     title: 'mathematics',
   //     topics: [
   //       {
+  //         id: 1,
   //         title: 'indices',
   //         types: [{ id: 1, title: 'exercise', url: '/' }],
   //       },
@@ -153,6 +155,7 @@ export async function getStaticProps() {
   //     title: 'history',
   //     topics: [
   //       {
+  //         id: 2,
   //         title: 'cold war',
   //         types: [{ id: 2, title: 'test', url: '/' }],
   //       },
@@ -162,18 +165,22 @@ export async function getStaticProps() {
   // NOTE: Move once useSWR hook is applied for this data into the appropriate components
   // const studentsData: IStudent[] = [
   //   {
+  //     id: 0,
   //     fullName: 'Smith, Lucas',
   //     tasks: 2,
   //   },
   //   {
+  //     id: 1,
   //     fullName: 'Miller, Amanda',
   //     tasks: 0,
   //   },
   //   {
+  //     id: 2,
   //     fullName: 'Adams, John',
   //     tasks: 1,
   //   },
   //   {
+  //     id: 3,
   //     fullName: 'Linsley, Karen',
   //     tasks: 4,
   //   },
