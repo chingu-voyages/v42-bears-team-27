@@ -23,6 +23,12 @@ const classroomSchema = new mongoose.Schema(
         ref: 'Subject',
       },
     ],
+    events: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Event',
+      },
+    ]
   },
   {
     timestamps: true,

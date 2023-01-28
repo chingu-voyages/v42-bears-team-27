@@ -1,4 +1,5 @@
 /* eslint spaced-comment: 0 */
+const Classroom = require('../models/classroomModel');
 const Student = require('../models/studentModel');
 const Classroom = require('../models/classroomModel');
 const { generatePassword, sendEmail } = require('../utils');
