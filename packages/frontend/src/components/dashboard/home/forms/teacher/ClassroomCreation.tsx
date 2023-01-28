@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { Button, TextField, Checkbox } from 'components/ui';
+import { putClassroom } from 'src/services';
 
 type Boxes = {
   [name: string]: boolean;
@@ -18,10 +19,10 @@ const ClassroomCreation: React.FC = () => {
   });
   const [alert, setAlert] = useState('');
 
-  const handleOnChange = (e) => {
+  const handleOnChange = (e: any) => {
     // React.MouseEventHandler<HTMLInputElement> ?
     const { id } = e.target;
-    setBoxes({ ...boxes, [id]: !boxes[id] });
+    setBoxes((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
@@ -30,27 +31,14 @@ const ClassroomCreation: React.FC = () => {
     const data = { name, subjects };
 
     try {
-      const call = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/create`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        },
-      );
-      const response = await call.json();
-      if (call.ok) {
-        setName('');
-        setAlert('Created!');
-      } else {
-        setAlert(response.message);
-      }
+      await putClassroom(data);
+      setName('');
+      setAlert('Created!');
     } catch (error) {
       setAlert('error');
     }
   };
+
   return (
     <div
       sx={{

@@ -9,7 +9,16 @@ export const getClassroom = () =>
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then((res) => res.json());
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Not authenticated');
+      }
+      return res.json();
+    })
+    .catch((error) => {
+      throw error;
+    });
 
 export const getClassroomEvents: Fetcher<IEvent[]> = (endpoint: string) =>
   fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}${endpoint}`, {
@@ -21,38 +30,52 @@ export const getClassroomEvents: Fetcher<IEvent[]> = (endpoint: string) =>
   }).then((res) => res.json());
 
 // POST REQUESTS
-export const postClassroomEvent = (newEvent: Omit<IEvent, 'id'>) => {
-  fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
+export const postClassroomEvent = (newEvent: Omit<IEvent, 'id'>) =>
+  fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/events/create`,
+    {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newEvent),
     },
-    body: JSON.stringify(newEvent),
-  }).then((res) => res.json());
-};
-
+  ).then((res) => res.json());
 // PUT REQUESTS
 export const putClassroom = (
   updatedClassroom: Omit<IClassroom, 'events' | 'subjects'>,
-) => {
-  fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom`, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
+) =>
+  fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/${updatedClassroom.id}`,
+    {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedClassroom),
     },
-    body: JSON.stringify(updatedClassroom),
-  }).then((res) => res.json());
-};
+  )
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Not authenticated');
+      }
+      return res.json();
+    })
+    .catch((error) => {
+      throw error;
+    });
 
-export const putClassroomEvent = (updatedEvent: IEvent) => {
-  fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom`, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
+export const putClassroomEvent = (updatedEvent: IEvent) =>
+  fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/events/${updatedEvent.id}`,
+    {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedEvent),
     },
-    body: JSON.stringify(updatedEvent),
-  }).then((res) => res.json());
-};
+  ).then((res) => res.json());

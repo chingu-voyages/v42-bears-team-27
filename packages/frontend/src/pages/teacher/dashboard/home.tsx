@@ -2,6 +2,7 @@ import type { ReactElement } from 'react';
 import { useContext, useState } from 'react';
 import type { InferGetStaticPropsType } from 'next';
 import { createColumnHelper } from '@tanstack/react-table';
+import useSWR, { SWRConfig } from 'swr';
 
 import { AuthLayout, Header } from 'layouts/AuthLayout';
 import { TeacherNav } from 'components/dashboard/navs';
@@ -44,15 +45,28 @@ function extractArray<T, K extends keyof T>(obj: T, key: K) {
 }
 
 const Home: NextPageWithLayout<
-InferGetStaticPropsType<typeof getStaticProps>
-> = ({ classroomData }) => {
+  InferGetStaticPropsType<typeof getServerSideProps>
+> = ({ fallback }) => {
+  console.log({ fallback });
+  const { data: classroomData } = useSWR('/api/v0/classroom/', (endpoint) => {
+    fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}${endpoint}`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((res) => res.json());
+  });
+  console.log({ classroomData });
   const authCtx = useContext(AuthContext);
   // TODO: Migrate with useSWR hook to appropriate components whereby subject data is required
   const [subjects] = useState<ISubject[]>(
+    // @ts-ignore
     extractArray(classroomData, 'subjects'),
   );
   // TODO: Migrate with useSWR hook to appropriate components whereby students data is required
   const [students] = useState<IStudent[]>(
+    // @ts-ignore
     extractArray(classroomData, 'students'),
   );
 
@@ -72,53 +86,66 @@ InferGetStaticPropsType<typeof getStaticProps>
     );
   }
 
+  console.log({ authCtx });
+
   return (
-    <>
+    <SWRConfig value={{ fallback }}>
+      <pre>{JSON.stringify(classroomData, null, 2)}</pre>
       <Header>
-        <TeacherNav heading={`Classroom: ${classroomData.name}`} />
+        <TeacherNav
+          // @ts-ignore
+          heading={`Classroom: ${(classroomData as IClassroom).name}`}
+        />
       </Header>
       <div sx={{ pt: 1, pb: 4, px: 2 }}>
-        {classroomData.length > 0 ? (
-          <ClassroomCreation />
-        ) : (
-          <>
-            <p
-              sx={{ variant: 'text.h3', color: 'primary', textAlign: 'center' }}
-            >
-              {`Good Morning, ${(authCtx.user as IUserData)?.title}.${
-                (authCtx.user as IUserData)?.fullName
-              }`}
-            </p>
-            <div
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                columnGap: 3,
-                mb: [4, null, 0],
-              }}
-            >
-              <BroadcastModal />
-              <ClassroomModal>
-                <ViewClassroom user={authCtx?.user as IUserData} />
-              </ClassroomModal>
-            </div>
-            <div
-              sx={{
-                display: 'flex',
-                flexDirection: ['column', null, 'row'],
-                alignItems: ['center', 'start', 'center'],
-                justifyContent: 'space-between',
-                columnGap: 3,
-                mt: [3, null, 4],
-              }}
-            >
-              <TeacherCalendar subjects={subjects} />
-              <StudentTable data={students} columns={columns} />
-            </div>
-          </>
-        )}
+        {
+          // @ts-ignore
+          !(classroomData as IClassroom).name ? (
+            <ClassroomCreation />
+          ) : (
+            <>
+              <p
+                sx={{
+                  variant: 'text.h3',
+                  color: 'primary',
+                  textAlign: 'center',
+                }}
+              >
+                {`Good Morning, ${(authCtx.user as IUserData)?.title}.${
+                  (authCtx.user as IUserData)?.fullName
+                }`}
+              </p>
+              <div
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  columnGap: 3,
+                  mb: [4, null, 0],
+                }}
+              >
+                <BroadcastModal />
+                <ClassroomModal>
+                  <ViewClassroom user={authCtx?.user as IUserData} />
+                </ClassroomModal>
+              </div>
+              <div
+                sx={{
+                  display: 'flex',
+                  flexDirection: ['column', null, 'row'],
+                  alignItems: ['center', 'start', 'center'],
+                  justifyContent: 'space-between',
+                  columnGap: 3,
+                  mt: [3, null, 4],
+                }}
+              >
+                <TeacherCalendar subjects={subjects} />
+                <StudentTable data={students} columns={columns} />
+              </div>
+            </>
+          )
+        }
       </div>
-    </>
+    </SWRConfig>
   );
 };
 
@@ -133,8 +160,19 @@ Home.getLayout = function getLayout(page: ReactElement) {
   );
 };
 
-export async function getStaticProps() {
-  const data: IClassroom = await getClassroom();
+export async function getServerSideProps() {
+  let data: IClassroom;
+  try {
+    data = await getClassroom();
+  } catch (e) {
+    data = {
+      id: '',
+      name: '',
+      subjects: [],
+      students: [],
+      events: [],
+    };
+  }
   // NOTE: Move once useSWR hook is applied for this data into the appropriate components
   // const subjectsData: ISubject[] = [
   //   {
@@ -203,7 +241,9 @@ export async function getStaticProps() {
 
   return {
     props: {
-      classroomData,
+      fallback: {
+        '/api/v0/classroom': classroomData,
+      },
     },
   };
 }

@@ -19,7 +19,9 @@ const classroomSchema = new mongoose.Schema(
     },
     subjects: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        // TODO
+        // type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'Subject',
       },
     ],
@@ -28,7 +30,7 @@ const classroomSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Event',
       },
-    ]
+    ],
   },
   {
     timestamps: true,
