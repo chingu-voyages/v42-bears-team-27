@@ -6,30 +6,25 @@ const {
 } = require('../middlewares');
 
 const {
-  createClassroom,
   getClassroom,
+  createClassroom,
   updateClassroom,
   deleteClassroom,
-  broadcastMessage,
-  broadcastMessage,
-  deleteClassroomEvent,
   addClassroomEvent,
   updateClassroomEvent,
+  deleteClassroomEvent,
+  broadcastMessage,
 } = require('../controllers/classroomController');
 
+router.get('/', checkTeacherAuthenticated, getClassroom);
 router.post('/create', checkTeacherAuthenticated, createClassroom);
-router.get('/', checkTeacherAuthenticated, getClassroom);
-router.delete('/:id', checkTeacherAuthenticated, deleteClassroom);
 router.put('/:id', checkTeacherAuthenticated, updateClassroom);
-const {
-  checkTeacherAuthenticated,
-  validateMessage,
-} = require('../middlewares');
+router.delete('/:id', checkTeacherAuthenticated, deleteClassroom);
 
-router.post('/create', checkTeacherAuthenticated, addClassroom);
-router.get('/', checkTeacherAuthenticated, getClassroom);
-router.delete('/', checkTeacherAuthenticated, deleteClassroom);
-router.put('/', checkTeacherAuthenticated, updateClassroom);
+router.post('/event', checkTeacherAuthenticated, addClassroomEvent);
+router.put('/event', checkTeacherAuthenticated, updateClassroomEvent);
+router.delete('/event', checkTeacherAuthenticated, deleteClassroomEvent);
+
 router.post(
   '/broadcast-message',
   checkTeacherAuthenticated,
