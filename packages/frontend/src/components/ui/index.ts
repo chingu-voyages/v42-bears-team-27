@@ -3,3 +3,6 @@ export * from './TextField';
 export * from './Calendar';
 export * from './IconButton';
 export * from './Modal';
+export * from './Avatar';
+export * from './Checkbox';
+export * from './Menu';
