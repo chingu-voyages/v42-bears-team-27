@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import useSWR from 'swr';
 import { isSameDay, format } from 'date-fns';
 import { MdAdd } from 'react-icons/md';
@@ -36,23 +36,16 @@ import CreateEventForm from './CreateEventForm';
 // ];
 
 const TeacherCalendar: React.FC = () => {
-  const [shouldFetch, setShouldFetch] = useState(true);
   const [activeDay, setActiveDay] = useState<Date>(new Date());
 
   const { data: eventsData } = useSWR<IEvent[]>(
-    shouldFetch ? '/api/v0/classroom/events' : null,
+    '/api/v0/classroom/events',
     fetcher,
   );
   const { data: subjectsData } = useSWR<ISubject[]>(
     '/api/v0/classroom/subjects',
     fetcher,
   );
-
-  useEffect(() => {
-    if (eventsData) {
-      setShouldFetch(false);
-    }
-  }, [eventsData]);
 
   const activeDayEvent = useMemo<IEvent | null>(() => {
     if (!eventsData) {
@@ -91,8 +84,6 @@ const TeacherCalendar: React.FC = () => {
       };
       postClassroomEvent(newEvent as IEvent);
     }
-    // Re-fetch for updated events
-    setShouldFetch(true);
   };
 
   return (
