@@ -10,6 +10,7 @@ const {
 const {
   createStudent,
   loginStudent,
+  getStudent,
   testStudent,
 } = require('../controllers/studentControllers');
 
@@ -21,6 +22,7 @@ router.post(
   createStudent,
 );
 router.post('/login', authenticateStudent, loginStudent);
+router.get('/', checkStudentAuthenticated, getStudent);
 router.get('/test', checkStudentAuthenticated, testStudent);
 
 module.exports = router;

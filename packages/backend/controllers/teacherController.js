@@ -110,6 +110,15 @@ const loginTeacher = async (req, res) => {
   });
 };
 
+// To be use for authentication when continuing the session
+const getTeacher = async (req, res) => {
+  const { user } = res.locals;
+  return res.json({
+    title: user.title,
+    fullName: user.fullName,
+  });
+};
+
 const sendDirectMessageToStudent = async (req, res) => {
   const { messageHeader, messageBody, studentID } = req.body;
 
@@ -154,6 +163,7 @@ const testTeacher = async (req, res) =>
 module.exports = {
   createTeacher,
   loginTeacher,
+  getTeacher,
   sendDirectMessageToStudent,
   testTeacher,
 };

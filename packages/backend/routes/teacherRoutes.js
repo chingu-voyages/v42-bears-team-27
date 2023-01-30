@@ -10,12 +10,14 @@ const {
 const {
   createTeacher,
   loginTeacher,
+  getTeacher,
   sendDirectMessageToStudent,
   testTeacher,
 } = require('../controllers/teacherController');
 
 router.post('/create', validateTeacher, createTeacher);
 router.post('/login', authenticateTeacher, loginTeacher);
+router.get('/', checkTeacherAuthenticated, getTeacher);
 router.post(
   '/send-direct-message',
   checkTeacherAuthenticated,
