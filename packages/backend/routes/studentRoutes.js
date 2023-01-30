@@ -1,10 +1,12 @@
 const router = require('express').Router();
 
-const { validateStudent } = require('../validators/studentValidator');
 const {
+  validateStudent,
   authenticateStudent,
   checkStudentAuthenticated,
-} = require('../middleware/auth');
+  checkTeacherAuthenticated,
+} = require('../middlewares');
+
 const {
   createStudent,
   loginStudent,
@@ -12,7 +14,12 @@ const {
 } = require('../controllers/studentControllers');
 
 // "http://localhost:5000/api/v0/student/create"
-router.post('/create', validateStudent, createStudent);
+router.post(
+  '/create',
+  checkTeacherAuthenticated,
+  validateStudent,
+  createStudent,
+);
 router.post('/login', authenticateStudent, loginStudent);
 router.get('/test', checkStudentAuthenticated, testStudent);
 

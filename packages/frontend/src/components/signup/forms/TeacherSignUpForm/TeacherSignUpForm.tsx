@@ -1,11 +1,11 @@
 import { useState, useContext } from 'react';
 
-import { Button, TextField } from '../../../UI';
-import { AuthContext } from '../../../../store/auth';
+import { Button, TextField } from 'components/ui';
+import { AuthContext } from 'store/auth';
 
 const TeacherSignUp: React.FC = () => {
   const [title, setTitle] = useState('');
-  const [fullname, setFullname] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -15,7 +15,7 @@ const TeacherSignUp: React.FC = () => {
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const credentials = { title, fullname, email, password, confirmPassword };
+    const credentials = { title, fullName, email, password, confirmPassword };
     const msg = await authCtx!.onSignup(credentials);
     setAlert(msg);
   };
@@ -37,15 +37,15 @@ const TeacherSignUp: React.FC = () => {
         label="Title"
         placeholder="Mr/Mrs."
         value={title}
-        onChange={(e) => setTitle((e.target as HTMLInputElement).value)}
+        onChange={(e) => setTitle(e.currentTarget.value)}
       />
       <TextField
         id="full-name"
         type="text"
         label="Full Name"
         placeholder="Firstname, Lastname"
-        value={fullname}
-        onChange={(e) => setFullname((e.target as HTMLInputElement).value)}
+        value={fullName}
+        onChange={(e) => setFullName(e.currentTarget.value)}
       />
       <TextField
         id="email"
@@ -53,7 +53,7 @@ const TeacherSignUp: React.FC = () => {
         label="E-mail:"
         placeholder="yourmail@mail.com"
         value={email}
-        onChange={(e) => setEmail((e.target as HTMLInputElement).value)}
+        onChange={(e) => setEmail(e.currentTarget.value)}
       />
       <TextField
         id="new-password"
@@ -61,7 +61,7 @@ const TeacherSignUp: React.FC = () => {
         label="New Password"
         placeholder="••••••"
         value={password}
-        onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
+        onChange={(e) => setPassword(e.currentTarget.value)}
       />
       <TextField
         id="confirm-password"
@@ -69,9 +69,7 @@ const TeacherSignUp: React.FC = () => {
         label="Confirm Password"
         placeholder="••••••"
         value={confirmPassword}
-        onChange={(e) =>
-          setConfirmPassword((e.target as HTMLInputElement).value)
-        }
+        onChange={(e) => setConfirmPassword(e.currentTarget.value)}
       />
       <Button sx={{ width: '100%', fontSize: 3 }} type="submit" rounded={false}>
         Join

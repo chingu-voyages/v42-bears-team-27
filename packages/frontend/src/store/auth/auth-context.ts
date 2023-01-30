@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import type { IUserCredentials, IUserData } from '../../interfaces';
+import type { IUserCredentials, IUserData } from 'interfaces';
 
 export interface IAuthContext {
   user: IUserData | null;

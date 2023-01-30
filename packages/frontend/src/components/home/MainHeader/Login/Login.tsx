@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button } from '../../../UI';
+import { Button } from 'components/ui';
 import LoginForm from './LoginForm';
 
 const Login: React.FC = () => {

@@ -1,13 +1,12 @@
-/* eslint-disable react/destructuring-assignment */
 import type { ReactElement } from 'react';
 import { useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
-import Layout from '../layouts/Layout';
-import MainHeader from '../components/home/MainHeader';
-import type { IUserData } from '../interfaces';
-import { AuthContext } from '../store/auth';
+import MainHeader from 'components/home/MainHeader';
+import Layout from 'layouts/Layout';
+import type { IUserData } from 'interfaces';
+import { AuthContext } from 'store/auth';
 
 import heroImg from '../../public/hero.jpg';
 

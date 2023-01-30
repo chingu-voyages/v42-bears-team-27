@@ -1,7 +1,7 @@
 import { MdAdd } from 'react-icons/md';
 
-import { IconButton } from '../../../UI';
-import type { IUserData } from '../../../../interfaces';
+import { IconButton } from 'components/ui';
+import type { IUserData } from 'interfaces';
 
 type Props = {
   user: IUserData;
