@@ -6,11 +6,11 @@ const {
 } = require('../middlewares');
 
 const {
-  createClassroom,
   getClassroom,
   updateClassroom,
   deleteClassroom,
   broadcastMessage,
+  getClassroomSubjects,
   getClassroomEvents,
   deleteClassroomEvent,
   addClassroomEvent,
@@ -18,9 +18,10 @@ const {
 } = require('../controllers/classroomController');
 
 router.get('/', checkTeacherAuthenticated, getClassroom);
-router.post('/create', checkTeacherAuthenticated, createClassroom);
 router.delete('/:id', checkTeacherAuthenticated, deleteClassroom);
 router.put('/:id', checkTeacherAuthenticated, updateClassroom);
+
+router.get('/subjects', checkTeacherAuthenticated, getClassroomSubjects);
 
 router.get('/events', checkTeacherAuthenticated, getClassroomEvents);
 router.post('/events/create', checkTeacherAuthenticated, addClassroomEvent);

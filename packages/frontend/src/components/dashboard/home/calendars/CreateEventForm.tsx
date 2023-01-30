@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
 
 import { Button } from 'components/ui';
-import type { IEvent, ISubject, ITopic, IType } from 'interfaces';
+import type { ISubject, ITask, ITopic } from 'interfaces';
 import { titleCase } from 'src/utils';
 
 type Props = {
   subjects: ISubject[];
-  onSubmit: (data: Omit<IEvent, 'id' | 'dueDate' | 'setAt'>) => void;
+  onSubmit: (data: Omit<ITask, 'id'>) => void;
 };
 
 // NOTE: File name to be renamed to CreateEventForm -> CreateTaskForm once refactored
@@ -57,20 +57,12 @@ const CreateEventForm: React.FC<Props> = ({ subjects, onSubmit }) => {
       return;
     }
 
-    const { id, url } = (selectedTopic as ITopic).types.find(
-      (item) => item.title === type,
-    ) as IType;
+    const title = (selectedTopic as ITopic).types.find((item) => item === type);
 
     const submissionData = {
-      tasks: [
-        {
-          id,
-          type: type as 'lesson' | 'exercise' | 'test',
-          subject,
-          topic,
-          sourceUrl: url,
-        },
-      ],
+      type: title as 'lesson' | 'exercise' | 'test',
+      subject,
+      topic,
     };
     onSubmit(submissionData);
   };
@@ -130,11 +122,12 @@ const CreateEventForm: React.FC<Props> = ({ subjects, onSubmit }) => {
       </fieldset>
       <fieldset>
         <legend>Choose the type of task</legend>
-        {selectedTopic?.types.map(({ id, title }) => (
-          <label key={id} sx={{ display: 'block' }} htmlFor={String(id)}>
+        {selectedTopic?.types.map((title, idx) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <label key={idx} sx={{ display: 'block' }} htmlFor={String(idx)}>
             {titleCase(title)}
             <input
-              id={String(id)}
+              id={String(idx)}
               type="radio"
               name="type"
               value={title}

@@ -1,4 +1,5 @@
 type TaskType = 'lesson' | 'exercise' | 'test';
+type ID = string;
 
 export interface IUserCredentials {
   email: string;
@@ -10,50 +11,50 @@ export interface IUserData {
   [key: string]: any;
 }
 
+export interface ITeacher {
+  id: ID;
+  title: string;
+  fullName: string;
+}
+
+export interface IStudent {
+  id: ID;
+  fullName: string;
+  tasks: number;
+}
+
 export interface ITask {
-  id: string | number;
+  id: ID;
   type: TaskType;
   subject: string;
   topic: string;
-  sourceUrl: string;
 }
 
 export interface IEvent {
-  id: string | number;
+  id: ID;
   dueDate: string;
   setAt: string;
   tasks: ITask[];
 }
 
-export interface IStudent {
-  id: string | number;
-  fullName: string;
-  tasks: number;
-}
-
-export interface IType {
-  id: string | number;
-  title: TaskType;
-  url: string;
-}
-
 export interface ITopic {
-  id: string | number;
+  id: ID;
+  slug: string;
   title: string;
-  types: IType[];
+  types: TaskType[];
 }
 
 export interface ISubject {
-  id: string | number;
+  id: ID;
   title: string;
   topics: ITopic[];
 }
 
 export interface IClassroom {
-  id: string | number;
+  id: ID;
   name: string;
-  students: IStudent[];
-  subjects: ISubject[];
-  events: IEvent[];
-  [key: string]: any;
+  teacher: ID;
+  students: ID[];
+  subjects: ID[];
+  events: ID[];
 }

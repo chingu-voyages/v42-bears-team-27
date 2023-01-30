@@ -1,8 +1,10 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
 const Teacher = require('../models/teacherModel');
 const Message = require('../models/messageModel');
 const Student = require('../models/studentModel');
 const Classroom = require('../models/classroomModel');
+const Subject = require('../models/subjectModel');
 
 const createTeacher = async (req, res) => {
   /* 
@@ -36,6 +38,12 @@ const createTeacher = async (req, res) => {
     const classroom = await Classroom.create({});
 
     if (classroom) {
+      const subjects = await Subject.find({});
+
+      subjects.map((subject, idx) => {
+        classroom.subjects[idx] = subject._id;
+      });
+
       const teacher = await Teacher.create({
         title,
         fullName,
@@ -71,7 +79,7 @@ const createTeacher = async (req, res) => {
     // TODO: more robust logging (morgan?)
     // TODO: log other events too? not just errors?
     // not all errors are being catch
-    // console.log(`Error while saving teacher to database ${error}`);
+    console.log(`Error while saving teacher to database ${error}`);
     return res.status(500).json({ message: 'Internal server error' });
   }
 };

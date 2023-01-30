@@ -1,4 +1,3 @@
-import type { Fetcher } from 'swr';
 import type { IClassroom, IEvent } from 'interfaces';
 
 // GET REQUESTS
@@ -14,20 +13,12 @@ export const getClassroom = () =>
       if (!res.ok) {
         throw new Error('Not authenticated');
       }
+
       return res.json();
     })
     .catch((error) => {
       throw error;
     });
-
-export const getClassroomEvents: Fetcher<IEvent[]> = (endpoint: string) =>
-  fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}${endpoint}`, {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) => res.json());
 
 // POST REQUESTS
 export const postClassroomEvent = (newEvent: Omit<IEvent, 'id'>) =>
@@ -41,11 +32,10 @@ export const postClassroomEvent = (newEvent: Omit<IEvent, 'id'>) =>
       },
       body: JSON.stringify(newEvent),
     },
-  ).then((res) => res.json());
+  );
+
 // PUT REQUESTS
-export const putClassroom = (
-  updatedClassroom: Omit<IClassroom, 'events' | 'subjects'>,
-) =>
+export const putClassroom = (updatedClassroom: Partial<IClassroom>) =>
   fetch(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/${updatedClassroom.id}`,
     {
@@ -61,13 +51,14 @@ export const putClassroom = (
       if (!res.ok) {
         throw new Error('Not authenticated');
       }
+
       return res.json();
     })
     .catch((error) => {
       throw error;
     });
 
-export const putClassroomEvent = (updatedEvent: IEvent) =>
+export const putClassroomEvent = (updatedEvent: Partial<IEvent>) =>
   fetch(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/events/${updatedEvent.id}`,
     {
@@ -78,4 +69,4 @@ export const putClassroomEvent = (updatedEvent: IEvent) =>
       },
       body: JSON.stringify(updatedEvent),
     },
-  ).then((res) => res.json());
+  );

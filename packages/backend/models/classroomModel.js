@@ -19,9 +19,7 @@ const classroomSchema = new mongoose.Schema(
     },
     subjects: [
       {
-        // TODO
-        // type: mongoose.Schema.Types.ObjectId,
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Subject',
       },
     ],

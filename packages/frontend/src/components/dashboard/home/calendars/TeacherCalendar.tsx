@@ -4,14 +4,10 @@ import useSWR from 'swr';
 import { isSameDay, format } from 'date-fns';
 import { MdAdd } from 'react-icons/md';
 
-import { Calendar, type CalendarProps, Modal, IconButton } from 'components/ui';
-import type { IEvent, ISubject } from 'interfaces';
+import { Calendar, Modal, IconButton } from 'components/ui';
+import type { IEvent, ISubject, ITask } from 'interfaces';
+import { fetcher, postClassroomEvent, putClassroomEvent } from 'src/services';
 import { titleCase } from 'src/utils';
-import {
-  getClassroomEvents,
-  postClassroomEvent,
-  putClassroomEvent,
-} from 'src/services';
 
 import CreateEventForm from './CreateEventForm';
 
@@ -39,17 +35,17 @@ import CreateEventForm from './CreateEventForm';
 //   },
 // ];
 
-interface Props extends CalendarProps {
-  subjects: ISubject[];
-}
-
-const TeacherCalendar: React.FC<Props> = ({ sx, subjects }) => {
+const TeacherCalendar: React.FC = () => {
   const [shouldFetch, setShouldFetch] = useState(true);
   const [activeDay, setActiveDay] = useState<Date>(new Date());
 
-  const { data: eventsData } = useSWR(
+  const { data: eventsData } = useSWR<IEvent[]>(
     shouldFetch ? '/api/v0/classroom/events' : null,
-    getClassroomEvents,
+    fetcher,
+  );
+  const { data: subjectsData } = useSWR<ISubject[]>(
+    '/api/v0/classroom/subjects',
+    fetcher,
   );
 
   useEffect(() => {
@@ -78,34 +74,22 @@ const TeacherCalendar: React.FC<Props> = ({ sx, subjects }) => {
     setActiveDay(date);
   };
 
-  const createEventHandler = (
-    newEvent: Omit<IEvent, 'id' | 'dueDate' | 'setAt'>,
-  ) => {
-    const currEvents = eventsData ? [...eventsData] : [];
-
-    const transformedEvent = {
-      ...newEvent,
-      dueDate: (activeDay as Date).toISOString(),
-      setAt: (activeDay as Date).toISOString(),
-    };
-    // Check if similar event exists already
-    const foundExistingEventIdx = currEvents.findIndex((event) =>
-      isSameDay(new Date(transformedEvent.setAt), new Date(event.setAt)),
-    );
-
-    // If similar event does exit, then update similar event with new form data
-    if (foundExistingEventIdx !== -1) {
-      const updatedEvent = {
-        ...currEvents[foundExistingEventIdx],
-        tasks: [
-          ...currEvents[foundExistingEventIdx].tasks,
-          ...transformedEvent.tasks,
-        ],
-      };
-      putClassroomEvent(updatedEvent);
+  const addTaskHandler = (newTask: Omit<ITask, 'id'>) => {
+    if (activeDayEvent) {
+      // If there is already an event on the active
+      // then update that existing classroom event with the new data
+      putClassroomEvent({
+        id: activeDayEvent.id,
+        tasks: [...activeDayEvent.tasks, newTask] as ITask[],
+      });
     } else {
-      // Or otherwise, add a new event using the form data
-      postClassroomEvent(transformedEvent);
+      // Or otherwise, add a new classroom event with the data
+      const newEvent = {
+        tasks: [newTask],
+        dueDate: new Date(activeDay.setHours(0, 0, 0, 0)).toISOString(),
+        setAt: new Date(activeDay.setHours(0, 0, 0, 0)).toISOString(),
+      };
+      postClassroomEvent(newEvent as IEvent);
     }
     // Re-fetch for updated events
     setShouldFetch(true);
@@ -119,7 +103,6 @@ const TeacherCalendar: React.FC<Props> = ({ sx, subjects }) => {
         width: [480, 544, 576, 640],
         ml: [null, null, 4],
         mx: 'auto',
-        ...sx,
       }}
     >
       <Calendar
@@ -148,7 +131,10 @@ const TeacherCalendar: React.FC<Props> = ({ sx, subjects }) => {
             </IconButton>
           }
         >
-          <CreateEventForm subjects={subjects} onSubmit={createEventHandler} />
+          <CreateEventForm
+            subjects={subjectsData as ISubject[]}
+            onSubmit={addTaskHandler}
+          />
         </Modal>
 
         <h2 sx={{ variant: 'text.h4', textAlign: 'center' }}>
@@ -162,9 +148,10 @@ const TeacherCalendar: React.FC<Props> = ({ sx, subjects }) => {
 
         {activeDayEvent && (
           <div sx={{ height: '60%', mx: 5, overflowY: 'auto' }}>
-            {activeDayEvent.tasks.map(({ id, type, subject, topic }) => (
+            {activeDayEvent.tasks.map(({ type, subject, topic }, idx) => (
               <div
-                key={id}
+                // eslint-disable-next-line react/no-array-index-key
+                key={idx}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',

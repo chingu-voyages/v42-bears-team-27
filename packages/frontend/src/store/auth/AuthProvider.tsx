@@ -59,7 +59,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     }
 
     const { token, ...userData }: any = await res.json();
-    console.log({ userData });
+
     setUser({ role: userRole, ...userData });
     setIsLoggedIn(true);
     setJSONToken(token);
