@@ -5,8 +5,21 @@ const eventSchema = new mongoose.Schema({
   setAt: Date,
   tasks: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Task',
+      type: {
+        type: String,
+        required: true,
+        enum: ['lesson', 'exercise', 'test'],
+      },
+      subject: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      topic: {
+        type: String,
+        required: true,
+        trim: true,
+      },
     },
   ],
 });

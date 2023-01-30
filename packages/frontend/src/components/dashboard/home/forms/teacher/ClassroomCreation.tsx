@@ -1,56 +1,60 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import useSWR from 'swr';
 
 import { Button, TextField, Checkbox } from 'components/ui';
 
-type Boxes = {
+import type { ISubject } from 'interfaces';
+import { fetcher, putClassroom } from 'src/services';
+import { titleCase } from 'src/utils';
+
+interface Boxes {
   [name: string]: boolean;
-};
+}
 
 const ClassroomCreation: React.FC = () => {
+  // const [shouldFetch, setShouldFetch] = useState(false);
+  const { data: subjectsData } = useSWR<ISubject[]>(
+    '/api/v0/classroom/subjects',
+    fetcher,
+  );
+
   const [name, setName] = useState('');
-  const [boxes, setBoxes] = useState<Boxes>({
-    mathematics: false,
-    history: false,
-    science: false,
-    geography: false,
-    english: false,
-    computerScience: false,
+  const [boxes, setBoxes] = useState<Boxes>(() => {
+    if (!subjectsData) {
+      return [];
+    }
+
+    return Object.keys(subjectsData).reduce(
+      (obj, key) => ({
+        ...obj,
+        [key]: false,
+      }),
+      {},
+    );
   });
+
   const [alert, setAlert] = useState('');
 
-  const handleOnChange = (e) => {
-    // React.MouseEventHandler<HTMLInputElement> ?
-    const { id } = e.target;
-    setBoxes({ ...boxes, [id]: !boxes[id] });
+  const handleOnChange = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    const { id } = e.currentTarget;
+    setBoxes((prevBoxes) => ({ ...prevBoxes, [id]: !prevBoxes[id] }));
   };
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    const subjects = Object.keys(boxes).filter((s) => boxes[s]);
-    const data = { name, subjects };
+    const subjectIds = Object.keys(boxes).filter((s) => boxes[s]);
 
     try {
-      const call = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/create`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        },
-      );
-      const response = await call.json();
-      if (call.ok) {
-        setName('');
-        setAlert('Created!');
-      } else {
-        setAlert(response.message);
-      }
+      await putClassroom({ name, subjects: subjectIds });
+      setName('');
+      setAlert('Created!');
     } catch (error) {
       setAlert('error');
     }
   };
+
   return (
     <div
       sx={{
@@ -58,7 +62,6 @@ const ClassroomCreation: React.FC = () => {
         alignItems: 'center',
         flexDirection: 'column',
         color: 'primary',
-        backgroundColor: 'muted',
       }}
     >
       <h1
@@ -92,14 +95,14 @@ const ClassroomCreation: React.FC = () => {
             flexDirection: 'column',
             border: '1px solid',
             borderColor: 'gray',
-            mt: '4',
+            mt: 4,
           }}
         >
           <h4
             sx={{
               variant: 'text.h4',
-              mt: '4',
-              mb: '0',
+              mt: 4,
+              mb: 0,
             }}
           >
             Subjects
@@ -109,54 +112,28 @@ const ClassroomCreation: React.FC = () => {
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
               width: '100%',
-              gap: '1.5rem',
-              p: '4',
+              gap: 2,
+              p: 4,
             }}
           >
-            <Checkbox
-              label="Mathematics"
-              id="mathematics"
-              checked={boxes.mathematics}
-              onClick={(e) => handleOnChange(e)}
-            />
-            <Checkbox
-              label="History"
-              id="history"
-              checked={boxes.history}
-              onClick={(e) => handleOnChange(e)}
-            />
-            <Checkbox
-              label="Science"
-              id="science"
-              checked={boxes.science}
-              onClick={(e) => handleOnChange(e)}
-            />
-            <Checkbox
-              label="Geography"
-              id="geography"
-              checked={boxes.geography}
-              onClick={(e) => handleOnChange(e)}
-            />
-            <Checkbox
-              label="English"
-              id="english"
-              checked={boxes.english}
-              onClick={(e) => handleOnChange(e)}
-            />
-            <Checkbox
-              label="Computer Science"
-              id="computerScience"
-              checked={boxes.computerScience}
-              onClick={(e) => handleOnChange(e)}
-            />
+            {subjectsData &&
+              subjectsData.map(({ id, title }) => (
+                <Checkbox
+                  key={id}
+                  id={String(id)}
+                  label={titleCase(title)}
+                  checked={boxes[title]}
+                  onClick={handleOnChange}
+                />
+              ))}
           </div>
         </div>
         <div
           sx={{
             display: 'flex',
             justifyContent: 'center',
-            mt: '2rem',
-            mb: '10rem',
+            mt: 2,
+            mb: 5,
           }}
         >
           <Button
