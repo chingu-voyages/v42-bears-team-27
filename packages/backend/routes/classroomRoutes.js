@@ -1,38 +1,38 @@
-const express = require('express');
-
-const router = express.Router();
+const router = require('express').Router();
 
 const {
-  deleteClassroom,
-  updateClassroom,
+  checkTeacherAuthenticated,
+  validateMessage,
+} = require('../middlewares');
+
+const {
   getClassroom,
-  addClassroom,
+  updateClassroom,
+  deleteClassroom,
+  broadcastMessage,
+  getClassroomSubjects,
+  getClassroomEvents,
+  deleteClassroomEvent,
+  addClassroomEvent,
+  updateClassroomEvent,
 } = require('../controllers/classroomController');
 
+router.get('/', checkTeacherAuthenticated, getClassroom);
+router.delete('/:id', checkTeacherAuthenticated, deleteClassroom);
+router.put('/:id', checkTeacherAuthenticated, updateClassroom);
+
+router.get('/subjects', checkTeacherAuthenticated, getClassroomSubjects);
+
+router.get('/events', checkTeacherAuthenticated, getClassroomEvents);
+router.post('/events/create', checkTeacherAuthenticated, addClassroomEvent);
+router.delete('/events/:id', checkTeacherAuthenticated, deleteClassroomEvent);
+router.put('/events/:id', checkTeacherAuthenticated, updateClassroomEvent);
+
 router.post(
-  '/create',
-  addClassroom,
-  // create classroom data
-  // return success message
-);
-router.get(
-  '/:id',
-  getClassroom,
-  // return classroom data
-);
-
-router.delete(
-  '/:id',
-  deleteClassroom,
-  // delete classroom
-  // return success message
-);
-
-router.put(
-  '/:id',
-  updateClassroom,
-  // delete classroom
-  // return success message
+  '/broadcast-message',
+  checkTeacherAuthenticated,
+  validateMessage,
+  broadcastMessage,
 );
 
 module.exports = router;

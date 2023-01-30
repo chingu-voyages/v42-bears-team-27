@@ -7,10 +7,10 @@ import {
   MdOutlineClose,
 } from 'react-icons/md';
 
-import { IconButton } from '../../UI';
+import { IconButton } from 'components/ui';
 
 type Props = {
-  heading: string;
+  heading?: string;
 };
 
 const TeacherNav: React.FC<Props> = ({ heading }) => {
@@ -26,18 +26,21 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          justifyContent: !heading ? 'center' : 'space-between',
+          height: 48,
         }}
       >
-        <p
-          sx={{
-            variant: 'text.h2',
-            m: 0,
-            textAlign: ['center', null, 'start'],
-          }}
-        >
-          {heading}
-        </p>
+        {heading && (
+          <p
+            sx={{
+              variant: 'text.h2',
+              m: 0,
+              textAlign: ['center', null, 'start'],
+            }}
+          >
+            {heading}
+          </p>
+        )}
         <div sx={{ display: ['none', 'flex', null], columnGap: 3 }}>
           <IconButton>
             <MdOutlineNotifications size="inherit" />

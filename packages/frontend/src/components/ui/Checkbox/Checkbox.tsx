@@ -1,0 +1,62 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
+import type { RefAttributes, ForwardRefExoticComponent } from 'react';
+import { forwardRef } from 'react';
+import type { ThemeUIStyleObject } from 'theme-ui';
+import * as RadixCheckbox from '@radix-ui/react-checkbox';
+import { MdCheck } from 'react-icons/md';
+
+export interface CheckboxProps extends RadixCheckbox.CheckboxProps {
+  /**
+   * Label for the component
+   */
+  label?: string;
+  /**
+   * Size of the component
+   * @default 18
+   */
+  size?: number;
+  sx?: ThemeUIStyleObject;
+}
+
+export const Checkbox: ForwardRefExoticComponent<
+CheckboxProps & RefAttributes<HTMLButtonElement>
+> = forwardRef(({ children, id, label, size = 18, sx, ...rest }, ref) => (
+  <div sx={{ display: 'flex', alignItems: 'center', color: 'primary', ...sx }}>
+    <RadixCheckbox.Root
+      ref={ref}
+      id={id}
+      sx={{
+        variant: 'buttons.primary.outlined',
+        p: 0,
+        width: `calc(${size}px + 4px)`,
+        height: `calc(${size}px + 4px)`,
+        cursor: 'pointer',
+      }}
+      {...rest}
+    >
+      <RadixCheckbox.Indicator>
+        <MdCheck size={size} />
+      </RadixCheckbox.Indicator>
+    </RadixCheckbox.Root>
+    {label && (
+      <label
+        htmlFor={id}
+        sx={{
+          variant: 'text.label',
+          ml: 2,
+          fontFamily: 'heading',
+          fontSize: 1,
+          fontWeight: 'regular',
+          lineHeight: 'heading',
+        }}
+      >
+        {label}
+      </label>
+    )}
+    {children}
+  </div>
+));
+
+if (process.env.NODE_ENV !== 'production') {
+  Checkbox.displayName = 'Checkbox';
+}

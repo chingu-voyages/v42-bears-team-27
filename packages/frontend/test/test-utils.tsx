@@ -3,7 +3,7 @@ import type { ReactElement } from 'react';
 import { render, type RenderOptions } from '@testing-library/react';
 import { ThemeProvider } from 'theme-ui';
 
-import theme from '../src/theme';
+import theme from 'src/theme';
 
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => (
   <ThemeProvider theme={theme}>{children}</ThemeProvider>

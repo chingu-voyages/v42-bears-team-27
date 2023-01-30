@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Modal } from '../../UI';
+
+import { Modal } from 'components/ui';
 import Login from './Login';
 
 const MainHeader: React.FC = () => (
@@ -27,7 +28,7 @@ const MainHeader: React.FC = () => (
         RemoteClass
       </h1>
       <div sx={{ display: 'flex', columnGap: 3 }}>
-        <Modal title="Login">
+        <Modal title="Login" width="95%" height="90vh">
           <Login />
         </Modal>
         <Link

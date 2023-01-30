@@ -4,8 +4,8 @@ import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import { ThemeProvider } from 'theme-ui';
 
-import ErrorBoundary from '../components/ErrorBoundary';
-import { AuthProvider } from '../store/auth';
+import ErrorBoundary from 'components/common/ErrorBoundary';
+import { AuthProvider } from 'store/auth';
 
 import theme from '../theme';
 

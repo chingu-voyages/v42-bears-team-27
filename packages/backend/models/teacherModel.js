@@ -2,30 +2,34 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const { Schema } = mongoose;
-
-const TeacherSchema = new Schema({
-  title: {
-    type: String,
+const TeacherSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+    },
+    fullName: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    passwordHash: {
+      type: String,
+      required: true,
+    },
+    classroom: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Classroom',
+      required: true,
+    },
   },
-  fullname: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  passwordHash: {
-    type: String,
-    required: true,
-  },
-  dateJoined: {
-    type: Date,
-    default: Date.now,
-  },
-});
+);
 
 TeacherSchema.statics.hashPassword = (password) =>
   bcrypt.hashSync(password, 10);

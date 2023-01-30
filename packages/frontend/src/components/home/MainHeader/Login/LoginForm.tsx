@@ -1,9 +1,7 @@
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable react/destructuring-assignment */
 import { useState, useContext } from 'react';
 
-import { Button, TextField } from '../../../UI';
-import { AuthContext } from '../../../../store/auth';
+import { Button, TextField } from 'components/ui';
+import { AuthContext } from 'store/auth';
 
 type Props = {
   userRole: 'student' | 'teacher';
@@ -42,8 +40,8 @@ const LoginForm: React.FC<Props> = ({ userRole }) => {
         type="email"
         label="E-mail"
         value={email}
-        onChange={(e) => setEmail((e.target as HTMLInputElement).value)}
-        {...({ required: true } as any)}
+        required
+        onChange={(e) => setEmail(e.currentTarget.value)}
       />
       <TextField
         id="password"
@@ -51,8 +49,8 @@ const LoginForm: React.FC<Props> = ({ userRole }) => {
         label="Password"
         placeholder="••••••"
         value={password}
-        onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
-        {...({ required: true } as any)}
+        required
+        onChange={(e) => setPassword(e.currentTarget.value)}
       />
       <Button sx={{ width: '100%' }} rounded={false} type="submit">
         Login

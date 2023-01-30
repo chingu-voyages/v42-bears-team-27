@@ -1,7 +1,5 @@
-const generatePassword = require('./generatePassword');
-const generateJWT = require('./generateJWT');
-
+/* eslint global-require: 0 */
 module.exports = {
-  generatePassword,
-  generateJWT,
+  ...require('./generatePassword'),
+  ...require('./email/sendEmail'),
 };

@@ -1,20 +1,23 @@
-/* eslint-disable react/destructuring-assignment */
 import type { ReactElement } from 'react';
 import { useContext, useState } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
+import useSWR from 'swr';
 
-import { AuthLayout, Header } from '../../../layouts/AuthLayout';
-import { TeacherNav } from '../../../components/dashboard/navs';
-import { TeacherCalendar } from '../../../components/dashboard/home/calendars';
+import { AuthLayout, Header } from 'layouts/AuthLayout';
+import { TeacherNav } from 'components/dashboard/navs';
+import { TeacherCalendar } from 'components/dashboard/home/calendars';
 import {
   BroadcastModal,
   ClassroomModal,
-} from '../../../components/dashboard/home/modals';
-import StudentTable from '../../../components/dashboard/home/StudentTable';
-import ViewClassroom from '../../../components/dashboard/home/ViewClassroom';
+} from 'components/dashboard/home/modals';
+import ClassroomCreation from 'components/dashboard/home/forms/teacher';
+import StudentTable from 'components/dashboard/home/StudentTable';
+import ViewClassroom from 'components/dashboard/home/ViewClassroom';
+
+import type { IClassroom, IStudent, IUserData } from 'interfaces';
+import { AuthContext } from 'store/auth';
+import { fetcher } from 'src/services';
 import type { NextPageWithLayout } from '../../_app';
-import type { IUserData } from '../../../interfaces';
-import { AuthContext } from '../../../store/auth';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -29,20 +32,29 @@ const columns = [
   }),
 ];
 
-type Props = {
-  defaultData: any[];
-};
+// NOTE: Temporary function only used until no longer needed
+function extractArray<T, K extends keyof T>(obj: T, key: K) {
+  if (!obj) {
+    return [];
+  }
 
-const Home: NextPageWithLayout<Props> = ({ defaultData }) => {
+  const extractedData = [...(obj[key] as any)];
+
+  return [...extractedData];
+}
+
+const Home: NextPageWithLayout = () => {
+  const { data: classroomData, isLoading } = useSWR<IClassroom>(
+    '/api/v0/classroom',
+    fetcher,
+  );
   const authCtx = useContext(AuthContext);
-  const [data] = useState(() => {
-    if (!defaultData) {
-      return [];
-    }
-    return [...defaultData];
-  });
+  // TODO: Migrate with useSWR hook to appropriate components whereby students data is required
+  const [students] = useState<IStudent[]>(
+    extractArray(classroomData as IClassroom, 'students'),
+  );
 
-  if (!authCtx) {
+  if (!authCtx || isLoading) {
     return (
       <p
         sx={{
@@ -59,38 +71,60 @@ const Home: NextPageWithLayout<Props> = ({ defaultData }) => {
   }
 
   return (
-    <div sx={{ pt: 1, pb: 4, px: 2 }}>
-      <p sx={{ variant: 'text.h3', color: 'primary', textAlign: 'center' }}>
-        {/* TODO: username should be replaced with last name (e.g. Mr.Jonathan) */}
-        {`Good Morning, ${(authCtx.user as IUserData)?.fullname}`}
-      </p>
-      <div
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          columnGap: 3,
-          mb: [4, null, 0],
-        }}
-      >
-        <BroadcastModal />
-        <ClassroomModal>
-          <ViewClassroom user={authCtx?.user as IUserData} />
-        </ClassroomModal>
+    <>
+      <Header>
+        <TeacherNav
+          heading={
+            classroomData?.name ? `Classroom: ${classroomData.name}` : ''
+          }
+        />
+      </Header>
+      <div>
+        {!(classroomData as IClassroom).name ? (
+          <ClassroomCreation />
+        ) : (
+          <>
+            <p
+              sx={{
+                variant: 'text.h3',
+                color: 'primary',
+                textAlign: 'center',
+              }}
+            >
+              {`Good Morning, ${(authCtx.user as IUserData)?.title}.${
+                (authCtx.user as IUserData)?.fullName
+              }`}
+            </p>
+            <div
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                columnGap: 3,
+                mb: [4, null, 0],
+              }}
+            >
+              <BroadcastModal />
+              <ClassroomModal>
+                <ViewClassroom user={authCtx?.user as IUserData} />
+              </ClassroomModal>
+            </div>
+            <div
+              sx={{
+                display: 'flex',
+                flexDirection: ['column', null, 'row'],
+                alignItems: ['center', 'start', 'center'],
+                justifyContent: 'space-between',
+                columnGap: 3,
+                mt: [3, null, 4],
+              }}
+            >
+              <TeacherCalendar />
+              <StudentTable data={students} columns={columns} />
+            </div>
+          </>
+        )}
       </div>
-      <div
-        sx={{
-          display: 'flex',
-          flexDirection: ['column', null, 'row'],
-          alignItems: ['center', 'start', 'center'],
-          justifyContent: 'space-between',
-          columnGap: 3,
-          mt: [3, null, 4],
-        }}
-      >
-        <TeacherCalendar />
-        <StudentTable data={data} columns={columns} />
-      </div>
-    </div>
+    </>
   );
 };
 
@@ -100,31 +134,31 @@ Home.getLayout = function getLayout(page: ReactElement) {
       title="RemoteClass"
       description="Dashboard where you can manage your classroom and do many other things"
     >
-      <Header>
-        {/* TODO: heading should include name of classroom (e.g. Bears Team 27) */}
-        <TeacherNav heading="Classroom" />
-      </Header>
       {page}
     </AuthLayout>
   );
 };
 
-// Before rendering home page, ensure required students data is loaded in
-// export async function getStaticProps() {
-//   const defaultData: any[] = [
+// export async function getServerSideProps() {
+// NOTE: Move once useSWR hook is applied for this data into the appropriate components
+//   const studentsData: IStudent[] = [
 //     {
+//       id: 0,
 //       fullName: 'Smith, Lucas',
 //       tasks: 2,
 //     },
 //     {
+//       id: 1,
 //       fullName: 'Miller, Amanda',
 //       tasks: 0,
 //     },
 //     {
+//       id: 2,
 //       fullName: 'Adams, John',
 //       tasks: 1,
 //     },
 //     {
+//       id: 3,
 //       fullName: 'Linsley, Karen',
 //       tasks: 4,
 //     },
@@ -132,7 +166,7 @@ Home.getLayout = function getLayout(page: ReactElement) {
 
 //   return {
 //     props: {
-//       defaultData,
+//       studentsData,
 //     },
 //   };
 // }
