@@ -3,18 +3,23 @@ import { MdSend } from 'react-icons/md';
 
 import { Modal, Button, TextField } from 'components/ui';
 
-const BroadcastModal: React.FC = () => {
+const DirectMessageModal: React.FC = () => {
+  const [student, setStudent] = useState('');
   const [headline, setHeadline] = useState('');
   const [message, setMessage] = useState('');
   const [alert, setAlert] = useState('');
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = { messageHeader: headline, messageBody: message };
+    const data = {
+      studentID: student,
+      messageHeader: headline,
+      messageBody: message,
+    };
 
     try {
       const call = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/broadcast-message`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/teacher/send-direct-message`,
         {
           method: 'POST',
           headers: {
@@ -25,6 +30,7 @@ const BroadcastModal: React.FC = () => {
       );
       const response = await call.json();
       if (call.ok) {
+        setStudent('');
         setHeadline('');
         setMessage('');
         setAlert('Sent!');
@@ -40,7 +46,7 @@ const BroadcastModal: React.FC = () => {
       title="Broadcast Message To Classroom"
       width="95%"
       height="90vh"
-      btn={<Button variant="outlined">Broadcast Message</Button>}
+      btn={<Button variant="outlined">Direct Message</Button>}
     >
       <div sx={{ display: 'flex', justifyContent: 'center' }}>
         <form
@@ -52,6 +58,14 @@ const BroadcastModal: React.FC = () => {
           }}
           onSubmit={submitHandler}
         >
+          <TextField
+            // TODO fetch list of classroom students and convert to a selector listing fullNames, then send ID of selected student
+            sx={{ mb: 20 }}
+            id="student"
+            label="Student"
+            value={student}
+            onChange={(e) => setStudent(e.currentTarget.value)}
+          />
           <TextField
             sx={{ mb: 20 }}
             id="headline"
@@ -82,4 +96,4 @@ const BroadcastModal: React.FC = () => {
   );
 };
 
-export default BroadcastModal;
+export default DirectMessageModal;
