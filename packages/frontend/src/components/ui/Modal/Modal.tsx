@@ -5,7 +5,7 @@ import type {
 } from 'react';
 import { forwardRef } from 'react';
 import type { ThemeUIStyleObject } from 'theme-ui';
-import * as Dialog from '@radix-ui/react-dialog';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { MdClose } from 'react-icons/md';
 
 import { Button } from '../Button';
@@ -39,10 +39,12 @@ export const Modal: ForwardRefExoticComponent<
 ModalProps & RefAttributes<HTMLDivElement>
 > = forwardRef(
   ({ children, title, description, width, height, btn, sx, ...rest }, ref) => (
-    <Dialog.Root>
-      <Dialog.Trigger asChild>{btn || <Button>{title}</Button>}</Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Overlay
+    <DialogPrimitive.Root>
+      <DialogPrimitive.Trigger asChild>
+        {btn || <Button>{title}</Button>}
+      </DialogPrimitive.Trigger>
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay
           sx={{
             position: 'fixed',
             top: 0,
@@ -54,7 +56,7 @@ ModalProps & RefAttributes<HTMLDivElement>
             bg: 'rgba(0, 0, 0, 0.6)',
           }}
         />
-        <Dialog.Content
+        <DialogPrimitive.Content
           ref={ref}
           sx={{
             position: 'fixed',
@@ -74,21 +76,23 @@ ModalProps & RefAttributes<HTMLDivElement>
           }}
           {...rest}
         >
-          <Dialog.Title sx={{ variant: 'text.h3', textAlign: 'center' }}>
+          <DialogPrimitive.Title
+            sx={{ variant: 'text.h3', textAlign: 'center' }}
+          >
             {title}
-          </Dialog.Title>
-          <Dialog.Description sx={{ variant: 'text.h4' }}>
+          </DialogPrimitive.Title>
+          <DialogPrimitive.Description sx={{ variant: 'text.h4' }}>
             {description}
-          </Dialog.Description>
+          </DialogPrimitive.Description>
           {children}
-          <Dialog.Close asChild>
+          <DialogPrimitive.Close asChild>
             <IconButton sx={{ position: 'absolute', top: 4, right: 4 }}>
               <MdClose size="inherit" />
             </IconButton>
-          </Dialog.Close>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+          </DialogPrimitive.Close>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
   ),
 );
 

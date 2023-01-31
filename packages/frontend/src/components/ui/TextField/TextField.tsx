@@ -5,7 +5,7 @@ import type {
 } from 'react';
 import { forwardRef } from 'react';
 import type { ThemeUIStyleObject } from 'theme-ui';
-import * as Label from '@radix-ui/react-label';
+import * as LabelPrimitive from '@radix-ui/react-label';
 
 export interface TextFieldProps
   extends HTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
@@ -33,6 +33,7 @@ TextFieldProps & RefAttributes<any>
 > = forwardRef(
   (
     {
+      key,
       id,
       label,
       type = 'text',
@@ -61,13 +62,16 @@ TextFieldProps & RefAttributes<any>
     };
 
     return (
-      <div sx={{ display: 'flex', flexDirection: 'column', rowGap: 3, ...sx }}>
-        <Label.Root
+      <div
+        key={key}
+        sx={{ display: 'flex', flexDirection: 'column', rowGap: 3, ...sx }}
+      >
+        <LabelPrimitive.Root
           htmlFor={id}
           sx={{ variant: 'text.label', fontFamily: 'heading', fontSize: 18 }}
         >
           {label}
-        </Label.Root>
+        </LabelPrimitive.Root>
         <div
           sx={{
             width: '100%',
