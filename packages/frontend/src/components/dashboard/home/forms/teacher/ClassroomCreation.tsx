@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import useSWR from 'swr';
 
-import { Button, TextField, Checkbox } from 'components/ui';
-
-import type { ISubject } from 'interfaces';
+import { Button, TextField, Checkbox } from 'src/components/ui';
+import type { ISubject } from 'src/interfaces';
 import { fetcher, putClassroom } from 'src/services';
 import { titleCase } from 'src/utils';
 
 interface Boxes {
-  [name: string]: boolean;
+  [title: string]: boolean;
 }
 
+// TODO: Add validators for input fields
+// nameValidator = (value: string) => value.trim().length > 0;
+
 const ClassroomCreation: React.FC = () => {
-  // const [shouldFetch, setShouldFetch] = useState(false);
   const { data: subjectsData } = useSWR<ISubject[]>(
     '/api/v0/classroom/subjects',
     fetcher,
@@ -33,7 +34,8 @@ const ClassroomCreation: React.FC = () => {
     );
   });
 
-  const [alert, setAlert] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [alert, setAlert] = useState<string | null>(null);
 
   const handleOnChange = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -44,14 +46,29 @@ const ClassroomCreation: React.FC = () => {
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+
+    // TODO: Add sanitization for input fields
+    // const sanitizedName = name;
+
+    // Extract selected subject ids
     const subjectIds = Object.keys(boxes).filter((s) => boxes[s]);
 
+    const data = {
+      name,
+      subjects: subjectIds,
+    };
+
     try {
-      await putClassroom({ name, subjects: subjectIds });
-      setName('');
-      setAlert('Created!');
-    } catch (error) {
-      setAlert('error');
+      // Submit form data
+      const msg = await putClassroom(data);
+      // Update alert with api response message
+      setAlert(msg);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
+
+      setError(`Unexpected error ${err}`);
     }
   };
 
@@ -64,20 +81,10 @@ const ClassroomCreation: React.FC = () => {
         color: 'primary',
       }}
     >
-      <h1
-        sx={{
-          variant: 'text.h2',
-          fontWeight: 'medium',
-        }}
-      >
+      <h1 sx={{ variant: 'text.h2', fontWeight: 'medium' }}>
         Create your classroom
       </h1>
-      <form
-        sx={{
-          minWidth: '40%',
-        }}
-        onSubmit={handleSubmit}
-      >
+      <form sx={{ minWidth: '40%' }} onSubmit={handleSubmit}>
         <div>
           <TextField
             placeholder="Your classroom name"
@@ -98,15 +105,7 @@ const ClassroomCreation: React.FC = () => {
             mt: 4,
           }}
         >
-          <h4
-            sx={{
-              variant: 'text.h4',
-              mt: 4,
-              mb: 0,
-            }}
-          >
-            Subjects
-          </h4>
+          <h4 sx={{ variant: 'text.h4', mt: 4, mb: 0 }}>Subjects</h4>
           <div
             sx={{
               display: 'grid',
@@ -120,7 +119,7 @@ const ClassroomCreation: React.FC = () => {
               subjectsData.map(({ id, title }) => (
                 <Checkbox
                   key={id}
-                  id={String(id)}
+                  id={id}
                   label={titleCase(title)}
                   checked={boxes[title]}
                   onClick={handleOnChange}
@@ -136,18 +135,21 @@ const ClassroomCreation: React.FC = () => {
             mb: 5,
           }}
         >
-          <Button
-            sx={{
-              width: '100%',
-            }}
-            rounded={false}
-            type="submit"
-          >
+          <Button sx={{ width: '100%' }} type="submit" rounded={false}>
             Confirm
           </Button>
         </div>
-        <h3>{alert}</h3>
+        {error && (
+          <p sx={{ variant: 'text.h4', color: 'error', textAlign: 'center' }}>
+            {error}
+          </p>
+        )}
       </form>
+      {alert && (
+        <p sx={{ variant: 'text.h4', color: 'info', textAlign: 'center' }}>
+          {alert}
+        </p>
+      )}
     </div>
   );
 };
