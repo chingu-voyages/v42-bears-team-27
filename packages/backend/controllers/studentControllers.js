@@ -68,32 +68,6 @@ const createStudent = async (req, res) => {
   }
 };
 
-const loginStudent = async (req, res) => {
-  const { user } = res.locals;
-  req.login(user, { session: false }, (error) => {
-    if (error) {
-      res.json({ Error: error });
-    }
-    const payload = {
-      _id: user._id,
-      email: user.email,
-    };
-    res
-      .cookie('auth', JSON.stringify(payload), {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        signed: true,
-        expires: new Date(Date.now() + 2592000), // 30 days
-      })
-      .status(200)
-      .json({
-        id: user._id,
-        email: user.email,
-        fullName: user.fullName,
-      });
-  });
-};
-
 const getStudent = async (req, res) => {
   const { user } = res.locals;
   return res.json({
@@ -102,11 +76,7 @@ const getStudent = async (req, res) => {
   });
 };
 
-const testStudent = async (req, res) => res.json({ message: 'authorized!' });
-
 module.exports = {
   createStudent,
-  loginStudent,
   getStudent,
-  testStudent,
 };

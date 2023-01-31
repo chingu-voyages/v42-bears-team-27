@@ -10,7 +10,6 @@ type Props = {
 const AuthProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<IUserData | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [jsonToken, setJSONToken] = useState<string | null>(null);
 
   const signupHandler = async (userCredentials: any) => {
     const res = await fetch(
@@ -29,11 +28,10 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       return 'Error: Failed to signup!';
     }
 
-    const { token, ...userData }: any = await res.json();
+    const { ...userData }: any = await res.json();
 
     setUser({ role: 'teacher', ...userData });
     setIsLoggedIn(true);
-    setJSONToken(token);
 
     return 'Success: Signed up!';
   };
@@ -43,7 +41,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     userRole: 'student' | 'teacher',
   ) => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/${userRole}/login`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/auth/${userRole}`,
       {
         method: 'POST',
         credentials: 'include',
@@ -58,31 +56,42 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       return 'Error: Failed to login!';
     }
 
-    const { token, ...userData }: any = await res.json();
+    const { ...userData }: any = await res.json();
 
     setUser({ role: userRole, ...userData });
     setIsLoggedIn(true);
-    setJSONToken(token);
 
     return 'Success: Logged in!';
   };
 
-  const logoutHandler = () => {
+  const logoutHandler = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/auth/logout`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      },
+    );
+
+    if (!res.ok) {
+      return 'Error: Server error!';
+    }
+
     setUser(null);
     setIsLoggedIn(false);
-    setJSONToken(null);
+
+    return 'Success: Logged Out!';
   };
 
   const authContext: IAuthContext = useMemo(
     () => ({
       user,
       isLoggedIn,
-      jsonToken,
       onSignup: signupHandler,
       onLogin: loginHandler,
       onLogout: logoutHandler,
     }),
-    [user, isLoggedIn, jsonToken],
+    [user, isLoggedIn],
   );
 
   return (

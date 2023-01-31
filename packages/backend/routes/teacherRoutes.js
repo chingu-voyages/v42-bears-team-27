@@ -3,20 +3,18 @@ const router = require('express').Router();
 const {
   validateTeacher,
   validateDirectMessage,
-  authenticateTeacher,
   checkTeacherAuthenticated,
+  validateMessage,
 } = require('../middlewares');
 
 const {
   createTeacher,
-  loginTeacher,
   getTeacher,
   sendDirectMessageToStudent,
-  testTeacher,
+  broadcastMessage,
 } = require('../controllers/teacherController');
 
 router.post('/create', validateTeacher, createTeacher);
-router.post('/login', authenticateTeacher, loginTeacher);
 router.get('/', checkTeacherAuthenticated, getTeacher);
 router.post(
   '/send-direct-message',
@@ -24,6 +22,11 @@ router.post(
   validateDirectMessage,
   sendDirectMessageToStudent,
 );
-router.get('/test', checkTeacherAuthenticated, testTeacher);
+router.post(
+  '/broadcast-message',
+  checkTeacherAuthenticated,
+  validateMessage,
+  broadcastMessage,
+);
 
 module.exports = router;

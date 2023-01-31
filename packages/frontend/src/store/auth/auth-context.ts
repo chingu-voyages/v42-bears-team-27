@@ -5,7 +5,6 @@ import type { IUserCredentials, IUserData } from 'interfaces';
 export interface IAuthContext {
   user: IUserData | null;
   isLoggedIn: boolean;
-  jsonToken: string | null;
   onSignup: (userCredentials: IUserCredentials) => Promise<string>;
   onLogin: (
     userCredentials: IUserCredentials,

@@ -1,8 +1,8 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
 const Teacher = require('../models/teacherModel');
-const Message = require('../models/messageModel');
 const Student = require('../models/studentModel');
+const Message = require('../models/messageModel');
 const Classroom = require('../models/classroomModel');
 const Subject = require('../models/subjectModel');
 
@@ -79,35 +79,9 @@ const createTeacher = async (req, res) => {
     // TODO: more robust logging (morgan?)
     // TODO: log other events too? not just errors?
     // not all errors are being catch
-    console.log(`Error while saving teacher to database ${error}`);
+    // console.log(`Error while saving teacher to database ${error}`);
     return res.status(500).json({ message: 'Internal server error' });
   }
-};
-
-const loginTeacher = async (req, res) => {
-  const { user } = res.locals;
-  req.login(user, { session: false }, (error) => {
-    if (error) {
-      res.json({ Error: error });
-    }
-    const payload = {
-      _id: user._id,
-      email: user.email,
-    };
-    return res
-      .cookie('auth', JSON.stringify(payload), {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        signed: true,
-        expires: new Date(Date.now() + 2592000), // 30 days
-      })
-      .json({
-        id: user._id,
-        email: user.email,
-        title: user.title,
-        fullName: user.fullName,
-      });
-  });
 };
 
 // To be use for authentication when continuing the session
@@ -157,13 +131,45 @@ const sendDirectMessageToStudent = async (req, res) => {
   }
 };
 
-const testTeacher = async (req, res) =>
-  res.json({ message: 'authenticated teacher!' });
+const broadcastMessage = async (req, res) => {
+  const { messageHeader, messageBody } = req.body;
+
+  const teacherID = res.locals.user;
+
+  try {
+    const { students } = await Classroom.findOne({ teacher: teacherID });
+
+    if (!students.length) {
+      return res
+        .status(400)
+        .json({ message: 'You have no students in your classroom' });
+    }
+
+    const newMessage = await Message.create({
+      isBroadcast: true,
+      fromTeacher: teacherID,
+      messageHeader,
+      messageBody,
+    });
+
+    students.forEach(async (studentID) => {
+      const student = await Student.findById(studentID);
+
+      student.inbox.push({
+        messageID: newMessage._id,
+        hasBeenRead: false,
+      });
+      await student.save();
+    });
+    return res.status(200).json({ message: 'message sent!' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 module.exports = {
   createTeacher,
-  loginTeacher,
   getTeacher,
   sendDirectMessageToStudent,
-  testTeacher,
+  broadcastMessage,
 };
