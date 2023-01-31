@@ -10,15 +10,12 @@ type Props = {
   onSubmit: (data: Omit<ITask, 'id'>) => void;
 };
 
-// NOTE: File name to be renamed to CreateEventForm -> CreateTaskForm once refactored
-// All event-specific (not task related) changes would be made elsewhere
-
 // TODO: Add validators for input fields
 // subjectValidator = (value: string) => value.trim().length > 0;
 // topicValidator = (value: string) => value.trim().length > 0;
 // typeValidator = (value: string) => value.trim().length > 0;
 
-const CreateEventForm: React.FC<Props> = ({ subjects, error, onSubmit }) => {
+const CreateTaskForm: React.FC<Props> = ({ subjects, error, onSubmit }) => {
   const [subject, setSubject] = useState('');
   const [topic, setTopic] = useState('');
   const [type, setType] = useState('');
@@ -137,4 +134,4 @@ const CreateEventForm: React.FC<Props> = ({ subjects, error, onSubmit }) => {
   );
 };
 
-export default CreateEventForm;
+export default CreateTaskForm;

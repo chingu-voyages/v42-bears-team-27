@@ -10,12 +10,11 @@ import {
   DialogContent,
   DialogTrigger,
   IconButton,
-} from 'components/ui';
-import type { IEvent, ISubject, ITask } from 'interfaces';
+} from 'src/components/ui';
+import type { IEvent, ISubject, ITask } from 'src/interfaces';
 import { fetcher, postClassroomEvent, putClassroomEvent } from 'src/services';
 import { titleCase } from 'src/utils';
-
-import CreateEventForm from './CreateEventForm';
+import CreateTaskForm from './CreateTaskForm';
 
 // const DUMMY_EVENTS_DATA: IEvent[] = [
 //   {
@@ -142,7 +141,7 @@ const TeacherCalendar: React.FC = () => {
             width="min(90%, 640px)"
             height="80vh"
           >
-            <CreateEventForm
+            <CreateTaskForm
               subjects={subjectsData as ISubject[]}
               error={error}
               onSubmit={addTaskHandler}
