@@ -94,10 +94,19 @@ const loginStudent = async (req, res) => {
   });
 };
 
+const getStudent = async (req, res) => {
+  const { user } = res.locals;
+  return res.json({
+    fullName: user.fullName,
+    inbox: user.inbox,
+  });
+};
+
 const testStudent = async (req, res) => res.json({ message: 'authorized!' });
 
 module.exports = {
   createStudent,
   loginStudent,
+  getStudent,
   testStudent,
 };
