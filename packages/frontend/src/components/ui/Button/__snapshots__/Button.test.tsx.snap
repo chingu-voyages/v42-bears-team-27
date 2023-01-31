@@ -17,8 +17,10 @@ exports[`<Button /> Snapshots should match snapshot 1`] = `
   -ms-flex-pack: center;
   -webkit-justify-content: center;
   justify-content: center;
-  border-radius: 50px;
   cursor: pointer;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  border-radius: 50px;
   -webkit-column-gap: 10px;
   column-gap: 10px;
   height: 48px;
@@ -53,6 +55,61 @@ exports[`<Button /> Snapshots should match snapshot 1`] = `
 </div>
 `;
 
+exports[`<Button /> Snapshots should match snapshot when rendered as link 1`] = `
+.emotion-0 {
+  background-color: var(--theme-ui-colors-primary);
+  color: white;
+  border: none;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  border-radius: 50px;
+  -webkit-column-gap: 10px;
+  column-gap: 10px;
+  height: 48px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 32px;
+  padding-right: 32px;
+  font-size: 18px;
+}
+
+.emotion-0:hover {
+  background-color: #424c5a;
+}
+
+.emotion-1 {
+  font-family: "Nunito",sans-serif;
+  font-size: inherit;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+}
+
+<div>
+  <a
+    class="emotion-0"
+    href="/"
+  >
+    <p
+      class="emotion-1"
+    />
+  </a>
+</div>
+`;
+
 exports[`<Button /> Snapshots should match snapshot with outlined variant 1`] = `
 .emotion-0 {
   background-color: white;
@@ -70,8 +127,10 @@ exports[`<Button /> Snapshots should match snapshot with outlined variant 1`] = 
   -ms-flex-pack: center;
   -webkit-justify-content: center;
   justify-content: center;
-  border-radius: 50px;
   cursor: pointer;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  border-radius: 50px;
   -webkit-column-gap: 10px;
   column-gap: 10px;
   height: 48px;
@@ -125,8 +184,10 @@ exports[`<Button /> Snapshots should match snapshot with rounded prop 1`] = `
   -ms-flex-pack: center;
   -webkit-justify-content: center;
   justify-content: center;
-  border-radius: 50px;
   cursor: pointer;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  border-radius: 50px;
   -webkit-column-gap: 10px;
   column-gap: 10px;
   height: 48px;
@@ -180,8 +241,10 @@ exports[`<Button /> Snapshots should match snapshot with size prop equals lg 1`]
   -ms-flex-pack: center;
   -webkit-justify-content: center;
   justify-content: center;
-  border-radius: 50px;
   cursor: pointer;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  border-radius: 50px;
   -webkit-column-gap: 10px;
   column-gap: 10px;
   height: 54px;
@@ -235,8 +298,10 @@ exports[`<Button /> Snapshots should match snapshot with size prop equals sm 1`]
   -ms-flex-pack: center;
   -webkit-justify-content: center;
   justify-content: center;
-  border-radius: 50px;
   cursor: pointer;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  border-radius: 50px;
   -webkit-column-gap: 10px;
   column-gap: 10px;
   height: 42px;
