@@ -1,10 +1,10 @@
 import { render, screen } from 'test-utils';
 import userEvent from '@testing-library/user-event';
 
-import { Dialog, DialogContent, DialogTrigger } from './Modal';
+import { Dialog, DialogContent, DialogTrigger } from './Dialog';
 import { Button } from '../Button';
 
-describe('<Modal />', () => {
+describe('<Dialog />', () => {
   describe('Snapshots', () => {
     it('should match snapshot', () => {
       const { container } = render(
@@ -18,8 +18,8 @@ describe('<Modal />', () => {
     });
   });
 
-  describe('Modal state', () => {
-    it('should display Modal children when state open', async () => {
+  describe('Dialog state', () => {
+    it('should display Dialog children when state open', async () => {
       render(
         <Dialog open>
           <DialogContent title="Foo" width={320} height={480}>

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Modal /> Snapshots should match snapshot 1`] = `
+exports[`<Dialog /> Snapshots should match snapshot 1`] = `
 .emotion-0 {
   background-color: var(--theme-ui-colors-primary);
   color: white;
