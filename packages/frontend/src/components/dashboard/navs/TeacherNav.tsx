@@ -7,7 +7,7 @@ import {
   MdOutlineClose,
 } from 'react-icons/md';
 
-import { IconButton } from 'components/ui';
+import { IconButton } from 'src/components/ui';
 
 type Props = {
   heading?: string;
@@ -26,21 +26,20 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: !heading ? 'center' : 'space-between',
+          justifyContent: !heading ? 'flex-end' : 'space-between',
           height: 48,
         }}
       >
-        {heading && (
-          <p
-            sx={{
-              variant: 'text.h2',
-              m: 0,
-              textAlign: ['center', null, 'start'],
-            }}
-          >
-            {heading}
-          </p>
-        )}
+        <p
+          sx={{
+            variant: 'text.h2',
+            display: !heading && 'none',
+            m: 0,
+            textAlign: ['center', null, 'start'],
+          }}
+        >
+          {heading}
+        </p>
         <div sx={{ display: ['none', 'flex', null], columnGap: 3 }}>
           <IconButton>
             <MdOutlineNotifications size={32} />
@@ -101,18 +100,21 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
               }}
             >
               <li>
+                {/* TODO: Wrap children using Menu/Modal component (responsive) */}
                 <p>Notifications</p>
                 <IconButton>
                   <MdOutlineNotifications size={32} />
                 </IconButton>
               </li>
               <li>
+                {/* TODO: Wrap children using Menu/Modal component (responsive) */}
                 <p>Profile</p>
                 <IconButton>
                   <MdOutlineAccountCircle size={32} />
                 </IconButton>
               </li>
               <li>
+                {/* TODO: Wrap children using Menu/Modal component (responsive) */}
                 <p>Settings</p>
                 <IconButton>
                   <MdOutlineSettings size={32} />
