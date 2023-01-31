@@ -1,16 +1,36 @@
 import { useState } from 'react';
 import { MdSend } from 'react-icons/md';
 
-import { Modal, Button, TextField } from 'components/ui';
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  TextField,
+  TextFieldArea,
+} from 'src/components/ui';
+import { postDirectMessageToStudent } from 'src/services';
+
+// TODO: Add validators for input fields
+// studentValidator = (value: string) => value.trim().length > 0;
+// headlineValidator = (value: string) => value.trim().length > 0;
+// messageValidator = (value: string) => value.trim().length > 0;
 
 const DirectMessageModal: React.FC = () => {
   const [student, setStudent] = useState('');
   const [headline, setHeadline] = useState('');
   const [message, setMessage] = useState('');
-  const [alert, setAlert] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [alert, setAlert] = useState<string | null>(null);
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // TODO: Add sanitization for input fields
+    // const sanitizedStudent = email;
+    // const sanitizedHeader = email;
+    // const sanitizedBody = password;
+
     const data = {
       studentID: student,
       messageHeader: headline,
@@ -18,81 +38,89 @@ const DirectMessageModal: React.FC = () => {
     };
 
     try {
-      const call = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/teacher/send-direct-message`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        },
-      );
-      const response = await call.json();
-      if (call.ok) {
-        setStudent('');
-        setHeadline('');
-        setMessage('');
-        setAlert('Sent!');
-      } else {
-        setAlert(response.message);
+      // Submit form data
+      const msg = await postDirectMessageToStudent(data);
+      // Update alert with api response message
+      setAlert(msg);
+      // Reset form values
+      setStudent('');
+      setHeadline('');
+      setMessage('');
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
       }
-    } catch (error) {
-      setAlert('error');
+
+      setError(`Unexpected error ${err}`);
     }
   };
+
   return (
-    <Modal
-      title="Broadcast Message To Classroom"
-      width="95%"
-      height="90vh"
-      btn={<Button variant="outlined">Direct Message</Button>}
-    >
-      <div sx={{ display: 'flex', justifyContent: 'center' }}>
-        <form
-          sx={{
-            width: '50%',
-            '& div': {
-              mb: 1,
-            },
-          }}
-          onSubmit={submitHandler}
-        >
-          <TextField
-            // TODO fetch list of classroom students and convert to a selector listing fullNames, then send ID of selected student
-            sx={{ mb: 20 }}
-            id="student"
-            label="Student"
-            value={student}
-            onChange={(e) => setStudent(e.currentTarget.value)}
-          />
-          <TextField
-            sx={{ mb: 20 }}
-            id="headline"
-            label="Headline"
-            value={headline}
-            onChange={(e) => setHeadline(e.currentTarget.value)}
-          />
-          <TextField
-            sx={{ pb: 20 }}
-            id="message"
-            label="Message"
-            value={message}
-            onChange={(e) => setMessage(e.currentTarget.value)}
-            multiline
-          />
-          <Button
-            sx={{ width: '100%' }}
-            type="submit"
-            rounded={false}
-            icon={<MdSend />}
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outlined">Direct Message</Button>
+      </DialogTrigger>
+      <DialogContent
+        title="Send Message to a Student"
+        width="95%"
+        height="90vh"
+      >
+        <div sx={{ display: 'flex', justifyContent: 'center' }}>
+          <form
+            sx={{
+              width: '50%',
+              '& div': {
+                mb: 1,
+              },
+            }}
+            onSubmit={submitHandler}
           >
-            Send Message
-          </Button>
-          <h3>{alert}</h3>
-        </form>
-      </div>
-    </Modal>
+            <TextField
+              // TODO fetch list of classroom students and convert to a selector listing fullNames, then send ID of selected student
+              sx={{ mb: 20 }}
+              id="student"
+              label="Student"
+              value={student}
+              onChange={(e) => setStudent(e.currentTarget.value)}
+            />
+            <TextField
+              sx={{ mb: 20 }}
+              id="headline"
+              label="Headline"
+              value={headline}
+              onChange={(e) => setHeadline(e.currentTarget.value)}
+            />
+            <TextFieldArea
+              sx={{ pb: 20 }}
+              id="message"
+              label="Message"
+              value={message}
+              onChange={(e) => setMessage(e.currentTarget.value)}
+            />
+            <Button
+              sx={{ width: '100%' }}
+              type="submit"
+              rounded={false}
+              icon={<MdSend />}
+            >
+              Send Message
+            </Button>
+            {error && (
+              <p
+                sx={{ variant: 'text.h4', color: 'error', textAlign: 'center' }}
+              >
+                {error}
+              </p>
+            )}
+          </form>
+          {alert && (
+            <p sx={{ variant: 'text.h4', color: 'info', textAlign: 'center' }}>
+              {alert}
+            </p>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
