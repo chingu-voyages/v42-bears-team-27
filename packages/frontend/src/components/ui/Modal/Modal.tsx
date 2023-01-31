@@ -87,7 +87,7 @@ ModalProps & RefAttributes<HTMLDivElement>
           {children}
           <DialogPrimitive.Close asChild>
             <IconButton sx={{ position: 'absolute', top: 4, right: 4 }}>
-              <MdClose size="inherit" />
+              <MdClose size={32} />
             </IconButton>
           </DialogPrimitive.Close>
         </DialogPrimitive.Content>

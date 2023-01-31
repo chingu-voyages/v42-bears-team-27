@@ -51,7 +51,7 @@ const ViewClassroom: React.FC<Props> = ({ user }) => (
         }}
       >
         <IconButton>
-          <MdAdd size="inherit" />
+          <MdAdd size={32} />
         </IconButton>
       </div>
     </div>

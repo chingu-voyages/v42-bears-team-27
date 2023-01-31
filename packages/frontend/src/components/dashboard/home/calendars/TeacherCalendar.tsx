@@ -118,7 +118,7 @@ const TeacherCalendar: React.FC = () => {
           height="80vh"
           btn={
             <IconButton sx={{ position: 'absolute', top: 3, right: 3 }}>
-              <MdAdd size="inherit" />
+              <MdAdd size={32} />
             </IconButton>
           }
         >

@@ -43,18 +43,18 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
         )}
         <div sx={{ display: ['none', 'flex', null], columnGap: 3 }}>
           <IconButton>
-            <MdOutlineNotifications size="inherit" />
+            <MdOutlineNotifications size={32} />
           </IconButton>
           <IconButton>
-            <MdOutlineAccountCircle size="inherit" />
+            <MdOutlineAccountCircle size={32} />
           </IconButton>
           <IconButton>
-            <MdOutlineSettings size="inherit" />
+            <MdOutlineSettings size={32} />
           </IconButton>
         </div>
         <div sx={{ display: [null, 'none', null], columnGap: 3 }}>
           <IconButton onClick={toggleSidebarHandler}>
-            <MdOutlineMenu size="inherit" />
+            <MdOutlineMenu size={32} />
           </IconButton>
         </div>
       </nav>
@@ -72,7 +72,7 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
         >
           <div sx={{ position: 'absolute', top: 3, right: 3 }}>
             <IconButton onClick={toggleSidebarHandler}>
-              <MdOutlineClose size="inherit" />
+              <MdOutlineClose size={32} />
             </IconButton>
           </div>
           <nav sx={{ width: '95%', pt: 5, mx: 'auto' }}>
@@ -103,19 +103,19 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
               <li>
                 <p>Notifications</p>
                 <IconButton>
-                  <MdOutlineNotifications size="inherit" />
+                  <MdOutlineNotifications size={32} />
                 </IconButton>
               </li>
               <li>
                 <p>Profile</p>
                 <IconButton>
-                  <MdOutlineAccountCircle size="inherit" />
+                  <MdOutlineAccountCircle size={32} />
                 </IconButton>
               </li>
               <li>
                 <p>Settings</p>
                 <IconButton>
-                  <MdOutlineSettings size="inherit" />
+                  <MdOutlineSettings size={32} />
                 </IconButton>
               </li>
             </ul>
