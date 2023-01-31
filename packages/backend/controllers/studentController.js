@@ -71,6 +71,7 @@ const createStudent = async (req, res) => {
 const getStudent = async (req, res) => {
   const { user } = res.locals;
   return res.json({
+    id: user.id,
     fullName: user.fullName,
     inbox: user.inbox,
   });
