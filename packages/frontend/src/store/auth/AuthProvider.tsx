@@ -1,6 +1,10 @@
 import { useState, useMemo } from 'react';
 
-import type { IUserCredentials, IUserData } from 'interfaces';
+import type {
+  INewTeacherCredentials,
+  IUserCredentials,
+  IUserData,
+} from 'interfaces';
 import { AuthContext, type IAuthContext } from './auth-context';
 
 type Props = {
@@ -12,7 +16,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [jsonToken, setJSONToken] = useState<string | null>(null);
 
-  const signupHandler = async (userCredentials: any) => {
+  const signupHandler = async (userCredentials: INewTeacherCredentials) => {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/teacher/create`,
       {
