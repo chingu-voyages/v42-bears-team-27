@@ -7,6 +7,14 @@ import { forwardRef } from 'react';
 import Link, { type LinkProps } from 'next/link';
 import type { ThemeUIStyleObject } from 'theme-ui';
 
+const baseStyles: ThemeUIStyleObject = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  textDecoration: 'none',
+};
+
 export interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
   /**
    * Type of the button element
@@ -52,11 +60,8 @@ ButtonProps & RefAttributes<HTMLButtonElement>
     ref,
   ) => {
     const styles: ThemeUIStyleObject = {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      ...baseStyles,
       borderRadius: rounded ? 50 : 0,
-      cursor: 'pointer',
       ...(size === 'lg' && {
         columnGap: 10,
         height: 54,
@@ -105,7 +110,7 @@ export interface ButtonLinkProps extends LinkProps {
   /**
    * Content of the component
    */
-  children: React.ReactNode;
+  children?: React.ReactNode;
   /**
    * Type of the button element
    * @default 'button'
@@ -149,12 +154,8 @@ ButtonLinkProps & RefAttributes<HTMLAnchorElement>
     ref,
   ) => {
     const styles: ThemeUIStyleObject = {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      textDecoration: 'none',
+      ...baseStyles,
       borderRadius: rounded ? 50 : 0,
-      cursor: 'pointer',
       ...(size === 'lg' && {
         columnGap: 10,
         height: 54,
