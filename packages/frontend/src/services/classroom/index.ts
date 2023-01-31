@@ -32,7 +32,11 @@ export const postClassroomEvent = (newEvent: Omit<IEvent, 'id'>) =>
       },
       body: JSON.stringify(newEvent),
     },
-  );
+  )
+    .then(() => 'Success: Created!')
+    .catch((error) => {
+      throw error;
+    });
 
 // PUT REQUESTS
 export const putClassroom = (updatedClassroom: Partial<IClassroom>) =>
@@ -69,4 +73,8 @@ export const putClassroomEvent = (updatedEvent: Partial<IEvent>) =>
       },
       body: JSON.stringify(updatedEvent),
     },
-  );
+  )
+    .then(() => 'Success: Updated!')
+    .catch((error) => {
+      throw error;
+    });
