@@ -14,7 +14,7 @@ const {
 } = require('../controllers/classroomController');
 
 router.get('/', checkTeacherAuthenticated, getClassroom);
-router.put('/:id', checkTeacherAuthenticated, updateClassroom);
+router.put('/', checkTeacherAuthenticated, updateClassroom);
 router.delete('/:id', checkTeacherAuthenticated, deleteClassroom);
 
 router.get('/subjects', checkTeacherAuthenticated, getClassroomSubjects);

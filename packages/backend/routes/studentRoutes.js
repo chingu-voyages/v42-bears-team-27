@@ -9,7 +9,7 @@ const {
 const {
   createStudent,
   getStudent,
-} = require('../controllers/studentControllers');
+} = require('../controllers/studentController');
 
 // "http://localhost:5000/api/v0/student/create"
 router.post(

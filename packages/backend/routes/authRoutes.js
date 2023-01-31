@@ -8,8 +8,8 @@ const {
   logout,
 } = require('../controllers/authController');
 
-router.get('/teacher', authenticateTeacher, loginTeacher);
-router.get('/student', authenticateStudent, loginStudent);
+router.post('/teacher', authenticateTeacher, loginTeacher);
+router.post('/student', authenticateStudent, loginStudent);
 // "http://localhost:5000/api/v0/auth/logout"
 router.get('/logout', logout);
 
