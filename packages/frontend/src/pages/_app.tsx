@@ -11,6 +11,12 @@ import theme from '../theme';
 import { io } from 'socket.io-client';
 
 const socket = io(`${process.env.NEXT_PUBLIC_SERVER_URL}`);
+socket.on('event - a', () => {
+  console.log('event - a recieved');
+});
+socket.on('teacher-connected', () => {
+  console.log('event teacher-connected');
+});
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => React.ReactNode;

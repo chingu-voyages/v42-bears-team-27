@@ -29,11 +29,7 @@ const io = new Server(httpServer, {
   cors: corsOptions(),
 });
 
-io.on('connection', (socket) => {
-  // ...
-  console.log(`new client with socket id ${socket.id} connected`);
-  socket.emit('event - a');
-});
+app.locals.io = io;
 
 // Database
 mongoose.set('strictQuery', false);
@@ -60,3 +56,9 @@ app.use('/api/v0', routes);
 const PORT = process.env.PORT || 5000;
 
 httpServer.listen(PORT, console.log(`server started on port ${PORT}`));
+
+const hi = 'hello';
+
+module.exports = {
+  hi,
+};

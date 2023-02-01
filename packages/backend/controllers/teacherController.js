@@ -82,6 +82,12 @@ const loginTeacher = async (req, res) => {
     if (error) {
       res.json({ Error: error });
     }
+
+    req.app.locals.io.on('connection', (socket) => {
+      console.log(`new client with socket id ${socket.id} connected`);
+      socket.emit('event - a');
+    });
+
     const payload = {
       _id: user._id,
       email: user.email,
