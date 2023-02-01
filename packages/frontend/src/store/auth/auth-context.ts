@@ -4,15 +4,18 @@ import type {
   INewTeacherCredentials,
   IUserCredentials,
   IUserData,
-} from 'interfaces';
+} from 'src/interfaces';
+
+export type UserRole = 'student' | 'teacher';
 
 export interface IAuthContext {
   user: IUserData | null;
+  role: UserRole | null;
   isLoggedIn: boolean;
-  onSignup: (userCredentials: INewTeacherCredentials) => Promise<string>;
+  onSignup: (teacherCredentials: INewTeacherCredentials) => Promise<string>;
   onLogin: (
     userCredentials: IUserCredentials,
-    userRole: 'student' | 'teacher',
+    userRole: UserRole,
   ) => Promise<string>;
   onLogout: () => void;
 }
