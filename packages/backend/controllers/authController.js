@@ -13,7 +13,7 @@ const loginTeacher = async (req, res) => {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
         signed: true,
-        expires: new Date(Date.now() + 2592000), // 30 days
+        expires: new Date(Date.now() + 2592000000), // 30 days
       })
       .json({
         id: user._id,
@@ -39,7 +39,7 @@ const loginStudent = async (req, res) => {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
         signed: true,
-        expires: new Date(Date.now() + 2592000), // 30 days
+        expires: new Date(Date.now() + 2592000000), // 30 days
       })
       .status(200)
       .json({
