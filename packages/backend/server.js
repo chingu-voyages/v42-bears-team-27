@@ -44,6 +44,11 @@ app.use(passport.initialize());
 
 app.use('/api/v0', routes);
 
+// Error handlers
+app.use((req, res) => {
+  res.status(404).json({ message: '404, endpoint not found' });
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, console.log(`server started on port ${PORT}`));
