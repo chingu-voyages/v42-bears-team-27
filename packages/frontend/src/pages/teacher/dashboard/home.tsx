@@ -10,7 +10,7 @@ import {
   BroadcastModal,
   ClassroomModal,
 } from 'components/dashboard/home/modals';
-import ClassroomCreation from 'components/dashboard/home/forms/teacher';
+import { ClassroomCreation } from 'components/dashboard/home/forms';
 import StudentTable from 'components/dashboard/home/StudentTable';
 import ViewClassroom from 'components/dashboard/home/ViewClassroom';
 
