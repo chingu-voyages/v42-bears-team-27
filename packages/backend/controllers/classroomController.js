@@ -70,7 +70,7 @@ const getClassroomSubjects = async (_, res) => {
     if (!teacher) {
       return res.status(400).json({ error: 'Classroom not found' });
     }
-    if (!teacher.id.equals(teacherId)) {
+    if (!teacher._id.equals(teacherId)) {
       return res.status(401).json({ error: 'Unauthorized access' });
     }
 
@@ -83,6 +83,7 @@ const getClassroomSubjects = async (_, res) => {
 
     return res.json(subjects);
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ err });
   }
 };
