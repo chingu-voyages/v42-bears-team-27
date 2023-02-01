@@ -7,7 +7,7 @@ import {
 } from 'src/components/ui';
 import Login from './Login';
 
-const MainHeader: React.FC = () => (
+const LandingHeader: React.FC = () => (
   <header sx={{ py: 3, px: 4, bg: 'muted' }}>
     <nav
       sx={{
@@ -42,4 +42,4 @@ const MainHeader: React.FC = () => (
   </header>
 );
 
-export default MainHeader;
+export default LandingHeader;
