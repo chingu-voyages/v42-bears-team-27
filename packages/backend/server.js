@@ -1,7 +1,9 @@
 /* eslint no-console: 0 */
 require('dotenv').config();
+const { createServer } = require('http');
 const cors = require('cors');
 const express = require('express');
+const { Server } = require('socket.io');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
@@ -9,6 +11,15 @@ const cookieParser = require('cookie-parser');
 const routes = require('./routes');
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  /* options */
+});
+
+io.on('connection', (socket) => {
+  // ...
+  console.log('user connected on socket');
+});
 
 // Database
 mongoose.set('strictQuery', false);
@@ -46,4 +57,4 @@ app.use('/api/v0', routes);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, console.log(`server started on port ${PORT}`));
+httpServer.listen(PORT, console.log(`server started on port ${PORT}`));

@@ -8,6 +8,9 @@ import ErrorBoundary from 'components/common/ErrorBoundary';
 import { AuthProvider } from 'store/auth';
 
 import theme from '../theme';
+import { io } from 'socket.io-client';
+
+const socket = io(`${process.env.NEXT_PUBLIC_SERVER_URL}`);
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => React.ReactNode;
