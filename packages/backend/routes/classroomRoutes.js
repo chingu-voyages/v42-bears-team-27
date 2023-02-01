@@ -7,6 +7,7 @@ const {
   updateClassroom,
   deleteClassroom,
   getClassroomSubjects,
+  getClassroomEvent,
   getClassroomEvents,
   addClassroomEvent,
   updateClassroomEvent,
@@ -19,6 +20,7 @@ router.delete('/:id', checkTeacherAuthenticated, deleteClassroom);
 
 router.get('/subjects', checkTeacherAuthenticated, getClassroomSubjects);
 
+router.get('/event/:id', checkTeacherAuthenticated, getClassroomEvent);
 router.get('/events', checkTeacherAuthenticated, getClassroomEvents);
 router.post('/events/create', checkTeacherAuthenticated, addClassroomEvent);
 router.put('/events/:id', checkTeacherAuthenticated, updateClassroomEvent);
