@@ -22,41 +22,43 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
 
   return (
     <>
-      <nav
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: !heading ? 'flex-end' : 'space-between',
-          height: 48,
-        }}
-      >
-        <p
+      <header sx={{ py: 3, px: 4, bg: 'muted' }}>
+        <nav
           sx={{
-            variant: 'text.h2',
-            display: !heading && 'none',
-            m: 0,
-            textAlign: ['center', null, 'start'],
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: !heading ? 'flex-end' : 'space-between',
+            height: 48,
           }}
         >
-          {heading}
-        </p>
-        <div sx={{ display: ['none', 'flex', null], columnGap: 3 }}>
-          <IconButton>
-            <MdOutlineNotifications size={32} />
-          </IconButton>
-          <IconButton>
-            <MdOutlineAccountCircle size={32} />
-          </IconButton>
-          <IconButton>
-            <MdOutlineSettings size={32} />
-          </IconButton>
-        </div>
-        <div sx={{ display: [null, 'none', null], columnGap: 3 }}>
-          <IconButton onClick={toggleSidebarHandler}>
-            <MdOutlineMenu size={32} />
-          </IconButton>
-        </div>
-      </nav>
+          <p
+            sx={{
+              variant: 'text.h2',
+              display: !heading && 'none',
+              m: 0,
+              textAlign: ['center', null, 'start'],
+            }}
+          >
+            {heading}
+          </p>
+          <div sx={{ display: ['none', 'flex', null], columnGap: 3 }}>
+            <IconButton>
+              <MdOutlineNotifications size={32} />
+            </IconButton>
+            <IconButton>
+              <MdOutlineAccountCircle size={32} />
+            </IconButton>
+            <IconButton>
+              <MdOutlineSettings size={32} />
+            </IconButton>
+          </div>
+          <div sx={{ display: [null, 'none', null], columnGap: 3 }}>
+            <IconButton onClick={toggleSidebarHandler}>
+              <MdOutlineMenu size={32} />
+            </IconButton>
+          </div>
+        </nav>
+      </header>
       {showSidebar && (
         <aside
           sx={{
