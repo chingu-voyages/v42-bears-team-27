@@ -1,11 +1,7 @@
 import { useState, useMemo } from 'react';
 
-import type {
-  INewTeacherCredentials,
-  IUserCredentials,
-  IUserData,
-} from 'src/interfaces';
-import type { IAuthContext, UserRole } from './auth-context';
+import type { INewTeacherCredentials, IUserCredentials } from 'src/interfaces';
+import type { IAuthContext, User, UserRole } from './auth-context';
 import { AuthContext } from './auth-context';
 
 type Props = {
@@ -13,7 +9,7 @@ type Props = {
 };
 
 const AuthProvider: React.FC<Props> = ({ children }) => {
-  const [user, setUser] = useState<IUserData | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 

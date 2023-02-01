@@ -13,10 +13,6 @@ export interface INewTeacherCredentials {
   password: string;
 }
 
-export interface IUserData extends ITeacher, IStudent {
-  role: 'student' | 'teacher';
-}
-
 export interface ITeacher {
   id: ID;
   title: string;
