@@ -1,18 +1,48 @@
+import useSWR from 'swr';
 import {
+  createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 
-// TODO: Define types for data & columns
-type Props = {
-  data: any[];
-  columns: any[];
-};
+import type { IStudent } from 'src/interfaces';
+import { fetcher } from 'src/services';
 
-const StudentTable: React.FC<Props> = ({ data, columns }) => {
+// const DUMMY_STUDENTS_DATA: IStudent[] = [
+//   {
+//     id: '0',
+//     fullName: 'Smith, Lucas',
+//     tasks: 2,
+//   },
+//   {
+//     id: '2',
+//     fullName: 'Adams, John',
+//     tasks: 1,
+//   },
+// ];
+
+const columnHelper = createColumnHelper<any>();
+
+const columns = [
+  columnHelper.accessor('fullName', {
+    header: () => 'Full Name',
+    cell: (info) => info.renderValue(),
+  }),
+  columnHelper.accessor('tasks', {
+    header: () => 'Tasks',
+    cell: (info) => info.renderValue(),
+  }),
+];
+
+const StudentTable: React.FC = () => {
+  const { data: studentsData } = useSWR<IStudent[]>(
+    '/api/v0/classroom/students',
+    fetcher,
+  );
+
   const table = useReactTable({
-    data,
+    data: studentsData || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -61,7 +91,7 @@ const StudentTable: React.FC<Props> = ({ data, columns }) => {
               sx={{
                 variant: 'text.label',
                 textAlign: 'center',
-                '&:nth-child(2n)': {
+                '&:nth-last-of-type(2n)': {
                   bg: 'muted',
                 },
               }}
