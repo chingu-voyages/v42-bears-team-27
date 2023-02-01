@@ -10,15 +10,29 @@ const cookieParser = require('cookie-parser');
 
 const routes = require('./routes');
 
+const corsOptions = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return {
+      origin: process.env.FRONTEND,
+      credentials: true,
+    };
+  }
+  return {
+    origin: 'http://localhost:3000',
+    credentials: true,
+  };
+};
+
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-  /* options */
+  cors: corsOptions(),
 });
 
 io.on('connection', (socket) => {
   // ...
-  console.log('user connected on socket');
+  console.log(`new client with socket id ${socket.id} connected`);
+  socket.emit('event - a');
 });
 
 // Database
@@ -35,18 +49,6 @@ mongoose
     console.log(err);
   });
 
-const corsOptions = () => {
-  if (process.env.NODE_ENV === 'production') {
-    return {
-      origin: process.env.FRONTEND,
-      credentials: true,
-    };
-  }
-  return {
-    origin: 'http://localhost:3000',
-    credentials: true,
-  };
-};
 app.use(cors(corsOptions()));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
