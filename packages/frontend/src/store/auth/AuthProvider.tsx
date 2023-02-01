@@ -1,6 +1,11 @@
 import { useState, useMemo } from 'react';
 
 import type { INewTeacherCredentials, IUserCredentials } from 'src/interfaces';
+import {
+  postCreateNewTeacher,
+  postLoginExistingUser,
+  postLogoutExistingUser,
+} from 'src/services';
 import type { IAuthContext, User, UserRole } from './auth-context';
 import { AuthContext } from './auth-context';
 
@@ -16,28 +21,18 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   const signupTeacherHandler = async (
     teacherCredentials: INewTeacherCredentials,
   ) => {
-    // TODO: Delegate logic to services
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/teacher/create`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(teacherCredentials),
-      },
-    );
+    try {
+      const teacherData = await postCreateNewTeacher(teacherCredentials);
+      setUser({ ...teacherData });
+      setRole('teacher');
+      setIsLoggedIn(true);
+    } catch (err) {
+      if (err instanceof Error) {
+        return err.message;
+      }
 
-    if (!res.ok) {
-      return 'Error: Failed to signup!';
+      return `Unexpected error ${err}`;
     }
-
-    const teacherData = await res.json();
-
-    setUser({ ...teacherData });
-    setRole('teacher');
-    setIsLoggedIn(true);
 
     return 'Success: Signed up!';
   };
@@ -46,51 +41,28 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     userCredentials: IUserCredentials,
     userRole: UserRole,
   ) => {
-    // TODO: Delegate logic to services
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/auth/${userRole}`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userCredentials),
-      },
-    );
+    try {
+      const userData = await postLoginExistingUser(userCredentials, userRole);
+      setUser({ ...userData });
+      setRole(userRole);
+      setIsLoggedIn(true);
+    } catch (err) {
+      if (err instanceof Error) {
+        return err.message;
+      }
 
-    if (!res.ok) {
-      return 'Error: Failed to login!';
+      return `Unexpected error ${err}`;
     }
-
-    const userData = await res.json();
-
-    setUser({ ...userData });
-    setRole(userRole);
-    setIsLoggedIn(true);
 
     return 'Success: Logged in!';
   };
 
   const logoutHandler = async () => {
-    // TODO: Delegate logic to services
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/auth/logout`,
-      {
-        method: 'GET',
-        credentials: 'include',
-      },
-    );
-
-    if (!res.ok) {
-      return 'Error: Server error!';
-    }
-
+    // NOTE: Can add feedback whether or not logout wsa successful
+    await postLogoutExistingUser();
     setUser(null);
     setRole(null);
     setIsLoggedIn(false);
-
-    return 'Success: Logged Out!';
   };
 
   const authContext: IAuthContext = useMemo(
