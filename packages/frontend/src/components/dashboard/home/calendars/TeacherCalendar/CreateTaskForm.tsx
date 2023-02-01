@@ -1,22 +1,24 @@
 import { useState, useMemo } from 'react';
 
-import { Button } from 'components/ui';
-import type { ISubject, ITask, ITopic } from 'interfaces';
+import { Button } from 'src/components/ui';
+import type { ISubject, ITask, ITopic } from 'src/interfaces';
 import { titleCase } from 'src/utils';
 
 type Props = {
   subjects: ISubject[];
+  error: string | null;
   onSubmit: (data: Omit<ITask, 'id'>) => void;
 };
 
-// NOTE: File name to be renamed to CreateEventForm -> CreateTaskForm once refactored
-// All event-specific (not task related) changes would be made elsewhere
+// TODO: Add validators for input fields
+// subjectValidator = (value: string) => value.trim().length > 0;
+// topicValidator = (value: string) => value.trim().length > 0;
+// typeValidator = (value: string) => value.trim().length > 0;
 
-const CreateEventForm: React.FC<Props> = ({ subjects, onSubmit }) => {
+const CreateTaskForm: React.FC<Props> = ({ subjects, error, onSubmit }) => {
   const [subject, setSubject] = useState('');
   const [topic, setTopic] = useState('');
   const [type, setType] = useState('');
-  const [alert, setAlert] = useState<string | null>(null);
 
   const selectedSubject = useMemo<ISubject | null>(() => {
     const subjectIdx = subjects.findIndex((item) => item.title === subject);
@@ -41,30 +43,15 @@ const CreateEventForm: React.FC<Props> = ({ subjects, onSubmit }) => {
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setAlert(null);
-    // Check if subject is selected
-    if (!subject) {
-      setAlert('WARNING: Subject is not selected');
-    }
-    // Check if topic is selected
-    if (!topic) {
-      setAlert(`WARNING: Topic is not selected for ${subject}`);
-      return;
-    }
-    // Check if type is selected
-    if (!type) {
-      setAlert(`WARNING: Type is not selected for ${topic}`);
-      return;
-    }
-
+    // Extract title of type of task
     const title = (selectedTopic as ITopic).types.find((item) => item === type);
-
-    const submissionData = {
-      type: title as 'lesson' | 'exercise' | 'test',
+    // Submit form data
+    const data = {
       subject,
       topic,
+      type: title as 'lesson' | 'exercise' | 'test',
     };
-    onSubmit(submissionData);
+    onSubmit(data);
   };
 
   return (
@@ -83,16 +70,15 @@ const CreateEventForm: React.FC<Props> = ({ subjects, onSubmit }) => {
       <fieldset>
         <legend>Choose the subject</legend>
         {subjects.map(({ id, title }) => (
-          <label key={id} sx={{ display: 'block' }} htmlFor={String(id)}>
+          <label key={id} sx={{ display: 'block' }} htmlFor={id}>
             {titleCase(title)}
             <input
-              id={String(id)}
+              id={id}
               type="radio"
               name="subject"
               value={title}
               checked={subject === title}
               onChange={(e) => {
-                setAlert(null);
                 setSubject(e.currentTarget.value);
                 setTopic('');
               }}
@@ -103,16 +89,15 @@ const CreateEventForm: React.FC<Props> = ({ subjects, onSubmit }) => {
       <fieldset>
         <legend>Choose the topic</legend>
         {selectedSubject?.topics.map(({ id, title }) => (
-          <label key={id} sx={{ display: 'block' }} htmlFor={String(id)}>
+          <label key={id} sx={{ display: 'block' }} htmlFor={id}>
             {titleCase(title)}
             <input
-              id={String(id)}
+              id={id}
               type="radio"
               name="topic"
               value={title}
               checked={topic === title}
               onChange={(e) => {
-                setAlert(null);
                 setTopic(e.currentTarget.value);
                 setType('');
               }}
@@ -140,11 +125,13 @@ const CreateEventForm: React.FC<Props> = ({ subjects, onSubmit }) => {
       <Button sx={{ width: '100%' }} rounded={false} type="submit">
         Add Task
       </Button>
-      <p sx={{ variant: 'text.h4', color: 'warning', textAlign: 'center' }}>
-        {alert}
-      </p>
+      {error && (
+        <p sx={{ variant: 'text.h4', color: 'error', textAlign: 'center' }}>
+          {error}
+        </p>
+      )}
     </form>
   );
 };
 
-export default CreateEventForm;
+export default CreateTaskForm;

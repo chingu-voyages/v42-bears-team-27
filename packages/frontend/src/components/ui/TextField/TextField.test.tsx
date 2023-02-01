@@ -1,6 +1,6 @@
 import { render, screen } from 'test-utils';
 
-import { TextField } from './TextField';
+import { TextField, TextFieldArea } from './TextField';
 
 describe('<TextField />', () => {
   describe('Snapshots', () => {
@@ -9,8 +9,8 @@ describe('<TextField />', () => {
       expect(container).toMatchSnapshot();
     });
 
-    it('should match snapshot with multiline prop', () => {
-      const { container } = render(<TextField label="Foo" multiline />);
+    it('should match snapshot when rendered as textarea', () => {
+      const { container } = render(<TextFieldArea label="Foo" />);
       expect(container).toMatchSnapshot();
     });
   });

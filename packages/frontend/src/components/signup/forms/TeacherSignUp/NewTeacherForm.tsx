@@ -1,23 +1,40 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 
-import { Button, TextField } from 'components/ui';
-import { AuthContext } from 'store/auth';
+import { Button, TextField } from 'src/components/ui';
+import type { INewTeacherCredentials } from 'src/interfaces';
 
-const TeacherSignUp: React.FC = () => {
+type Props = {
+  error: string | null;
+  onSubmit: (data: INewTeacherCredentials) => void;
+};
+
+// TODO: Add validators for input fields
+// titleValidator = (value: string) => value.trim().length > 0;
+// fullNameValidator = (value: string) => value.trim().length > 0;
+// emailValidator = (value: string) => value.trim().length > 0;
+// passwordValidator = (value: string) => value.trim().length > 0;
+// confirmPasswordValidator = (value: string) => value.trim().length > 0;
+
+const NewTeacherForm: React.FC<Props> = ({ error, onSubmit }) => {
   const [title, setTitle] = useState('');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [alert, setAlert] = useState<string | null>(null);
 
-  const authCtx = useContext(AuthContext);
-
-  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const credentials = { title, fullName, email, password, confirmPassword };
-    const msg = await authCtx!.onSignup(credentials);
-    setAlert(msg);
+
+    // TODO: Add sanitization for input fields
+    // const sanitizedTitle = title;
+    // const sanitizedFullName = fullName;
+    // const sanitizedEmail = email;
+    // const sanitizedPassword = password;
+    // const sanitizedConfirmPassword = confirmPassword;
+
+    // Submit form data
+    const data = { title, fullName, email, password, confirmPassword };
+    onSubmit(data);
   };
 
   return (
@@ -74,8 +91,13 @@ const TeacherSignUp: React.FC = () => {
       <Button sx={{ width: '100%', fontSize: 3 }} type="submit" rounded={false}>
         Join
       </Button>
-      <p sx={{ variant: 'text.h4', textAlign: 'center' }}>{alert}</p>
+      {error && (
+        <p sx={{ variant: 'text.h4', color: 'error', textAlign: 'center' }}>
+          {error}
+        </p>
+      )}
     </form>
   );
 };
-export default TeacherSignUp;
+
+export default NewTeacherForm;

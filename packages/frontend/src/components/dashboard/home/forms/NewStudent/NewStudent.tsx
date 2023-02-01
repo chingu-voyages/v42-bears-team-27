@@ -1,39 +1,43 @@
 import { useState } from 'react';
 
-import { Button, TextField } from 'components/ui';
+import { Button, TextField } from 'src/components/ui';
+import { postCreateNewStudent } from 'src/services/student';
+
+// TODO: Add validators for input fields
+// fullNameValidator = (value: string) => value.trim().length > 0;
+// emailValidator = (value: string) => value.trim().length > 0;
 
 const NewStudent: React.FC = () => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  const [alert, setAlert] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [alert, setAlert] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const data = { fullName, email };
 
+    // TODO: Add sanitization for input fields
+    // const sanitizedFullName = fullName;
+    // const sanitizedEmail = email;
+
     try {
-      const call = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/student/create`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        },
-      );
-      const response = await call.json();
-      if (call.ok) {
-        setFullName('');
-        setEmail('');
-        setAlert('Created!');
-      } else {
-        setAlert(response.message);
+      // Submit form data
+      const msg = await postCreateNewStudent(data);
+      // Update alert with api response message
+      setAlert(msg);
+      // Reset form values
+      setFullName('');
+      setEmail('');
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
       }
-    } catch (error) {
-      setAlert('error');
+
+      setError(`Unexpected error ${err}`);
     }
   };
+
   return (
     <div
       sx={{
@@ -44,43 +48,25 @@ const NewStudent: React.FC = () => {
         backgroundColor: 'muted',
       }}
     >
-      <h1
-        sx={{
-          variant: 'text.h2',
-          fontWeight: 'medium',
-        }}
-      >
+      <h1 sx={{ variant: 'text.h2', fontWeight: 'medium' }}>
         Invite a Student
       </h1>
-      <form
-        sx={{
-          minWidth: '40%',
-        }}
-        onSubmit={handleSubmit}
-      >
-        <div
-          sx={{
-            py: '3',
-          }}
-        >
+      <form sx={{ minWidth: '40%' }} onSubmit={handleSubmit}>
+        <div sx={{ py: 3 }}>
           <TextField
-            placeholder="Surname, Name"
+            placeholder="Forename, Surname"
             value={fullName}
             onChange={(e) => setFullName(e.currentTarget.value)}
-            label="Student’s Full Name:"
+            label="Student’s Full Name"
             type="text"
           />
         </div>
-        <div
-          sx={{
-            py: '3',
-          }}
-        >
+        <div sx={{ py: 3 }}>
           <TextField
             placeholder="student@mail.com"
             value={email}
             onChange={(e) => setEmail(e.currentTarget.value)}
-            label="Student’s E-mail:"
+            label="Student’s E-mail"
             type="email"
           />
         </div>
@@ -92,18 +78,21 @@ const NewStudent: React.FC = () => {
             mb: '10rem',
           }}
         >
-          <Button
-            sx={{
-              width: '100%',
-            }}
-            rounded={false}
-            type="submit"
-          >
+          <Button sx={{ width: '100%' }} type="submit" rounded={false}>
             Send Invite
           </Button>
         </div>
-        <h3>{alert}</h3>
+        {error && (
+          <p sx={{ variant: 'text.h4', color: 'error', textAlign: 'center' }}>
+            {error}
+          </p>
+        )}
       </form>
+      {alert && (
+        <p sx={{ variant: 'text.h4', color: 'info', textAlign: 'center' }}>
+          {alert}
+        </p>
+      )}
     </div>
   );
 };

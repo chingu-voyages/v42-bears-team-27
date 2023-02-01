@@ -4,6 +4,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
+// TODO: Define types for data & columns
 type Props = {
   data: any[];
   columns: any[];
@@ -29,13 +30,7 @@ const StudentTable: React.FC<Props> = ({ data, columns }) => {
       }}
     >
       <table sx={{ width: '100%', height: '50%', borderCollapse: 'collapse' }}>
-        <thead
-          sx={{
-            py: 2,
-            px: 3,
-            bg: 'primary',
-          }}
-        >
+        <thead sx={{ py: 2, px: 3, bg: 'primary' }}>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr
               key={headerGroup.id}

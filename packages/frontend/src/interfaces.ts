@@ -1,14 +1,20 @@
-type TaskType = 'lesson' | 'exercise' | 'test';
 type ID = string;
+type TaskType = 'lesson' | 'exercise' | 'test';
 
 export interface IUserCredentials {
   email: string;
   password: string;
 }
 
-export interface IUserData {
+export interface INewTeacherCredentials {
+  title: string;
+  fullName: string;
+  email: string;
+  password: string;
+}
+
+export interface IUserData extends ITeacher, IStudent {
   role: 'student' | 'teacher';
-  [key: string]: any;
 }
 
 export interface ITeacher {

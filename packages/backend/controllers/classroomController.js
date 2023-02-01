@@ -97,6 +97,7 @@ const getClassroomSubjects = async (req, res) => {
     return res.status(401).json({ error: 'Unauthorized access' });
   }
 
+  // TODO: Transform each topic in topics so property "_id" --> "id"
   const responseData = subjects.map(({ _id: id, title, topics }) => ({
     id,
     title,

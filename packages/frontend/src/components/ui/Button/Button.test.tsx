@@ -1,12 +1,17 @@
 import { render, screen } from 'test-utils';
 import userEvent from '@testing-library/user-event';
 
-import { Button } from './Button';
+import { Button, ButtonLink } from './Button';
 
 describe('<Button />', () => {
   describe('Snapshots', () => {
     it('should match snapshot', () => {
       const { container } = render(<Button />);
+      expect(container).toMatchSnapshot();
+    });
+
+    it('should match snapshot when rendered as link', () => {
+      const { container } = render(<ButtonLink href="/" />);
       expect(container).toMatchSnapshot();
     });
 

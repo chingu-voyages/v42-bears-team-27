@@ -1,13 +1,36 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
-import { Button } from 'components/ui';
+import { Button } from 'src/components/ui';
+import type { IUserCredentials } from 'src/interfaces';
+import { AuthContext } from 'src/store/auth';
 import LoginForm from './LoginForm';
 
 const Login: React.FC = () => {
-  const [showStudentForm, setShowStudentForm] = useState(true);
+  const authCtx = useContext(AuthContext);
 
-  const toggleUserHandler = () => {
-    setShowStudentForm((prevState) => !prevState);
+  const [isStudent, setIsStudent] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [alert, setAlert] = useState<string | null>(null);
+
+  const userRole = isStudent ? 'student' : 'teacher';
+
+  const toggleUserRoleHandler = () => {
+    setIsStudent((prevState) => !prevState);
+  };
+
+  const submitHandler = async (credentials: IUserCredentials) => {
+    try {
+      // Submit form data
+      const msg = await authCtx!.onLogin(credentials, userRole);
+      // Update alert with api response message
+      setAlert(msg);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
+
+      setError(`Unexpected error ${err}`);
+    }
   };
 
   return (
@@ -22,25 +45,30 @@ const Login: React.FC = () => {
       }}
     >
       <h2 sx={{ variant: 'text.h2', mt: 0 }}>
-        {`Ready to ${showStudentForm ? 'learn' : 'aspire'}!`}
+        {`Ready to ${isStudent ? 'learn' : 'aspire'}!`}
       </h2>
       <div sx={{ display: 'flex', mb: 3 }}>
         <Button
-          variant={showStudentForm ? 'filled' : 'outlined'}
+          variant={isStudent ? 'filled' : 'outlined'}
           rounded={false}
-          onClick={toggleUserHandler}
+          onClick={toggleUserRoleHandler}
         >
           Student
         </Button>
         <Button
-          variant={showStudentForm ? 'outlined' : 'filled'}
+          variant={isStudent ? 'outlined' : 'filled'}
           rounded={false}
-          onClick={toggleUserHandler}
+          onClick={toggleUserRoleHandler}
         >
           Teacher
         </Button>
       </div>
-      <LoginForm userRole={showStudentForm ? 'student' : 'teacher'} />
+      <LoginForm userRole={userRole} error={error} onSubmit={submitHandler} />
+      {alert && (
+        <p sx={{ variant: 'text.h4', color: 'info', textAlign: 'center' }}>
+          {alert}
+        </p>
+      )}
     </div>
   );
 };

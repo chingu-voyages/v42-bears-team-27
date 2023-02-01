@@ -7,7 +7,7 @@ import {
   MdOutlineClose,
 } from 'react-icons/md';
 
-import { IconButton } from 'components/ui';
+import { IconButton } from 'src/components/ui';
 
 type Props = {
   heading?: string;
@@ -26,35 +26,34 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: !heading ? 'center' : 'space-between',
+          justifyContent: !heading ? 'flex-end' : 'space-between',
           height: 48,
         }}
       >
-        {heading && (
-          <p
-            sx={{
-              variant: 'text.h2',
-              m: 0,
-              textAlign: ['center', null, 'start'],
-            }}
-          >
-            {heading}
-          </p>
-        )}
+        <p
+          sx={{
+            variant: 'text.h2',
+            display: !heading && 'none',
+            m: 0,
+            textAlign: ['center', null, 'start'],
+          }}
+        >
+          {heading}
+        </p>
         <div sx={{ display: ['none', 'flex', null], columnGap: 3 }}>
           <IconButton>
-            <MdOutlineNotifications size="inherit" />
+            <MdOutlineNotifications size={32} />
           </IconButton>
           <IconButton>
-            <MdOutlineAccountCircle size="inherit" />
+            <MdOutlineAccountCircle size={32} />
           </IconButton>
           <IconButton>
-            <MdOutlineSettings size="inherit" />
+            <MdOutlineSettings size={32} />
           </IconButton>
         </div>
         <div sx={{ display: [null, 'none', null], columnGap: 3 }}>
           <IconButton onClick={toggleSidebarHandler}>
-            <MdOutlineMenu size="inherit" />
+            <MdOutlineMenu size={32} />
           </IconButton>
         </div>
       </nav>
@@ -72,7 +71,7 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
         >
           <div sx={{ position: 'absolute', top: 3, right: 3 }}>
             <IconButton onClick={toggleSidebarHandler}>
-              <MdOutlineClose size="inherit" />
+              <MdOutlineClose size={32} />
             </IconButton>
           </div>
           <nav sx={{ width: '95%', pt: 5, mx: 'auto' }}>
@@ -101,21 +100,24 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
               }}
             >
               <li>
+                {/* TODO: Wrap children using Menu/Modal component (responsive) */}
                 <p>Notifications</p>
                 <IconButton>
-                  <MdOutlineNotifications size="inherit" />
+                  <MdOutlineNotifications size={32} />
                 </IconButton>
               </li>
               <li>
+                {/* TODO: Wrap children using Menu/Modal component (responsive) */}
                 <p>Profile</p>
                 <IconButton>
-                  <MdOutlineAccountCircle size="inherit" />
+                  <MdOutlineAccountCircle size={32} />
                 </IconButton>
               </li>
               <li>
+                {/* TODO: Wrap children using Menu/Modal component (responsive) */}
                 <p>Settings</p>
                 <IconButton>
-                  <MdOutlineSettings size="inherit" />
+                  <MdOutlineSettings size={32} />
                 </IconButton>
               </li>
             </ul>

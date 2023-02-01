@@ -1,11 +1,15 @@
 import { createContext } from 'react';
 
-import type { IUserCredentials, IUserData } from 'interfaces';
+import type {
+  INewTeacherCredentials,
+  IUserCredentials,
+  IUserData,
+} from 'interfaces';
 
 export interface IAuthContext {
   user: IUserData | null;
   isLoggedIn: boolean;
-  onSignup: (userCredentials: IUserCredentials) => Promise<string>;
+  onSignup: (userCredentials: INewTeacherCredentials) => Promise<string>;
   onLogin: (
     userCredentials: IUserCredentials,
     userRole: 'student' | 'teacher',

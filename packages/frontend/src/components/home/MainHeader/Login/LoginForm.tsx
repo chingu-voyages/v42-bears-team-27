@@ -1,24 +1,32 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 
-import { Button, TextField } from 'components/ui';
-import { AuthContext } from 'store/auth';
+import { Button, TextField } from 'src/components/ui';
+import type { IUserCredentials } from 'src/interfaces';
 
 type Props = {
   userRole: 'student' | 'teacher';
+  error: string | null;
+  onSubmit: (data: IUserCredentials) => void;
 };
 
-const LoginForm: React.FC<Props> = ({ userRole }) => {
+// TODO: Add validators for input fields
+// emailValidator = (value: string) => value.trim().length > 0;
+// passwordValidator = (value: string) => value.trim().length > 0;
+
+const LoginForm: React.FC<Props> = ({ userRole, error, onSubmit }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [alert, setAlert] = useState<string | null>(null);
-
-  const authCtx = useContext(AuthContext);
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const credentials = { email, password };
-    const msg = await authCtx!.onLogin(credentials, userRole);
-    setAlert(msg);
+
+    // TODO: Add sanitization for input fields
+    // const sanitizedEmail = email;
+    // const sanitizedPassword = password;
+
+    // Submit form data
+    const data = { email, password };
+    onSubmit(data);
   };
 
   return (
@@ -52,10 +60,14 @@ const LoginForm: React.FC<Props> = ({ userRole }) => {
         required
         onChange={(e) => setPassword(e.currentTarget.value)}
       />
-      <Button sx={{ width: '100%' }} rounded={false} type="submit">
+      <Button sx={{ width: '100%' }} type="submit" rounded={false}>
         Login
       </Button>
-      <p sx={{ variant: 'text.h4', textAlign: 'center' }}>{alert}</p>
+      {error && (
+        <p sx={{ variant: 'text.h4', color: 'error', textAlign: 'center' }}>
+          {error}
+        </p>
+      )}
     </form>
   );
 };
