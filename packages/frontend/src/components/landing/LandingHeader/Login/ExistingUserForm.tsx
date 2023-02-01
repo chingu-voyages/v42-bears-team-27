@@ -13,7 +13,7 @@ type Props = {
 // emailValidator = (value: string) => value.trim().length > 0;
 // passwordValidator = (value: string) => value.trim().length > 0;
 
-const LoginForm: React.FC<Props> = ({ userRole, error, onSubmit }) => {
+const ExistingUserForm: React.FC<Props> = ({ userRole, error, onSubmit }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -72,4 +72,4 @@ const LoginForm: React.FC<Props> = ({ userRole, error, onSubmit }) => {
   );
 };
 
-export default LoginForm;
+export default ExistingUserForm;

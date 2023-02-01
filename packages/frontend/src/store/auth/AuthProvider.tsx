@@ -1,21 +1,22 @@
 import { useState, useMemo } from 'react';
 
-import type {
-  INewTeacherCredentials,
-  IUserCredentials,
-  IUserData,
-} from 'interfaces';
-import { AuthContext, type IAuthContext } from './auth-context';
+import type { INewTeacherCredentials, IUserCredentials } from 'src/interfaces';
+import type { IAuthContext, User, UserRole } from './auth-context';
+import { AuthContext } from './auth-context';
 
 type Props = {
   children: React.ReactNode;
 };
 
 const AuthProvider: React.FC<Props> = ({ children }) => {
-  const [user, setUser] = useState<IUserData | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [role, setRole] = useState<UserRole | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const signupHandler = async (userCredentials: INewTeacherCredentials) => {
+  const signupTeacherHandler = async (
+    teacherCredentials: INewTeacherCredentials,
+  ) => {
+    // TODO: Delegate logic to services
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/teacher/create`,
       {
@@ -24,7 +25,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userCredentials),
+        body: JSON.stringify(teacherCredentials),
       },
     );
 
@@ -32,9 +33,10 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       return 'Error: Failed to signup!';
     }
 
-    const { ...userData }: any = await res.json();
+    const teacherData = await res.json();
 
-    setUser({ role: 'teacher', ...userData });
+    setUser({ ...teacherData });
+    setRole('teacher');
     setIsLoggedIn(true);
 
     return 'Success: Signed up!';
@@ -42,8 +44,9 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
 
   const loginHandler = async (
     userCredentials: IUserCredentials,
-    userRole: 'student' | 'teacher',
+    userRole: UserRole,
   ) => {
+    // TODO: Delegate logic to services
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/auth/${userRole}`,
       {
@@ -60,15 +63,17 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       return 'Error: Failed to login!';
     }
 
-    const { ...userData }: any = await res.json();
+    const userData = await res.json();
 
-    setUser({ role: userRole, ...userData });
+    setUser({ ...userData });
+    setRole(userRole);
     setIsLoggedIn(true);
 
     return 'Success: Logged in!';
   };
 
   const logoutHandler = async () => {
+    // TODO: Delegate logic to services
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/auth/logout`,
       {
@@ -82,6 +87,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     }
 
     setUser(null);
+    setRole(null);
     setIsLoggedIn(false);
 
     return 'Success: Logged Out!';
@@ -90,12 +96,13 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   const authContext: IAuthContext = useMemo(
     () => ({
       user,
+      role,
       isLoggedIn,
-      onSignup: signupHandler,
+      onSignup: signupTeacherHandler,
       onLogin: loginHandler,
       onLogout: logoutHandler,
     }),
-    [user, isLoggedIn],
+    [isLoggedIn, role, user],
   );
 
   return (

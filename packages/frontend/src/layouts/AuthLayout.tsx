@@ -1,8 +1,8 @@
+import { useState, useContext, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useState, useContext, useEffect } from 'react';
 
-import { AuthContext } from 'store/auth';
+import { AuthContext } from 'src/store/auth';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -10,23 +10,7 @@ type LayoutProps = {
   description?: string;
 };
 
-type HeaderProps = {
-  children: React.ReactNode;
-};
-
-export const Header: React.FC<HeaderProps> = ({ children }) => (
-  <header
-    sx={{
-      py: 3,
-      px: 4,
-      bg: '#f4f4f2',
-    }}
-  >
-    {children}
-  </header>
-);
-
-export const AuthLayout: React.FC<LayoutProps> = ({
+const AuthLayout: React.FC<LayoutProps> = ({
   children,
   title,
   description,
@@ -41,7 +25,8 @@ export const AuthLayout: React.FC<LayoutProps> = ({
     } else {
       setIsMounted(true);
     }
-  }, [authCtx?.isLoggedIn, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authCtx?.isLoggedIn]);
 
   if (!isMounted) {
     return (
@@ -70,7 +55,9 @@ export const AuthLayout: React.FC<LayoutProps> = ({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main sx={{ height: '100vh' }}>{children}</main>
+      <main sx={{ minHeight: '100vh' }}>{children}</main>
     </>
   );
 };
+
+export default AuthLayout;

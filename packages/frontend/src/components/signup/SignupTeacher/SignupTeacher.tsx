@@ -4,7 +4,7 @@ import type { INewTeacherCredentials } from 'src/interfaces';
 import { AuthContext } from 'src/store/auth';
 import NewTeacherForm from './NewTeacherForm';
 
-const TeacherSignUp: React.FC = () => {
+const SignupTeacher: React.FC = () => {
   const authCtx = useContext(AuthContext);
 
   const [error, setError] = useState<string | null>(null);
@@ -42,4 +42,4 @@ const TeacherSignUp: React.FC = () => {
     </>
   );
 };
-export default TeacherSignUp;
+export default SignupTeacher;

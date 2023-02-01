@@ -3,7 +3,7 @@ import { useState, useContext } from 'react';
 import { Button } from 'src/components/ui';
 import type { IUserCredentials } from 'src/interfaces';
 import { AuthContext } from 'src/store/auth';
-import LoginForm from './LoginForm';
+import ExistingUserForm from './ExistingUserForm';
 
 const Login: React.FC = () => {
   const authCtx = useContext(AuthContext);
@@ -63,7 +63,11 @@ const Login: React.FC = () => {
           Teacher
         </Button>
       </div>
-      <LoginForm userRole={userRole} error={error} onSubmit={submitHandler} />
+      <ExistingUserForm
+        userRole={userRole}
+        error={error}
+        onSubmit={submitHandler}
+      />
       {alert && (
         <p sx={{ variant: 'text.h4', color: 'info', textAlign: 'center' }}>
           {alert}

@@ -8,7 +8,7 @@ import {
   DialogTrigger,
   TextField,
   TextFieldArea,
-} from 'components/ui';
+} from 'src/components/ui';
 import { postBroadcastMessageToStudents } from 'src/services';
 
 // TODO: Add validators for input fields
