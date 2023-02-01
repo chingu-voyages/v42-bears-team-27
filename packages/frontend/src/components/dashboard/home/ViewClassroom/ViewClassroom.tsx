@@ -1,7 +1,7 @@
 import { MdAdd } from 'react-icons/md';
 
-import { IconButton } from 'components/ui';
-import type { IUserData } from 'interfaces';
+import { IconButton } from 'src/components/ui';
+import type { IUserData } from 'src/interfaces';
 
 type Props = {
   user: IUserData;
@@ -35,8 +35,9 @@ const ViewClassroom: React.FC<Props> = ({ user }) => (
               borderRadius: '50%',
             }}
           />
-          {/* TODO: username should be replaced with last name (e.g. Mr.Jonathan) */}
-          <p sx={{ variant: 'text.h4' }}>{user.fullname}</p>
+          <p sx={{ variant: 'text.h4' }}>{`${user.title}.${user.fullName
+            .split(',')[1]
+            .trim()}`}</p>
         </div>
       </div>
     </div>
@@ -50,6 +51,7 @@ const ViewClassroom: React.FC<Props> = ({ user }) => (
           columnGap: 3,
         }}
       >
+        {/* TODO: Add/Change/Switch Modal to add new student */}
         <IconButton>
           <MdAdd size={32} />
         </IconButton>
