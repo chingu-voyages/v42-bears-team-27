@@ -21,7 +21,6 @@ const createTeacher = async (req, res) => {
 
   try {
     const prevTeacher = await Teacher.findOne({ email });
-
     if (prevTeacher) {
       const errors = [
         {
@@ -31,71 +30,71 @@ const createTeacher = async (req, res) => {
           location: 'body',
         },
       ];
-
       return res.status(400).json({ errors });
     }
 
     const classroom = await Classroom.create({});
-
-    if (classroom) {
-      const subjects = await Subject.find({});
-
-      subjects.map((subject, idx) => {
-        classroom.subjects[idx] = subject._id;
-      });
-
-      const teacher = await Teacher.create({
-        title,
-        fullName,
-        email,
-        passwordHash,
-        classroom: classroom._id,
-      });
-
-      if (teacher) {
-        classroom.teacher = teacher._id;
-        await classroom.save();
-
-        const payload = {
-          _id: teacher._id,
-          email: teacher.email,
-        };
-        return res
-          .cookie('auth', JSON.stringify(payload), {
-            secure: process.env.NODE_ENV === 'production',
-            httpOnly: true,
-            signed: true,
-            expires: new Date(Date.now() + 2592000), // 30 days
-          })
-          .json({
-            id: teacher._id,
-            email: teacher.email,
-            title: teacher.title,
-            fullName: teacher.fullName,
-          });
-      }
+    if (!classroom) {
+      return res.status(500).json({ message: 'Internal server error' });
     }
+
+    const subjects = await Subject.find({});
+    if (!subjects) {
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+    subjects.map((subject, idx) => {
+      classroom.subjects[idx] = subject._id;
+    });
+
+    const teacher = await Teacher.create({
+      title,
+      fullName,
+      email,
+      passwordHash,
+      classroom: classroom._id,
+    });
+    if (!teacher) {
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+
+    classroom.teacher = teacher._id;
+    await classroom.save();
+
+    const payload = {
+      _id: teacher._id,
+      email: teacher.email,
+    };
+    return res
+      .cookie('auth', JSON.stringify(payload), {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        signed: true,
+        expires: new Date(Date.now() + 2592000000), // 30 days
+      })
+      .json({
+        _id: teacher._id,
+        // email: teacher.email,
+        title: teacher.title,
+        fullName: teacher.fullName,
+      });
   } catch (error) {
-    // TODO: more robust logging (morgan?)
-    // TODO: log other events too? not just errors?
-    // not all errors are being catch
-    // console.log(`Error while saving teacher to database ${error}`);
+    // TODO: more robust logging? (morgan?)
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
-// To be use for authentication when continuing the session
-const getTeacher = async (req, res) => {
-  const { user } = res.locals;
+// To check if still authenticated when continuing the session
+const getTeacher = async (_, res) => {
+  const { _id, title, fullName } = res.locals.user;
   return res.json({
-    title: user.title,
-    fullName: user.fullName,
+    _id,
+    title,
+    fullName,
   });
 };
 
 const sendDirectMessageToStudent = async (req, res) => {
   const { messageHeader, messageBody, studentID } = req.body;
-
   const teacher = res.locals.user;
 
   try {
@@ -113,11 +112,14 @@ const sendDirectMessageToStudent = async (req, res) => {
 
     const newMessage = await Message.create({
       isBroadcast: false,
-      fromTeacher: teacher.id,
-      toStudent: student.id,
+      fromTeacher: teacher._id,
+      toStudent: student._id,
       messageHeader,
       messageBody,
     });
+    if (!newMessage) {
+      return res.status(500).json({ message: 'Internal server error' });
+    }
 
     student.inbox.push({
       messageID: newMessage._id,
@@ -133,11 +135,10 @@ const sendDirectMessageToStudent = async (req, res) => {
 
 const broadcastMessage = async (req, res) => {
   const { messageHeader, messageBody } = req.body;
-
-  const teacherID = res.locals.user;
+  const { id: teacherId, classroom: classroomId } = res.locals.user;
 
   try {
-    const { students } = await Classroom.findOne({ teacher: teacherID });
+    const { students } = await Classroom.findById(classroomId);
 
     if (!students.length) {
       return res
@@ -147,13 +148,16 @@ const broadcastMessage = async (req, res) => {
 
     const newMessage = await Message.create({
       isBroadcast: true,
-      fromTeacher: teacherID,
+      fromTeacher: teacherId,
       messageHeader,
       messageBody,
     });
+    if (!newMessage) {
+      return res.status(500).json({ message: 'Internal server error' });
+    }
 
-    students.forEach(async (studentID) => {
-      const student = await Student.findById(studentID);
+    students.forEach(async (studentId) => {
+      const student = await Student.findById(studentId);
 
       student.inbox.push({
         messageID: newMessage._id,

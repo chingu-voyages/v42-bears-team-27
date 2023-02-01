@@ -68,12 +68,13 @@ const createStudent = async (req, res) => {
   }
 };
 
-const getStudent = async (req, res) => {
-  const { user } = res.locals;
+// To check if still authenticated when continuing the session
+const getStudent = async (_, res) => {
+  const { _id, fullName, inbox } = res.locals.user;
   return res.json({
-    id: user.id,
-    fullName: user.fullName,
-    inbox: user.inbox,
+    _id,
+    fullName,
+    inbox,
   });
 };
 

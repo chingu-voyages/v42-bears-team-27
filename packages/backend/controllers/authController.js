@@ -16,7 +16,7 @@ const loginTeacher = async (req, res) => {
         expires: new Date(Date.now() + 2592000000), // 30 days
       })
       .json({
-        id: user._id,
+        _id: user._id,
         // email: user.email,
         title: user.title,
         fullName: user.fullName,
@@ -43,14 +43,14 @@ const loginStudent = async (req, res) => {
       })
       .status(200)
       .json({
-        id: user._id,
+        _id: user._id,
         // email: user.email,
         fullName: user.fullName,
       });
   });
 };
 
-const logout = async (req, res) => {
+const logout = async (_, res) => {
   res
     .clearCookie('auth', {
       secure: process.env.NODE_ENV === 'production',
