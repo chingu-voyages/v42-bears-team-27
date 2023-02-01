@@ -13,6 +13,11 @@ export interface INewTeacherCredentials {
   password: string;
 }
 
+export interface INewStudentCredentials {
+  fullName: string;
+  email: string;
+}
+
 export interface ITeacher {
   id: ID;
   title: string;
