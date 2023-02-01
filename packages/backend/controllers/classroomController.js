@@ -15,22 +15,18 @@ const getClassroom = async (_, res) => {
 };
 
 const updateClassroom = async (req, res) => {
-  // TODO waiting for comments
-  const teacherId = res.locals.user.id;
+  const { id: teacherId, classroom: classroomId } = res.locals.user;
   try {
-    const classroom = await Classroom.findOne({ teacher: teacherId });
-
+    const classroom = await Classroom.findById(classroomId);
     if (!classroom) {
       return res.status(400).json({ error: 'Classroom not found' });
     }
-    // if (!classroom.teacher.equals(res.locals.user.id)) {
-    //   return res.status(401).json({ error: 'Unauthorized access' });
-    // }
 
-    // NOTE: This is may not be ideal,
-    // but MongoDB will ignore any properties it doesn't recognize
+    // Block from updating other properties
     const update = {
-      ...req.body,
+      ...(!req.body.name ? {} : { name: req.body.name }),
+      ...(!req.body.subjects ? {} : { subjects: req.body.subjects }),
+      ...(!req.body.events ? {} : { events: req.body.events }),
     };
 
     const updatedClassroom = await Classroom.findOneAndUpdate(
