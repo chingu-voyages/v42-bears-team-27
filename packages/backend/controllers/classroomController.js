@@ -74,13 +74,6 @@ const getClassroomSubjects = async (_, res) => {
       return res.status(401).json({ error: 'Unauthorized access' });
     }
 
-    // TODO: Transform each topic in topics so property "_id" --> "id"
-    // const responseData = subjects.map(({ _id: id, title, topics }) => ({
-    //   id,
-    //   title,
-    //   topics,
-    // }));
-
     return res.json(subjects);
   } catch (err) {
     return res.status(500).json({ err });
@@ -97,19 +90,8 @@ const getClassroomEvent = async (req, res) => {
       return res.status(400).json({ error: 'Classroom not found' });
     }
 
-    // delete this? students can also access this endpoint
-    // if (!classroom.teacher.equals(teacherId)) {
-    //   return res.status(401).json({ error: 'Unauthorized access' });
-    // }
-
     const event = await Event.findById(requestId);
     if (!event) return res.status(400).json('event not found!');
-
-    // const responseData = {
-    //   setAt: event.setAt,
-    //   dueDate: event.dueDate,
-    //   tasks: event.tasks,
-    // };
 
     return res.json(event);
   } catch (err) {
@@ -126,18 +108,6 @@ const getClassroomEvents = async (_, res) => {
     if (!events) {
       return res.status(400).json({ error: 'Classroom not found' });
     }
-
-    // delete this? students can also access this endpoint
-    // if (!teacher.equals(teacherId)) {
-    //   return res.status(401).json({ error: 'Unauthorized access' });
-    // }
-
-    // const responseData = events.map(({ _id: id, dueDate, setAt, tasks }) => ({
-    //   id,
-    //   dueDate,
-    //   setAt,
-    //   tasks,
-    // }));
 
     return res.json(events);
   } catch (err) {
@@ -175,21 +145,21 @@ const addClassroomEvent = async (req, res) => {
 };
 
 const updateClassroomEvent = async (req, res) => {
-  const { id: teacherId, classroom: classroomId } = res.locals.user;
+  const { classroom: classroomId } = res.locals.user;
   const { id: requestId } = req.params;
   try {
-    const classroom = await Classroom.findById(classroomId);
-    if (!classroom) {
+    const { events } = await Classroom.findById(classroomId);
+    if (!events) {
       return res.status(400).json({ error: 'Classroom not found' });
     }
-    if (!classroom.teacher.equals(teacherId)) {
-      return res.status(401).json({ error: 'Unauthorized access' });
+    if (!events.includes(requestId)) {
+      return res.status(401).json({ error: 'Event is not in your classroom' });
     }
 
-    // NOTE: This is may not be ideal,
-    // but MongoDB will ignore any properties it doesn't recognize
     const update = {
-      ...req.body,
+      ...(!req.body.type ? {} : { type: req.body.type }),
+      ...(!req.body.subject ? {} : { subject: req.body.subject }),
+      ...(!req.body.topic ? {} : { topic: req.body.topic }),
     };
 
     const updatedEvent = await Event.findByIdAndUpdate(requestId, update, {
