@@ -156,13 +156,7 @@ const updateClassroomEvent = async (req, res) => {
       return res.status(401).json({ error: 'Event is not in your classroom' });
     }
 
-    const update = {
-      ...(!req.body.type ? {} : { type: req.body.type }),
-      ...(!req.body.subject ? {} : { subject: req.body.subject }),
-      ...(!req.body.topic ? {} : { topic: req.body.topic }),
-    };
-
-    const updatedEvent = await Event.findByIdAndUpdate(requestId, update, {
+    const updatedEvent = await Event.findByIdAndUpdate(requestId, req.body, {
       new: true,
     });
     if (!updatedEvent) return res.status(500).send('error updating the event!');
