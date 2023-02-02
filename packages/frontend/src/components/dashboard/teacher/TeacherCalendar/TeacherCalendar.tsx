@@ -78,7 +78,7 @@ const TeacherCalendar: React.FC = () => {
         // If there is already an event on the active
         // then update that existing classroom event with the new data
         const msg = await putClassroomEvent({
-          id: activeDayEvent.id,
+          _id: activeDayEvent._id,
           tasks: [...activeDayEvent.tasks, newTask] as ITask[],
         });
         // Update alert with api response message

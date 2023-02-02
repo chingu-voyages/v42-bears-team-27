@@ -41,7 +41,7 @@ export const putClassroom = (updatedClassroom: Partial<IClassroom>) =>
 
 export const putClassroomEvent = (updatedEvent: Partial<IEvent>) =>
   fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/events/${updatedEvent.id}`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/events/${updatedEvent._id}`,
     {
       method: 'PUT',
       credentials: 'include',
@@ -59,7 +59,7 @@ export const putClassroomEvent = (updatedEvent: Partial<IEvent>) =>
 // DELETE REQUESTS
 export const deleteClassroomEvent = (deletedEvent: Partial<IEvent>) =>
   fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/events/${deletedEvent.id}`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/events/${deletedEvent._id}`,
     {
       method: 'DELETE',
       credentials: 'include',
