@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<RadioGroup /> Snapshots should match snapshot 1`] = `
+.emotion-0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.emotion-1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-column-gap: 16px;
+  column-gap: 16px;
+}
+
+.emotion-2 {
+  background-color: white;
+  color: var(--theme-ui-colors-primary);
+  border: 2px solid currentColor;
+  width: 24px;
+  height: 24px;
+  border-radius: 100%;
+  cursor: pointer;
+}
+
+.emotion-2:hover {
+  background-color: #e6e6e6;
+}
+
+.emotion-3 {
+  font-family: "Nunito",sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--theme-ui-colors-primary);
+}
+
+<div>
+  <div
+    aria-required="false"
+    class="emotion-0"
+    dir="ltr"
+    role="radiogroup"
+    style="outline: none;"
+    tabindex="0"
+  >
+    <div
+      class="emotion-1"
+    >
+      <button
+        aria-checked="false"
+        class="emotion-2"
+        data-radix-collection-item=""
+        data-state="unchecked"
+        role="radio"
+        tabindex="-1"
+        type="button"
+        value="foo"
+      />
+      <label
+        class="emotion-3"
+      >
+        Foo
+      </label>
+    </div>
+    <div
+      class="emotion-1"
+    >
+      <button
+        aria-checked="false"
+        class="emotion-2"
+        data-radix-collection-item=""
+        data-state="unchecked"
+        role="radio"
+        tabindex="-1"
+        type="button"
+        value="bar"
+      />
+      <label
+        class="emotion-3"
+      >
+        Bar
+      </label>
+    </div>
+    <div
+      class="emotion-1"
+    >
+      <button
+        aria-checked="false"
+        class="emotion-2"
+        data-radix-collection-item=""
+        data-state="unchecked"
+        role="radio"
+        tabindex="-1"
+        type="button"
+        value="baz"
+      />
+      <label
+        class="emotion-3"
+      >
+        Baz
+      </label>
+    </div>
+  </div>
+</div>
+`;
