@@ -17,7 +17,6 @@ const loginTeacher = async (req, res) => {
       })
       .json({
         _id: user._id,
-        // email: user.email,
         title: user.title,
         fullName: user.fullName,
       });
@@ -44,7 +43,6 @@ const loginStudent = async (req, res) => {
       .status(200)
       .json({
         _id: user._id,
-        // email: user.email,
         fullName: user.fullName,
       });
   });

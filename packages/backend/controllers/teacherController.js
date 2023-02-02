@@ -1,5 +1,4 @@
 /* eslint-disable array-callback-return */
-/* eslint-disable consistent-return */
 const Teacher = require('../models/teacherModel');
 const Student = require('../models/studentModel');
 const Message = require('../models/messageModel');
@@ -73,12 +72,10 @@ const createTeacher = async (req, res) => {
       })
       .json({
         _id: teacher._id,
-        // email: teacher.email,
         title: teacher.title,
         fullName: teacher.fullName,
       });
   } catch (error) {
-    // TODO: more robust logging? (morgan?)
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -99,11 +96,9 @@ const sendDirectMessageToStudent = async (req, res) => {
 
   try {
     const student = await Student.findById(studentID);
-
     if (!student) {
       return res.status(400).json({ message: 'This student does not exist' });
     }
-
     if (!student.classroom.equals(teacher.classroom)) {
       return res
         .status(400)
@@ -158,12 +153,17 @@ const broadcastMessage = async (req, res) => {
 
     students.forEach(async (studentId) => {
       const student = await Student.findById(studentId);
-
-      student.inbox.push({
-        messageID: newMessage._id,
-        hasBeenRead: false,
-      });
-      await student.save();
+      if (student) {
+        student.inbox.push({
+          messageID: newMessage._id,
+          hasBeenRead: false,
+        });
+        await student.save();
+      } else {
+        res
+          .status(400)
+          .json({ message: `Student ${student._id} does not exist` });
+      }
     });
     return res.status(200).json({ message: 'message sent!' });
   } catch (error) {

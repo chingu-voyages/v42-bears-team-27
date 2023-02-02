@@ -138,7 +138,7 @@ const ClassroomCreation: React.FC = () => {
             }}
           >
             {subjectsData &&
-              subjectsData.map(({ id, title }) => (
+              subjectsData.map(({ _id: id, title }) => (
                 <Checkbox
                   key={id}
                   id={id}

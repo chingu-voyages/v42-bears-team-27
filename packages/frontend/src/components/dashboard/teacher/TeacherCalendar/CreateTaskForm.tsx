@@ -69,7 +69,7 @@ const CreateTaskForm: React.FC<Props> = ({ subjects, error, onSubmit }) => {
     >
       <fieldset>
         <legend>Choose the subject</legend>
-        {subjects.map(({ id, title }) => (
+        {subjects.map(({ _id: id, title }) => (
           <label key={id} sx={{ display: 'block' }} htmlFor={id}>
             {titleCase(title)}
             <input
@@ -88,7 +88,7 @@ const CreateTaskForm: React.FC<Props> = ({ subjects, error, onSubmit }) => {
       </fieldset>
       <fieldset>
         <legend>Choose the topic</legend>
-        {selectedSubject?.topics.map(({ id, title }) => (
+        {selectedSubject?.topics.map(({ _id: id, title }) => (
           <label key={id} sx={{ display: 'block' }} htmlFor={id}>
             {titleCase(title)}
             <input
