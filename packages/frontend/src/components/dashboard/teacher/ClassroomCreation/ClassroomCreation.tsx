@@ -1,17 +1,24 @@
 import { useState } from 'react';
 import useSWR from 'swr';
+import validator from 'validator';
 
 import { Button, TextField, Checkbox } from 'src/components/ui';
 import type { ISubject } from 'src/interfaces';
 import { fetcher, putClassroom } from 'src/services';
 import { titleCase } from 'src/utils';
+import useInput from 'src/hooks/use-input';
 
 interface Boxes {
   [title: string]: boolean;
 }
 
-// TODO: Add validators for input fields
-// nameValidator = (value: string) => value.trim().length > 0;
+const nameValidator = (value: string) => {
+  const trimmed = value.trim();
+  return (
+    !validator.isEmpty(trimmed) &&
+    validator.isLength(trimmed, { min: 3, max: 20 })
+  );
+};
 
 const ClassroomCreation: React.FC = () => {
   const { data: subjectsData } = useSWR<ISubject[]>(
@@ -19,7 +26,15 @@ const ClassroomCreation: React.FC = () => {
     fetcher,
   );
 
-  const [name, setName] = useState('');
+  const {
+    value: enteredName,
+    hasErrors: enteredNameHasErrors,
+    inputChangeHandler: nameChangedHandler,
+    inputBlurHandler: nameBlurHandler,
+    inputResetHandler: nameResetHandler,
+  } = useInput(nameValidator, '');
+
+  // TODO: Validation - at least one subject should be selected?
   const [boxes, setBoxes] = useState<Boxes>(() => {
     if (!subjectsData) {
       return [];
@@ -47,14 +62,13 @@ const ClassroomCreation: React.FC = () => {
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    // TODO: Add sanitization for input fields
-    // const sanitizedName = name;
+    const sanitizedName = validator.escape(enteredName);
 
     // Extract selected subject ids
     const subjectIds = Object.keys(boxes).filter((s) => boxes[s]);
 
     const data = {
-      name,
+      name: sanitizedName,
       subjects: subjectIds,
     };
 
@@ -63,6 +77,7 @@ const ClassroomCreation: React.FC = () => {
       const msg = await putClassroom(data);
       // Update alert with api response message
       setAlert(msg);
+      nameResetHandler();
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -87,9 +102,16 @@ const ClassroomCreation: React.FC = () => {
       <form sx={{ minWidth: '40%' }} onSubmit={handleSubmit}>
         <div>
           <TextField
+            sx={{
+              borderColor: enteredNameHasErrors ? 'red' : 'gray',
+            }}
             placeholder="Your classroom name"
-            value={name}
-            onChange={(e) => setName(e.currentTarget.value)}
+            value={enteredName}
+            onChange={(e) => {
+              setAlert(null);
+              nameChangedHandler(e.currentTarget.value);
+            }}
+            onBlur={nameBlurHandler}
             label="Name"
             type="text"
             required
