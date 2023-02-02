@@ -1,57 +1,64 @@
-type TaskType = 'lesson' | 'exercise' | 'test';
 type ID = string;
+type TaskType = 'lesson' | 'exercise' | 'test';
 
 export interface IUserCredentials {
   email: string;
   password: string;
 }
 
-export interface IUserData {
-  role: 'student' | 'teacher';
-  [key: string]: any;
+export interface INewTeacherCredentials {
+  title: string;
+  fullName: string;
+  email: string;
+  password: string;
+}
+
+export interface INewStudentCredentials {
+  fullName: string;
+  email: string;
 }
 
 export interface ITeacher {
-  id: ID;
+  _id: ID;
   title: string;
   fullName: string;
 }
 
 export interface IStudent {
-  id: ID;
+  _id: ID;
   fullName: string;
   tasks: number;
 }
 
 export interface ITask {
-  id: ID;
+  _id: ID;
   type: TaskType;
   subject: string;
   topic: string;
 }
 
 export interface IEvent {
-  id: ID;
+  _id: ID;
   dueDate: string;
   setAt: string;
   tasks: ITask[];
 }
 
 export interface ITopic {
-  id: ID;
+  _id: ID;
   slug: string;
   title: string;
   types: TaskType[];
 }
 
 export interface ISubject {
-  id: ID;
+  _id: ID;
   title: string;
   topics: ITopic[];
 }
 
 export interface IClassroom {
-  id: ID;
+  _id: ID;
   name: string;
   teacher: ID;
   students: ID[];

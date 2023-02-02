@@ -6,7 +6,20 @@ export function fetcher(endpoint: string) {
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then((res) => res.json());
+  })
+    .then((res) => {
+      if (res.status === 401) {
+        throw Error('Unauthenticated!');
+      }
+
+      return res.json();
+    })
+    .catch((error) => {
+      throw error;
+    });
 }
 
 export * from './classroom';
+export * from './teacher';
+export * from './student';
+export * from './auth';

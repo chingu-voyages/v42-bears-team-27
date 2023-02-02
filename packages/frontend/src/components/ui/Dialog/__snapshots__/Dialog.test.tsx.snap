@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Dialog /> Snapshots should match snapshot 1`] = `
+.emotion-0 {
+  background-color: var(--theme-ui-colors-primary);
+  color: white;
+  border: none;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  border-radius: 50px;
+  -webkit-column-gap: 10px;
+  column-gap: 10px;
+  height: 48px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 32px;
+  padding-right: 32px;
+  font-size: 18px;
+}
+
+.emotion-0:hover {
+  background-color: #424c5a;
+}
+
+.emotion-1 {
+  font-family: "Nunito",sans-serif;
+  font-size: inherit;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+}
+
+<div>
+  <button
+    aria-controls="radix-:r0:"
+    aria-expanded="false"
+    aria-haspopup="dialog"
+    class="emotion-0"
+    data-state="closed"
+    type="button"
+  >
+    <p
+      class="emotion-1"
+    >
+      Foo
+    </p>
+  </button>
+</div>
+`;

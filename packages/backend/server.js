@@ -13,10 +13,7 @@ const app = express();
 // Database
 mongoose.set('strictQuery', false);
 mongoose
-  .connect(process.env.CONNECTION_STRING, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.CONNECTION_STRING)
   .then(() => {
     console.log('database connected!');
   })
@@ -43,6 +40,11 @@ app.use(cookieParser(process.env.SIGN_COOKIE_KEY));
 app.use(passport.initialize());
 
 app.use('/api/v0', routes);
+
+// Error handlers
+app.use((_, res) => {
+  res.status(404).json({ message: '404, endpoint not found' });
+});
 
 const PORT = process.env.PORT || 5000;
 
