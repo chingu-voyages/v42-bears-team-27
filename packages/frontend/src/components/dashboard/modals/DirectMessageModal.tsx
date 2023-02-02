@@ -14,14 +14,29 @@ import {
 } from 'src/components/ui';
 import { postDirectMessageToStudent } from 'src/services';
 
-const studentValidator = (value: string) =>
-  !validator.isEmpty(value) && validator.isLength(value, { min: 6, max: 60 });
+const studentValidator = (value: string) => {
+  const trimmed = value.trim();
+  return (
+    !validator.isEmpty(trimmed) &&
+    validator.isLength(trimmed, { min: 6, max: 60 })
+  );
+};
 
-const headlineValidator = (value: string) =>
-  !validator.isEmpty(value) && validator.isLength(value, { min: 5, max: 30 });
+const headlineValidator = (value: string) => {
+  const trimmed = value.trim();
+  return (
+    !validator.isEmpty(trimmed) &&
+    validator.isLength(trimmed, { min: 5, max: 30 })
+  );
+};
 
-const messageValidator = (value: string) =>
-  !validator.isEmpty(value) && validator.isLength(value, { min: 20, max: 500 });
+const messageValidator = (value: string) => {
+  const trimmed = value.trim();
+  return (
+    !validator.isEmpty(trimmed) &&
+    validator.isLength(trimmed, { min: 20, max: 500 })
+  );
+};
 
 const DirectMessageModal: React.FC = () => {
   const {
