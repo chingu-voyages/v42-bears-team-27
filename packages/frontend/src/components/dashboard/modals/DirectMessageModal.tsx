@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MdSend } from 'react-icons/md';
+import validator from 'validator';
+
+import useInput from 'src/hooks/use-input';
 
 import {
   Button,
@@ -11,30 +14,54 @@ import {
 } from 'src/components/ui';
 import { postDirectMessageToStudent } from 'src/services';
 
-// TODO: Add validators for input fields
-// studentValidator = (value: string) => value.trim().length > 0;
-// headlineValidator = (value: string) => value.trim().length > 0;
-// messageValidator = (value: string) => value.trim().length > 0;
+const studentValidator = (value: string) =>
+  !validator.isEmpty(value) && validator.isLength(value, { min: 6, max: 60 });
+
+const headlineValidator = (value: string) =>
+  !validator.isEmpty(value) && validator.isLength(value, { min: 5, max: 30 });
+
+const messageValidator = (value: string) =>
+  !validator.isEmpty(value) && validator.isLength(value, { min: 20, max: 500 });
 
 const DirectMessageModal: React.FC = () => {
-  const [student, setStudent] = useState('');
-  const [headline, setHeadline] = useState('');
-  const [message, setMessage] = useState('');
+  const {
+    value: enteredStudent,
+    hasErrors: enteredStudentHasErrors,
+    inputChangeHandler: studentChangedHandler,
+    inputBlurHandler: studentBlurHandler,
+    inputResetHandler: studentResetHandler,
+  } = useInput(studentValidator, '');
+
+  const {
+    value: enteredHeadline,
+    hasErrors: enteredHeadlineHasErrors,
+    inputChangeHandler: headlineChangedHandler,
+    inputBlurHandler: headlineBlurHandler,
+    inputResetHandler: headlineResetHandler,
+  } = useInput(headlineValidator, '');
+
+  const {
+    value: enteredMessage,
+    hasErrors: enteredMessageHasErrors,
+    inputChangeHandler: messageChangedHandler,
+    inputBlurHandler: messageBlurHandler,
+    inputResetHandler: messageResetHandler,
+  } = useInput(messageValidator, '');
+
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<string | null>(null);
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // TODO: Add sanitization for input fields
-    // const sanitizedStudent = email;
-    // const sanitizedHeader = email;
-    // const sanitizedBody = password;
+    const sanitizedStudent = validator.escape(enteredStudent);
+    const sanitizedHeadline = validator.escape(enteredHeadline);
+    const sanitizedMessage = validator.escape(enteredMessage);
 
     const data = {
-      studentID: student,
-      messageHeader: headline,
-      messageBody: message,
+      studentID: sanitizedStudent,
+      messageHeader: sanitizedHeadline,
+      messageBody: sanitizedMessage,
     };
 
     try {
@@ -43,9 +70,9 @@ const DirectMessageModal: React.FC = () => {
       // Update alert with api response message
       setAlert(msg);
       // Reset form values
-      setStudent('');
-      setHeadline('');
-      setMessage('');
+      studentResetHandler();
+      headlineResetHandler();
+      messageResetHandler();
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -54,6 +81,25 @@ const DirectMessageModal: React.FC = () => {
       setError(`Unexpected error ${err}`);
     }
   };
+
+  // TODO: The following warnings are not very helpful because they appear only once
+  useEffect(() => {
+    if (enteredStudentHasErrors) {
+      setAlert('WARNING: Student input has errors');
+    }
+  }, [enteredStudentHasErrors]);
+
+  useEffect(() => {
+    if (enteredHeadlineHasErrors) {
+      setAlert('WARNING: Headline input has errors');
+    }
+  }, [enteredHeadlineHasErrors]);
+
+  useEffect(() => {
+    if (enteredMessageHasErrors) {
+      setAlert('WARNING: Message input has errors');
+    }
+  }, [enteredMessageHasErrors]);
 
   return (
     <Dialog>
@@ -65,7 +111,15 @@ const DirectMessageModal: React.FC = () => {
         width="95%"
         height="90vh"
       >
-        <div sx={{ display: 'flex', justifyContent: 'center' }}>
+        <div
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '2em',
+          }}
+        >
           <form
             sx={{
               width: '50%',
@@ -77,25 +131,46 @@ const DirectMessageModal: React.FC = () => {
           >
             <TextField
               // TODO fetch list of classroom students and convert to a selector listing fullNames, then send ID of selected student
-              sx={{ mb: 20 }}
+              sx={{
+                mb: 20,
+                borderColor: enteredStudentHasErrors ? 'red' : 'gray',
+              }}
               id="student"
               label="Student"
-              value={student}
-              onChange={(e) => setStudent(e.currentTarget.value)}
+              value={enteredStudent}
+              onChange={(e) => {
+                setAlert(null);
+                studentChangedHandler(e.currentTarget.value);
+              }}
+              onBlur={studentBlurHandler}
             />
             <TextField
-              sx={{ mb: 20 }}
+              sx={{
+                mb: 20,
+                borderColor: enteredHeadlineHasErrors ? 'red' : 'gray',
+              }}
               id="headline"
               label="Headline"
-              value={headline}
-              onChange={(e) => setHeadline(e.currentTarget.value)}
+              value={enteredHeadline}
+              onChange={(e) => {
+                setAlert(null);
+                headlineChangedHandler(e.currentTarget.value);
+              }}
+              onBlur={headlineBlurHandler}
             />
             <TextFieldArea
-              sx={{ pb: 20 }}
+              sx={{
+                mb: 20,
+                borderColor: enteredMessageHasErrors ? 'red' : 'gray',
+              }}
               id="message"
               label="Message"
-              value={message}
-              onChange={(e) => setMessage(e.currentTarget.value)}
+              value={enteredMessage}
+              onChange={(e) => {
+                setAlert(null);
+                messageChangedHandler(e.currentTarget.value);
+              }}
+              onBlur={messageBlurHandler}
             />
             <Button
               sx={{ width: '100%' }}
@@ -113,11 +188,15 @@ const DirectMessageModal: React.FC = () => {
               </p>
             )}
           </form>
-          {alert && (
-            <p sx={{ variant: 'text.h4', color: 'info', textAlign: 'center' }}>
-              {alert}
-            </p>
-          )}
+          <div>
+            {alert && (
+              <p
+                sx={{ variant: 'text.h4', color: 'info', textAlign: 'center' }}
+              >
+                {alert}
+              </p>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
