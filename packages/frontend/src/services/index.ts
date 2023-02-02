@@ -6,12 +6,17 @@ export function fetcher(endpoint: string) {
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then((res) => {
-    if (res.status === 401) {
-      // TODO Call logoutHandler function
-    }
-    return res.json();
-  });
+  })
+    .then((res) => {
+      if (res.status === 401) {
+        throw Error('Unauthenticated!');
+      }
+
+      return res.json();
+    })
+    .catch((error) => {
+      throw error;
+    });
 }
 
 export * from './classroom';
