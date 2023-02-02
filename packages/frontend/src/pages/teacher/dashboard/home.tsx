@@ -19,10 +19,11 @@ import type { NextPageWithLayout } from '../../_app';
 const Home: NextPageWithLayout = () => {
   const authCtx = useContext(AuthContext);
 
-  const { data: classroomData, isLoading } = useSWR<IClassroom>(
-    '/api/v0/classroom',
-    fetcher,
-  );
+  const {
+    data: classroomData,
+    isLoading,
+    error,
+  } = useSWR<IClassroom>('/api/v0/classroom', fetcher);
 
   if (!authCtx || isLoading) {
     return (
@@ -38,6 +39,12 @@ const Home: NextPageWithLayout = () => {
         Loading Dashboard...
       </p>
     );
+  }
+
+  if (error) {
+    // Assuming any error when fetching data means that user cookies have expired,
+    // therefore logout the user from the app since they're not authenticated
+    authCtx.onLogout();
   }
 
   return (
