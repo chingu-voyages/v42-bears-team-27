@@ -2,10 +2,22 @@ import { useState } from 'react';
 
 import { Button, TextField } from 'src/components/ui';
 import type { INewStudentCredentials } from 'src/interfaces';
+import validator from 'validator';
 
-// TODO: Add validators for input fields
-// fullNameValidator = (value: string) => value.trim().length > 0;
-// emailValidator = (value: string) => value.trim().length > 0;
+import useInput from 'src/hooks/use-input';
+
+const fullNameValidator = (value: string) => {
+  const trimmed = value.trim();
+  return (
+    !validator.isEmpty(trimmed) &&
+    validator.isLength(trimmed, { min: 3, max: 60 })
+  );
+};
+
+const emailValidator = (value: string) => {
+  const trimmed = value.trim();
+  return !validator.isEmpty(trimmed) && validator.isEmail(trimmed);
+};
 
 type Props = {
   error: string | null;
@@ -13,20 +25,32 @@ type Props = {
 };
 
 const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
+  const {
+    value: enteredFullName,
+    hasErrors: enteredFullNameHasErrors,
+    inputChangeHandler: fullNameChangedHandler,
+    inputBlurHandler: fullNameBlurHandler,
+    inputResetHandler: fullNameResetHandler,
+  } = useInput(fullNameValidator, '');
+
+  const {
+    value: enteredEmail,
+    hasErrors: enteredEmailHasErrors,
+    inputChangeHandler: emailChangedHandler,
+    inputBlurHandler: emailBlurHandler,
+    inputResetHandler: emailResetHandler,
+  } = useInput(emailValidator, '');
 
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    // TODO: Add sanitization for input fields
-    // const sanitizedFullName = fullName;
-    // const sanitizedEmail = email;
+    const sanitizedFullName = validator.escape(enteredFullName);
+    const sanitizedEmail = validator.escape(enteredEmail);
 
-    const data = { fullName, email };
+    const data = { fullName: sanitizedFullName, email: sanitizedEmail };
     // Reset form values
-    setFullName('');
-    setEmail('');
+    fullNameResetHandler();
+    emailResetHandler();
     // Submit form data
     onSubmit(data);
   };
@@ -35,18 +59,26 @@ const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
     <form sx={{ minWidth: '40%' }} onSubmit={submitHandler}>
       <div sx={{ py: 3 }}>
         <TextField
+          sx={{
+            borderColor: enteredFullNameHasErrors ? 'red' : 'gray',
+          }}
           placeholder="Forename, Surname"
-          value={fullName}
-          onChange={(e) => setFullName(e.currentTarget.value)}
+          value={enteredFullName}
+          onChange={(e) => fullNameChangedHandler(e.currentTarget.value)}
+          onBlur={fullNameBlurHandler}
           label="Student’s Full Name"
           type="text"
         />
       </div>
       <div sx={{ py: 3 }}>
         <TextField
+          sx={{
+            borderColor: enteredEmailHasErrors ? 'red' : 'gray',
+          }}
           placeholder="student@mail.com"
-          value={email}
-          onChange={(e) => setEmail(e.currentTarget.value)}
+          value={enteredEmail}
+          onChange={(e) => emailChangedHandler(e.currentTarget.value)}
+          onBlur={emailBlurHandler}
           label="Student’s E-mail"
           type="email"
         />
