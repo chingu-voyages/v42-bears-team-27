@@ -32,13 +32,17 @@ function reducer(state: typeof initialState, action: ACTIONTYPE) {
   return initialState;
 }
 
-function useInput(validate: (value: string) => boolean, defaultValue = '') {
+function useInput(
+  validate: (value: string, validatorArgs: any) => boolean,
+  defaultValue = '',
+  validatorArgs = {},
+) {
   const [inputState, dispatch] = useReducer(reducer, {
     ...initialState,
     value: defaultValue,
   });
 
-  const isValueValid = validate(inputState.value);
+  const isValueValid = validate(inputState.value, validatorArgs);
   const hasErrors = inputState.isTouched && !isValueValid;
 
   const inputChangeHandler = (value: string) => {
