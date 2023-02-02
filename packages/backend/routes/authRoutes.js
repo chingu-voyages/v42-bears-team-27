@@ -1,6 +1,10 @@
 const router = require('express').Router();
 
-const { authenticateTeacher, authenticateStudent } = require('../middlewares');
+const {
+  authenticateTeacher,
+  authenticateStudent,
+  validateLoginCredentials,
+} = require('../middlewares');
 
 const {
   loginTeacher,
@@ -8,8 +12,18 @@ const {
   logout,
 } = require('../controllers/authController');
 
-router.post('/teacher', authenticateTeacher, loginTeacher);
-router.post('/student', authenticateStudent, loginStudent);
+router.post(
+  '/teacher',
+  validateLoginCredentials,
+  authenticateTeacher,
+  loginTeacher,
+);
+router.post(
+  '/student',
+  validateLoginCredentials,
+  authenticateStudent,
+  loginStudent,
+);
 // "http://localhost:5000/api/v0/auth/logout"
 router.get('/logout', logout);
 
