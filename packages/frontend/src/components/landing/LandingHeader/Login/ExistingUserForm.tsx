@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import validator from 'validator';
 
 import { Button, TextField } from 'src/components/ui';
 import type { IUserCredentials } from 'src/interfaces';
+import useInput from 'src/hooks/use-input';
 
 type Props = {
   userRole: 'student' | 'teacher';
@@ -9,24 +10,45 @@ type Props = {
   onSubmit: (data: IUserCredentials) => void;
 };
 
-// TODO: Add validators for input fields
-// emailValidator = (value: string) => value.trim().length > 0;
-// passwordValidator = (value: string) => value.trim().length > 0;
+const emailValidator = (value: string) => {
+  const trimmed = value.trim();
+  return !validator.isEmpty(trimmed) && validator.isEmail(trimmed);
+};
+
+const passwordValidator = (value: string) => {
+  const trimmed = value.trim();
+  return !validator.isEmpty(trimmed) && validator.isLength(trimmed, { min: 6 });
+};
 
 const ExistingUserForm: React.FC<Props> = ({ userRole, error, onSubmit }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    value: enteredEmail,
+    hasErrors: enteredEmailHasErrors,
+    inputChangeHandler: emailChangedHandler,
+    inputBlurHandler: emailBlurHandler,
+    inputResetHandler: emailResetHandler,
+  } = useInput(emailValidator, '');
+
+  const {
+    value: enteredPassword,
+    hasErrors: enteredPasswordHasErrors,
+    inputChangeHandler: passwordChangedHandler,
+    inputBlurHandler: passwordBlurHandler,
+    inputResetHandler: passwordResetHandler,
+  } = useInput(passwordValidator, '');
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // TODO: Add sanitization for input fields
-    // const sanitizedEmail = email;
-    // const sanitizedPassword = password;
+    const sanitizedEmail = validator.escape(enteredEmail);
+    const sanitizedPassword = validator.escape(enteredPassword);
 
     // Submit form data
-    const data = { email, password };
+    const data = { email: sanitizedEmail, password: sanitizedPassword };
     onSubmit(data);
+
+    emailResetHandler();
+    passwordResetHandler();
   };
 
   return (
@@ -41,24 +63,32 @@ const ExistingUserForm: React.FC<Props> = ({ userRole, error, onSubmit }) => {
       onSubmit={submitHandler}
     >
       <TextField
+        sx={{
+          borderColor: enteredEmailHasErrors ? 'red' : 'gray',
+        }}
         placeholder={
           userRole === 'student' ? 'student@mail.com' : 'teacher@mail.com'
         }
         id="email"
         type="email"
         label="E-mail"
-        value={email}
+        value={enteredEmail}
+        onChange={(e) => emailChangedHandler(e.currentTarget.value)}
+        onBlur={emailBlurHandler}
         required
-        onChange={(e) => setEmail(e.currentTarget.value)}
       />
       <TextField
+        sx={{
+          borderColor: enteredPasswordHasErrors ? 'red' : 'gray',
+        }}
         id="password"
         type="password"
         label="Password"
         placeholder="••••••"
-        value={password}
+        value={enteredPassword}
+        onChange={(e) => passwordChangedHandler(e.currentTarget.value)}
+        onBlur={passwordBlurHandler}
         required
-        onChange={(e) => setPassword(e.currentTarget.value)}
       />
       <Button sx={{ width: '100%' }} type="submit" rounded={false}>
         Login
