@@ -7,3 +7,4 @@ export * from './Avatar';
 export * from './Checkbox';
 export * from './Menu';
 export * from './RadioGroup';
+export * from './Progress';
