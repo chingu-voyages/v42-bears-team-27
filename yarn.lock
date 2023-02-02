@@ -3447,6 +3447,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@radix-ui/react-alert-dialog@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@radix-ui/react-alert-dialog@npm:1.0.2"
+  dependencies:
+    "@babel/runtime": ^7.13.10
+    "@radix-ui/primitive": 1.0.0
+    "@radix-ui/react-compose-refs": 1.0.0
+    "@radix-ui/react-context": 1.0.0
+    "@radix-ui/react-dialog": 1.0.2
+    "@radix-ui/react-primitive": 1.0.1
+    "@radix-ui/react-slot": 1.0.1
+  peerDependencies:
+    react: ^16.8 || ^17.0 || ^18.0
+    react-dom: ^16.8 || ^17.0 || ^18.0
+  checksum: 6f44674f37996d1c7810111766a33283bccd95ee0586b5e2fde580ae4d401078bc5c3476c163984de815ebd42782b030ee78f4625e64c17851c31c2a61d1f871
+  languageName: node
+  linkType: hard
+
 "@radix-ui/react-arrow@npm:1.0.1":
   version: 1.0.1
   resolution: "@radix-ui/react-arrow@npm:1.0.1"
@@ -3534,7 +3552,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-dialog@npm:^1.0.2":
+"@radix-ui/react-dialog@npm:1.0.2, @radix-ui/react-dialog@npm:^1.0.2":
   version: 1.0.2
   resolution: "@radix-ui/react-dialog@npm:1.0.2"
   dependencies:
@@ -7704,6 +7722,7 @@ __metadata:
     "@emotion/react": ^11.10.5
     "@fontsource/nunito": ^4.5.11
     "@fontsource/roboto": ^4.5.8
+    "@radix-ui/react-alert-dialog": ^1.0.2
     "@radix-ui/react-avatar": ^1.0.1
     "@radix-ui/react-checkbox": ^1.0.1
     "@radix-ui/react-dialog": ^1.0.2
