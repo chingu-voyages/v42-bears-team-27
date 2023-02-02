@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import type { INewTeacherCredentials, IUserCredentials } from 'src/interfaces';
+import { useLocalstorageState } from 'src/hooks';
 import {
   postCreateNewTeacher,
   postLoginExistingUser,
@@ -14,9 +15,18 @@ type Props = {
 };
 
 const AuthProvider: React.FC<Props> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [role, setRole] = useState<UserRole | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useLocalstorageState<User | null>(
+    'app:user-data',
+    null,
+  );
+  const [role, setRole] = useLocalstorageState<UserRole | null>(
+    'app:user-role',
+    null,
+  );
+  const [isLoggedIn, setIsLoggedIn] = useLocalstorageState(
+    'app:logged-in',
+    false,
+  );
 
   const signupTeacherHandler = async (
     teacherCredentials: INewTeacherCredentials,
@@ -74,6 +84,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
       onLogin: loginHandler,
       onLogout: logoutHandler,
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [isLoggedIn, role, user],
   );
 
