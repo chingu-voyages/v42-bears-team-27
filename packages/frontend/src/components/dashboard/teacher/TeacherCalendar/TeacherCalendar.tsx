@@ -6,6 +6,10 @@ import { MdAdd, MdCheck, MdEdit } from 'react-icons/md';
 import { BsEraser } from 'react-icons/bs';
 
 import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogTrigger,
+  Button,
   Calendar,
   Dialog,
   DialogContent,
@@ -13,7 +17,12 @@ import {
   IconButton,
 } from 'src/components/ui';
 import type { IEvent, ISubject, ITask } from 'src/interfaces';
-import { fetcher, postClassroomEvent, putClassroomEvent } from 'src/services';
+import {
+  fetcher,
+  postClassroomEvent,
+  putClassroomEvent,
+  deleteClassroomEvent,
+} from 'src/services';
 import { titleCase } from 'src/utils';
 import CreateTaskForm from './CreateTaskForm';
 
@@ -39,6 +48,9 @@ import CreateTaskForm from './CreateTaskForm';
 //   },
 // ];
 
+// eslint-disable-next-line no-promise-executor-return
+const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
+
 const TeacherCalendar: React.FC = () => {
   const { data: eventsData, mutate: mutateEventsData } = useSWR<IEvent[]>(
     '/api/v0/classroom/events',
@@ -49,6 +61,7 @@ const TeacherCalendar: React.FC = () => {
     fetcher,
   );
 
+  const [open, setOpen] = useState(false);
   const [activeDay, setActiveDay] = useState<Date>(new Date());
   const [isEditEvent, setIsEditEvent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -175,6 +188,29 @@ const TeacherCalendar: React.FC = () => {
     setIsEditEvent(false);
   };
 
+  const deleteEventHandler = async () => {
+    try {
+      if (activeDayEvent) {
+        // If there is already an event on the active
+        // then delete that existing classroom event
+        // Submit form data
+        const msg = await deleteClassroomEvent(activeDayEvent);
+        // Fetch updated events
+        mutateEventsData();
+        // Update alert with api response message
+        setAlert(msg);
+        // Wait and close modal afterwards
+        wait().then(() => setOpen(false));
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
+
+      setError(`Unexpected error ${err}`);
+    }
+  };
+
   return (
     <div
       sx={{
@@ -286,7 +322,7 @@ const TeacherCalendar: React.FC = () => {
         )}
 
         {activeDayEvent && (
-          <div sx={{ height: '60%', overflowY: 'auto' }}>
+          <div sx={{ height: '40%', overflowY: 'auto' }}>
             {activeDayEvent.tasks.map(({ _id, type, subject, topic }) => (
               <div
                 key={_id}
@@ -320,6 +356,27 @@ const TeacherCalendar: React.FC = () => {
               </div>
             ))}
           </div>
+        )}
+
+        {activeDayEvent && isEditEvent && (
+          <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialogTrigger asChild>
+              <Button
+                sx={{ variant: 'buttons.danger', mx: 'auto' }}
+                rounded={false}
+              >
+                Delete Event
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent
+              sx={{ p: 4 }}
+              title="Are you sure you want to delete this event?"
+              description="Once this event is deleted, all students progress for this event would be lost"
+              width={480}
+              height="min-content"
+              onConfirm={deleteEventHandler}
+            />
+          </AlertDialog>
         )}
       </div>
     </div>
