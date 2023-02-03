@@ -39,7 +39,7 @@ import CreateTaskForm from './CreateTaskForm';
 // ];
 
 const TeacherCalendar: React.FC = () => {
-  const { data: eventsData } = useSWR<IEvent[]>(
+  const { data: eventsData, mutate: mutateEventsData } = useSWR<IEvent[]>(
     '/api/v0/classroom/events',
     fetcher,
   );
@@ -72,15 +72,19 @@ const TeacherCalendar: React.FC = () => {
     setActiveDay(date);
   };
 
-  const addTaskHandler = async (newTask: Omit<ITask, 'id'>) => {
+  const addTaskHandler = async (newTask: Omit<ITask, '_id'>) => {
     try {
       if (activeDayEvent) {
         // If there is already an event on the active
         // then update that existing classroom event with the new data
-        const msg = await putClassroomEvent({
+        const updateEvent = {
           _id: activeDayEvent._id,
-          tasks: [...activeDayEvent.tasks, newTask] as ITask[],
-        });
+          tasks: [...activeDayEvent.tasks, newTask],
+        } as IEvent;
+        // Submit form data
+        const msg = await putClassroomEvent(updateEvent);
+        // Fetch updated events
+        mutateEventsData();
         // Update alert with api response message
         setAlert(msg);
       } else {
@@ -89,9 +93,11 @@ const TeacherCalendar: React.FC = () => {
           tasks: [newTask],
           dueDate: new Date(activeDay.setHours(0, 0, 0, 0)).toISOString(),
           setAt: new Date(activeDay.setHours(0, 0, 0, 0)).toISOString(),
-        };
+        } as IEvent;
         // Submit form data
-        const msg = await postClassroomEvent(newEvent as IEvent);
+        const msg = await postClassroomEvent(newEvent);
+        // Fetch updated events
+        mutateEventsData();
         // Update alert with api response message
         setAlert(msg);
       }
