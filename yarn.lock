@@ -4514,6 +4514,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/validator@npm:^13.7.11":
+  version: 13.7.11
+  resolution: "@types/validator@npm:13.7.11"
+  checksum: fbf981a798f9c8dda774e55212945e6dd573eac6e1e520f6a56c11fd9232932d5537e2c848d2148ba6c4613787ad33616adc35d6a9b789614532a4c6a08d9d72
+  languageName: node
+  linkType: hard
+
 "@types/webidl-conversions@npm:*":
   version: 7.0.0
   resolution: "@types/webidl-conversions@npm:7.0.0"
@@ -7738,6 +7745,7 @@ __metadata:
     "@types/react": 18.0.26
     "@types/react-calendar": ^3.9.0
     "@types/react-dom": 18.0.10
+    "@types/validator": ^13.7.11
     "@typescript-eslint/eslint-plugin": ^5.48.1
     "@typescript-eslint/parser": ^5.48.1
     date-fns: ^2.29.3
