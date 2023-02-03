@@ -1,25 +1,16 @@
 const mongoose = require('mongoose');
 
 const eventSchema = new mongoose.Schema({
+  classroom: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Classroom',
+  },
   dueDate: Date,
   setAt: Date,
   tasks: [
     {
-      type: {
-        type: String,
-        required: true,
-        enum: ['lesson', 'exercise', 'test'],
-      },
-      subject: {
-        type: String,
-        required: true,
-        trim: true,
-      },
-      topic: {
-        type: String,
-        required: true,
-        trim: true,
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Task',
     },
   ],
 });

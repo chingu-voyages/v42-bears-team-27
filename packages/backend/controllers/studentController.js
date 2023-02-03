@@ -29,7 +29,9 @@ const createStudent = async (req, res) => {
     });
 
     // Add Student to classroom collection DB
-    const studentClassroom = await Classroom.findById(classroom);
+    const studentClassroom = await Classroom.findById(classroom).populate(
+      'events',
+    );
     if (!studentClassroom) {
       return res.status(400).json({
         message: 'classroom not found',
@@ -38,8 +40,16 @@ const createStudent = async (req, res) => {
     studentClassroom.students.push(newStudent._id);
     await studentClassroom.save();
 
+    // Add existing tasks to Student
+    const studentTasks = [];
+    studentClassroom.events.map((event) =>
+      event.tasks.map((task) => studentTasks.push({ taskID: task })),
+    );
+    newStudent.tasks = studentTasks;
+    await newStudent.save();
+
+    // Send email to student with the password
     if (process.env.NODE_ENV === 'production') {
-      // send email to student with the password
       const content = () => /*html*/ `You have been registered into
             Remote Class! Please use your email and this password to
             login.<br>Password: ${password}`;

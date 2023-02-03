@@ -35,6 +35,20 @@ const StudentSchema = new mongoose.Schema(
         hasBeenRead: {
           type: Boolean,
           required: true,
+          default: false,
+        },
+      },
+    ],
+    tasks: [
+      {
+        taskID: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Task',
+          required: true,
+        },
+        completed: {
+          type: Boolean,
+          default: false,
         },
       },
     ],
