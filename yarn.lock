@@ -3447,6 +3447,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@radix-ui/react-alert-dialog@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@radix-ui/react-alert-dialog@npm:1.0.2"
+  dependencies:
+    "@babel/runtime": ^7.13.10
+    "@radix-ui/primitive": 1.0.0
+    "@radix-ui/react-compose-refs": 1.0.0
+    "@radix-ui/react-context": 1.0.0
+    "@radix-ui/react-dialog": 1.0.2
+    "@radix-ui/react-primitive": 1.0.1
+    "@radix-ui/react-slot": 1.0.1
+  peerDependencies:
+    react: ^16.8 || ^17.0 || ^18.0
+    react-dom: ^16.8 || ^17.0 || ^18.0
+  checksum: 6f44674f37996d1c7810111766a33283bccd95ee0586b5e2fde580ae4d401078bc5c3476c163984de815ebd42782b030ee78f4625e64c17851c31c2a61d1f871
+  languageName: node
+  linkType: hard
+
 "@radix-ui/react-arrow@npm:1.0.1":
   version: 1.0.1
   resolution: "@radix-ui/react-arrow@npm:1.0.1"
@@ -3534,7 +3552,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-dialog@npm:^1.0.2":
+"@radix-ui/react-dialog@npm:1.0.2, @radix-ui/react-dialog@npm:^1.0.2":
   version: 1.0.2
   resolution: "@radix-ui/react-dialog@npm:1.0.2"
   dependencies:
@@ -3747,6 +3765,42 @@ __metadata:
     react: ^16.8 || ^17.0 || ^18.0
     react-dom: ^16.8 || ^17.0 || ^18.0
   checksum: 1cc86b72f926be4a42122e7e456e965de0906f16b0dc244b8448bac05905f208598c984a0dd40026f654b4a71d0235335d48a18e377b07b0ec6c6917576a8080
+  languageName: node
+  linkType: hard
+
+"@radix-ui/react-progress@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@radix-ui/react-progress@npm:1.0.1"
+  dependencies:
+    "@babel/runtime": ^7.13.10
+    "@radix-ui/react-context": 1.0.0
+    "@radix-ui/react-primitive": 1.0.1
+  peerDependencies:
+    react: ^16.8 || ^17.0 || ^18.0
+    react-dom: ^16.8 || ^17.0 || ^18.0
+  checksum: 98b16c1886e39f8efcd7fc60a9c30d7851ce3fab501328ebd76581f6956e7c62901db3834fdb018faca6a3b6f438a3a1a509b1db2c1785822deb38886714bfac
+  languageName: node
+  linkType: hard
+
+"@radix-ui/react-radio-group@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@radix-ui/react-radio-group@npm:1.1.1"
+  dependencies:
+    "@babel/runtime": ^7.13.10
+    "@radix-ui/primitive": 1.0.0
+    "@radix-ui/react-compose-refs": 1.0.0
+    "@radix-ui/react-context": 1.0.0
+    "@radix-ui/react-direction": 1.0.0
+    "@radix-ui/react-presence": 1.0.0
+    "@radix-ui/react-primitive": 1.0.1
+    "@radix-ui/react-roving-focus": 1.0.2
+    "@radix-ui/react-use-controllable-state": 1.0.0
+    "@radix-ui/react-use-previous": 1.0.0
+    "@radix-ui/react-use-size": 1.0.0
+  peerDependencies:
+    react: ^16.8 || ^17.0 || ^18.0
+    react-dom: ^16.8 || ^17.0 || ^18.0
+  checksum: a3edf8636416514cc08ee837cf04fae83cc08a7c35ae44fe99f99e937da99fe92a1df92c084cd897d750a01669f39d118ddacc830e4b4ae59b09fabb18de412e
   languageName: node
   linkType: hard
 
@@ -7668,11 +7722,14 @@ __metadata:
     "@emotion/react": ^11.10.5
     "@fontsource/nunito": ^4.5.11
     "@fontsource/roboto": ^4.5.8
+    "@radix-ui/react-alert-dialog": ^1.0.2
     "@radix-ui/react-avatar": ^1.0.1
     "@radix-ui/react-checkbox": ^1.0.1
     "@radix-ui/react-dialog": ^1.0.2
     "@radix-ui/react-dropdown-menu": ^2.0.2
     "@radix-ui/react-label": ^2.0.0
+    "@radix-ui/react-progress": ^1.0.1
+    "@radix-ui/react-radio-group": ^1.1.1
     "@tanstack/react-table": ^8.7.6
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.4.0
