@@ -1,3 +1,4 @@
+type ID = string;
 type TaskType = 'lesson' | 'exercise' | 'test';
 
 export interface IUserCredentials {
@@ -5,55 +6,62 @@ export interface IUserCredentials {
   password: string;
 }
 
-export interface IUserData {
-  role: 'student' | 'teacher';
-  [key: string]: any;
+export interface INewTeacherCredentials {
+  title: string;
+  fullName: string;
+  email: string;
+  password: string;
+}
+
+export interface INewStudentCredentials {
+  fullName: string;
+  email: string;
+}
+
+export interface ITeacher {
+  _id: ID;
+  title: string;
+  fullName: string;
+}
+
+export interface IStudent {
+  _id: ID;
+  fullName: string;
+  tasks: number;
 }
 
 export interface ITask {
-  id: string | number;
+  _id: ID;
   type: TaskType;
   subject: string;
   topic: string;
-  sourceUrl: string;
 }
 
 export interface IEvent {
-  id: string | number;
+  _id: ID;
   dueDate: string;
   setAt: string;
   tasks: ITask[];
 }
 
-export interface IStudent {
-  id: string | number;
-  fullName: string;
-  tasks: number;
-}
-
-export interface IType {
-  id: string | number;
-  title: TaskType;
-  url: string;
-}
-
 export interface ITopic {
-  id: string | number;
+  _id: ID;
+  slug: string;
   title: string;
-  types: IType[];
+  types: TaskType[];
 }
 
 export interface ISubject {
-  id: string | number;
+  _id: ID;
   title: string;
   topics: ITopic[];
 }
 
 export interface IClassroom {
-  id: string | number;
+  _id: ID;
   name: string;
-  students: IStudent[];
-  subjects: ISubject[];
-  events: IEvent[];
-  [key: string]: any;
+  teacher: ID;
+  students: ID[];
+  subjects: ID[];
+  events: ID[];
 }

@@ -4,9 +4,8 @@ import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import { ThemeProvider } from 'theme-ui';
 
-import ErrorBoundary from 'components/common/ErrorBoundary';
-import { AuthProvider } from 'store/auth';
-
+import ErrorBoundary from 'src/components/common/ErrorBoundary';
+import { AuthProvider } from 'src/store/auth';
 import theme from '../theme';
 import { io } from 'socket.io-client';
 
@@ -16,6 +15,9 @@ socket.on('event - a', () => {
 });
 socket.on('teacher-connected', () => {
   console.log('event teacher-connected');
+});
+socket.on('student-connected', () => {
+  console.log('event student-connected');
 });
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {

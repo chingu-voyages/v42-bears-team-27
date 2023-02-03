@@ -56,9 +56,3 @@ app.use('/api/v0', routes);
 const PORT = process.env.PORT || 5000;
 
 httpServer.listen(PORT, console.log(`server started on port ${PORT}`));
-
-const hi = 'hello';
-
-module.exports = {
-  hi,
-};

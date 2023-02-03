@@ -1,41 +1,25 @@
-import type { Fetcher } from 'swr';
 import type { IClassroom, IEvent } from 'interfaces';
 
-// GET REQUESTS
-export const getClassroom = () =>
-  fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom`, {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) => res.json());
-
-export const getClassroomEvents: Fetcher<IEvent[]> = (endpoint: string) =>
-  fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}${endpoint}`, {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) => res.json());
-
 // POST REQUESTS
-export const postClassroomEvent = (newEvent: Omit<IEvent, 'id'>) => {
-  fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
+export const postClassroomEvent = (newEvent: Omit<IEvent, 'id'>) =>
+  fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/events/create`,
+    {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newEvent),
     },
-    body: JSON.stringify(newEvent),
-  }).then((res) => res.json());
-};
+  )
+    .then(() => 'Success: Created!')
+    .catch((error) => {
+      throw error;
+    });
 
 // PUT REQUESTS
-export const putClassroom = (
-  updatedClassroom: Omit<IClassroom, 'events' | 'subjects'>,
-) => {
+export const putClassroom = (updatedClassroom: Partial<IClassroom>) =>
   fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom`, {
     method: 'PUT',
     credentials: 'include',
@@ -43,16 +27,49 @@ export const putClassroom = (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(updatedClassroom),
-  }).then((res) => res.json());
-};
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Not authenticated');
+      }
 
-export const putClassroomEvent = (updatedEvent: IEvent) => {
-  fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom`, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
+      return res.json();
+    })
+    .catch((error) => {
+      throw error;
+    });
+
+export const putClassroomEvent = (updatedEvent: Partial<IEvent>) =>
+  fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/events/${updatedEvent._id}`,
+    {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedEvent),
     },
-    body: JSON.stringify(updatedEvent),
-  }).then((res) => res.json());
-};
+  )
+    .then(() => 'Success: Updated!')
+    .catch((error) => {
+      throw error;
+    });
+
+// DELETE REQUESTS
+export const deleteClassroomEvent = (deletedEvent: Partial<IEvent>) =>
+  fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/events/${deletedEvent._id}`,
+    {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(deletedEvent),
+    },
+  )
+    .then(() => 'Success: Deleted!')
+    .catch((error) => {
+      throw error;
+    });

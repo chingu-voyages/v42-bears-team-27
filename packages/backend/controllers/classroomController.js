@@ -1,72 +1,55 @@
 const Classroom = require('../models/classroomModel');
-const Student = require('../models/studentModel');
-const Message = require('../models/messageModel');
 const Event = require('../models/eventModel');
 
-const getClassroom = async (req, res) => {
+const getClassroom = async (_, res) => {
   const { user } = res.locals;
   try {
     const classroom = await Classroom.findById(user.classroom);
-    if (classroom) {
-      return res.json(classroom);
+    if (!classroom) {
+      return res.status(400).json({ message: 'Classroom not found' });
     }
-    return res.status(400).json({ message: 'Classroom not found' });
-  } catch (err) {
-    return res.status(500).json({ err });
-  }
-};
-
-const createClassroom = async (req, res) => {
-  const { user } = res.locals;
-  const { name, subjects } = req.body;
-  try {
-    const classroom = await Classroom.findById(user.classroom);
-    if (classroom) {
-      classroom.name = name;
-      classroom.subjects = subjects;
-      // TODO Add after subjects schema creation
-      // subjects.map(async (t) => {
-      //   const subjectToAdd = await Subject.findOne({ name: t });
-      //   classroom.subjects.push(subjectToAdd._id);
-      // })
-      await classroom.save();
-      return res.json(classroom);
-    }
-    return res.status(400).json({ message: 'Classroom not found' });
+    return res.json(classroom);
   } catch (err) {
     return res.status(500).json({ err });
   }
 };
 
 const updateClassroom = async (req, res) => {
-  const classroomId = res.locals.user.id;
-  let classroom = await Classroom.findById(classroomId);
+  const { id: teacherId, classroom: classroomId } = res.locals.user;
+  try {
+    const classroom = await Classroom.findById(classroomId);
+    if (!classroom) {
+      return res.status(400).json({ error: 'Classroom not found' });
+    }
 
-  if (!classroom) {
-    return res.status(404).json({ error: 'Classroom not found' });
+    // Block from updating other properties
+    const update = {
+      ...(!req.body.name ? {} : { name: req.body.name }),
+      ...(!req.body.subjects ? {} : { subjects: req.body.subjects }),
+      ...(!req.body.events ? {} : { events: req.body.events }),
+    };
+
+    const updatedClassroom = await Classroom.findOneAndUpdate(
+      { teacher: teacherId },
+      update,
+      {
+        new: true,
+      },
+    );
+
+    return res.json(updatedClassroom);
+  } catch (err) {
+    return res.status(500).json({ err });
   }
-  if (!classroom.teacher.equals(res.locals.user.id)) {
-    return res.status(401).json({ error: 'Unauthorized access' });
-  }
-
-  classroom = {
-    ...classroom,
-    name: req.body.name,
-    students: req.body.students,
-    subjects: req.body.subjects,
-    events: req.body.events,
-  };
-
-  await classroom.save();
-  return res.json(classroom);
 };
 
-const deleteClassroom = async (req, res) => {
-  const classroomId = res.locals.user.id;
-  const classroom = await Classroom.findById(classroomId);
+// Not used on the frontend
+const deleteClassroom = async (_, res) => {
+  const { classroom: classroomId } = res.locals.user;
 
+  const classroom = await Classroom.findById(classroomId);
   if (!classroom) {
-    return res.status(404).json({ error: 'Classroom not found' });
+    return res.status(400).json({ error: 'Classroom not found' });
   }
   if (!classroom.teacher.equals(res.locals.user.id)) {
     return res.status(401).json({ error: 'Unauthorized access' });
@@ -77,108 +60,148 @@ const deleteClassroom = async (req, res) => {
   return res.json({ message: 'Classroom deleted' });
 };
 
-/// Classroom Events
+/// Classroom Subjects
+const getClassroomSubjects = async (_, res) => {
+  const { id: teacherId, classroom } = res.locals.user;
+  try {
+    const { teacher, subjects } = await Classroom.findById(classroom).populate(
+      'subjects',
+    );
+    if (!teacher) {
+      return res.status(400).json({ error: 'Classroom not found' });
+    }
+    if (!teacher._id.equals(teacherId)) {
+      return res.status(401).json({ error: 'Unauthorized access' });
+    }
 
-// TODO: It should return populated data for classroom events
-// const getClassroomEvents = async (req, res) => {};
-
-const addClassroomEvent = async (req, res) => {
-  const classroom = await Classroom.findOne({ teacher: res.locals.user.id });
-
-  if (!classroom.teacher.equals(res.locals.user.id)) {
-    return res.status(401).json({ error: 'Unauthorized access' });
+    return res.json(subjects);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ err });
   }
-
-  const newEvent = new Event({
-    setAt: new Date(req.body.setAt),
-    dueDate: new Date(req.body.dueDate),
-    tasks: req.body.tasks,
-  });
-
-  await newEvent.save();
-
-  return res.json(newEvent);
 };
 
-const updateClassroomEvent = async (req, res) => {
-  const classroom = await Classroom.findOne({ teacher: res.locals.user.id });
+/// Classroom Events
+const getClassroomEvent = async (req, res) => {
+  const { user } = res.locals;
+  const { id: requestId } = req.params;
+  try {
+    const classroom = await Classroom.findById(user.classroom);
+    if (!classroom) {
+      return res.status(400).json({ error: 'Classroom not found' });
+    }
 
-  if (!classroom.teacher.equals(res.locals.user.id)) {
-    return res.status(401).json({ error: 'Unauthorized access' });
+    const event = await Event.findById(requestId);
+    if (!event) return res.status(400).json('event not found!');
+
+    return res.json(event);
+  } catch (err) {
+    return res.status(500).json({ err });
   }
+};
 
-  const updatedEvent = await Event.findByIdAndUpdate(
-    req.params.id,
-    {
+const getClassroomEvents = async (_, res) => {
+  const { user } = res.locals;
+  try {
+    const { events } = await Classroom.findById(user.classroom).populate(
+      'events',
+    );
+    if (!events) {
+      return res.status(400).json({ error: 'Classroom not found' });
+    }
+
+    return res.json(events);
+  } catch (err) {
+    return res.status(500).json({ err });
+  }
+};
+
+const addClassroomEvent = async (req, res) => {
+  const { id: teacherId, classroom: classroomId } = res.locals.user;
+  try {
+    const classroom = await Classroom.findById(classroomId);
+    if (!classroom) {
+      return res.status(400).json({ error: 'Classroom not found' });
+    }
+    if (!classroom.teacher.equals(teacherId)) {
+      return res.status(401).json({ error: 'Unauthorized access' });
+    }
+
+    const newEvent = await Event.create({
       setAt: new Date(req.body.setAt),
       dueDate: new Date(req.body.dueDate),
       tasks: req.body.tasks,
-    },
-    { new: true },
-  );
+    });
+    if (!newEvent) {
+      return res.status(500).json({ error: 'Server error' });
+    }
+    // Update tasks refs
+    classroom.events.push(newEvent._id);
+    await classroom.save();
 
-  if (!updatedEvent)
-    return res.status(400).send('the event cannot be updated!');
+    return res.json({ message: 'Event created!', id: newEvent._id });
+  } catch (err) {
+    return res.status(500).json('Server error');
+  }
+};
 
-  return res.json(updatedEvent);
+const updateClassroomEvent = async (req, res) => {
+  const { classroom: classroomId } = res.locals.user;
+  const { id: requestId } = req.params;
+  try {
+    const { events } = await Classroom.findById(classroomId);
+    if (!events) {
+      return res.status(400).json({ error: 'Classroom not found' });
+    }
+    if (!events.includes(requestId)) {
+      return res.status(401).json({ error: 'Event is not in your classroom' });
+    }
+
+    const updatedEvent = await Event.findByIdAndUpdate(requestId, req.body, {
+      new: true,
+    });
+    if (!updatedEvent) return res.status(500).send('error updating the event!');
+
+    return res.json({ message: 'Event updated!' });
+  } catch (err) {
+    return res.status(500).json({ err });
+  }
 };
 
 const deleteClassroomEvent = async (req, res) => {
-  const event = await Classroom.events.findById(req.params.id);
-
-  if (!event) {
-    return res.status(404).json({ error: 'classroom event not found' });
-  }
-
-  await event.remove();
-
-  return res.json({ message: 'classroom event deleted' });
-};
-
-const broadcastMessage = async (req, res) => {
-  const { messageHeader, messageBody } = req.body;
-
-  const teacherID = res.locals.user;
-
+  const { id: teacherId, classroom: classroomId } = res.locals.user;
+  const { id: requestId } = req.params;
   try {
-    const { students } = await Classroom.findOne({ teacher: teacherID });
-
-    if (!students.length) {
-      return res
-        .status(400)
-        .json({ message: 'You have no students in your classroom' });
+    const classroom = await Classroom.findById(classroomId);
+    if (!classroom) {
+      return res.status(400).json('classroom not found!');
+    }
+    if (!classroom.teacher.equals(teacherId)) {
+      return res.status(401).json({ error: 'Unauthorized access' });
     }
 
-    const newMessage = await Message.create({
-      isBroadcast: true,
-      fromTeacher: teacherID,
-      messageHeader,
-      messageBody,
-    });
+    const deleted = await Event.findByIdAndDelete(requestId);
+    if (!deleted) {
+      return res.status(400).json('event not found!');
+    }
 
-    students.forEach(async (studentID) => {
-      const student = await Student.findById(studentID);
+    classroom.events.pull({ _id: requestId });
+    await classroom.save();
 
-      student.inbox.push({
-        messageID: newMessage._id,
-        hasBeenRead: false,
-      });
-      await student.save();
-    });
-    return res.status(200).json({ message: 'message sent!' });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.json({ message: 'classroom event deleted' });
+  } catch (err) {
+    return res.status(500).json('Server error');
   }
 };
 
 module.exports = {
-  createClassroom,
   getClassroom,
   updateClassroom,
   deleteClassroom,
-  broadcastMessage,
-  deleteClassroomEvent,
+  getClassroomSubjects,
+  getClassroomEvent,
+  getClassroomEvents,
   addClassroomEvent,
   updateClassroomEvent,
+  deleteClassroomEvent,
 };
