@@ -19,12 +19,9 @@ export interface CheckboxProps extends CheckboxPrimitive.CheckboxProps {
 }
 
 export const Checkbox: ForwardRefExoticComponent<
-CheckboxProps & RefAttributes<HTMLButtonElement>
-> = forwardRef(({ children, key, id, label, size = 18, sx, ...rest }, ref) => (
-  <div
-    key={key}
-    sx={{ display: 'flex', alignItems: 'center', color: 'primary', ...sx }}
-  >
+  CheckboxProps & RefAttributes<HTMLButtonElement>
+> = forwardRef(({ children, id, label, size = 18, sx, ...rest }, ref) => (
+  <div sx={{ display: 'flex', alignItems: 'center', color: 'primary', ...sx }}>
     <CheckboxPrimitive.Root
       ref={ref}
       id={id}
