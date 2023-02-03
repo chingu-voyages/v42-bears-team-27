@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react';
 import useSWR from 'swr';
 import { isSameDay, format } from 'date-fns';
 import { MdAdd } from 'react-icons/md';
+import { BsEraser } from 'react-icons/bs';
 
 import {
   Calendar,
@@ -110,6 +111,38 @@ const TeacherCalendar: React.FC = () => {
     }
   };
 
+  const removeTaskHandler = async (taskId: string) => {
+    try {
+      if (activeDayEvent) {
+        const foundExistingTaskIdx = activeDayEvent.tasks.findIndex(
+          (task) => task._id === taskId,
+        );
+        if (foundExistingTaskIdx === -1) {
+          setAlert('WARNING: Task does not exist for this event');
+        } else {
+          const updatedTasks = [...activeDayEvent.tasks];
+          // Remove task instance from activeDayEvent
+          updatedTasks.splice(foundExistingTaskIdx, 1);
+          // Update existing classroom event with the removed data
+          const msg = await putClassroomEvent({
+            _id: activeDayEvent._id,
+            tasks: updatedTasks,
+          });
+          // Fetch updated events
+          mutateEventsData();
+          // Update alert with api response message
+          setAlert(msg);
+        }
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
+
+      setError(`Unexpected error ${err}`);
+    }
+  };
+
   return (
     <div
       sx={{
@@ -172,26 +205,35 @@ const TeacherCalendar: React.FC = () => {
         }`}</p>
 
         {activeDayEvent && (
-          <div sx={{ height: '60%', mx: 5, overflowY: 'auto' }}>
-            {activeDayEvent.tasks.map(({ type, subject, topic }, idx) => (
+          <div sx={{ height: '60%', overflowY: 'auto' }}>
+            {activeDayEvent.tasks.map(({ _id, type, subject, topic }) => (
               <div
-                // eslint-disable-next-line react/no-array-index-key
-                key={idx}
+                key={_id}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  justifyContent: 'space-between',
                   columnGap: 1,
+                  maxWidth: '95%',
+                  width: 400,
+                  mx: 'auto',
                 }}
               >
-                <p sx={{ width: 128 }}>
-                  {`
+                <div
+                  sx={{ display: 'flex', alignItems: 'center', columnGap: 1 }}
+                >
+                  <p sx={{ width: 128 }}>
+                    {`
                   ${
                     type === 'lesson' ? '🔵' : type === 'exercise' ? '🟡' : '🟣'
                   } ${titleCase(type)}:
                   `}
-                </p>
-                <p>{titleCase(`${subject} - ${topic}`)}</p>
+                  </p>
+                  <p>{titleCase(`${subject} - ${topic}`)}</p>
+                </div>
+                <IconButton onClick={() => removeTaskHandler(_id)}>
+                  <BsEraser size={24} />
+                </IconButton>
               </div>
             ))}
           </div>
