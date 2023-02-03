@@ -3,11 +3,11 @@ require('dotenv').config();
 const { createServer } = require('http');
 const cors = require('cors');
 const express = require('express');
-const { Server } = require('socket.io');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 
+const { initializeSocketConnection, getSocketConnection } = require('./socket');
 const routes = require('./routes');
 
 const corsOptions = () => {
@@ -25,12 +25,15 @@ const corsOptions = () => {
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  cors: corsOptions(),
+initializeSocketConnection(httpServer, corsOptions);
+
+const io = getSocketConnection();
+io.on('connection', (socket) => {
+  console.log(`user connected on socket with id ${socket.id}`);
+  socket.on('disconnect', () => {
+    console.log(`user disconnected on socket with id ${socket.id}`);
+  });
 });
-
-app.locals.io = io;
-
 // Database
 mongoose.set('strictQuery', false);
 mongoose

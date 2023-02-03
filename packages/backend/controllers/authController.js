@@ -1,4 +1,7 @@
+const { getSocketConnection } = require('../socket');
+
 const loginTeacher = async (req, res) => {
+  const io = getSocketConnection();
   const { user } = res.locals;
   req.login(user, { session: false }, (error) => {
     if (error) {
@@ -9,9 +12,15 @@ const loginTeacher = async (req, res) => {
       email: user.email,
     };
 
-    req.app.locals.io.on('connection', (socket) => {
-      console.log(`new teacher with socket id ${socket.id} connected`);
-      socket.emit('teacher-connected');
+    io.on('teacher-signed-in', (socket) => {
+      console.log(
+        `teacher with id ${user._id} connected on socket with id ${socket.id}`,
+      );
+      socket.on('teacher-signed-out', () => {
+        console.log(
+          `teacher with id ${user._id} disconnected on socket with id ${socket.id}`,
+        );
+      });
     });
 
     return res
@@ -30,6 +39,7 @@ const loginTeacher = async (req, res) => {
 };
 
 const loginStudent = async (req, res) => {
+  const io = getSocketConnection();
   const { user } = res.locals;
   req.login(user, { session: false }, (error) => {
     if (error) {
@@ -40,9 +50,15 @@ const loginStudent = async (req, res) => {
       email: user.email,
     };
 
-    req.app.locals.io.on('connection', (socket) => {
-      console.log(`new student with socket id ${socket.id} connected`);
-      socket.emit('student-connected');
+    io.on('teacher-signed-in', (socket) => {
+      console.log(
+        `student with id ${user._id} connected on socket with id ${socket.id}`,
+      );
+      socket.on('teacher-signed-out', () => {
+        console.log(
+          `student with id ${user._id} disconnected on socket with id ${socket.id}`,
+        );
+      });
     });
 
     res
