@@ -38,8 +38,11 @@ const updateClassroom = async (req, res) => {
         new: true,
       },
     );
+    if (!updatedClassroom) {
+      return res.status(500).json({ error: 'Classroom was not updated' });
+    }
 
-    return res.json(updatedClassroom);
+    return res.json({ message: 'Classroom updated!' });
   } catch (err) {
     return res.status(500).json({ err });
   }
