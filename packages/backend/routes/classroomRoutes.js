@@ -4,7 +4,6 @@ const { checkTeacherAuthenticated } = require('../middlewares');
 
 const {
   getClassroom,
-  createClassroom,
   updateClassroom,
   deleteClassroom,
   getClassroomSubjects,
@@ -17,7 +16,6 @@ const {
 
 router.get('/', checkTeacherAuthenticated, getClassroom);
 
-router.post('/create', checkTeacherAuthenticated, createClassroom);
 router.get('/', checkTeacherAuthenticated, getClassroom);
 router.put('/', checkTeacherAuthenticated, updateClassroom);
 router.delete('/', checkTeacherAuthenticated, deleteClassroom);
