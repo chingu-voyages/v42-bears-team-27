@@ -23,6 +23,7 @@ export interface AlertDialogContentProps
    * Height of the component
    */
   height: string | number;
+  onConfirm: () => void;
   sx?: ThemeUIStyleObject;
 }
 
@@ -54,7 +55,10 @@ const contentStyles: ThemeUIStyleObject = {
 export const AlertDialogContent: ForwardRefExoticComponent<
 AlertDialogContentProps & RefAttributes<HTMLDivElement>
 > = forwardRef(
-  ({ children, title, description, width, height, sx, ...rest }, ref) => (
+  (
+    { children, title, description, width, height, sx, onConfirm, ...rest },
+    ref,
+  ) => (
     <AlertDialogPrimitive.Portal>
       <AlertDialogPrimitive.Overlay sx={overlayStyles} />
       <AlertDialogPrimitive.Content
@@ -76,7 +80,7 @@ AlertDialogContentProps & RefAttributes<HTMLDivElement>
             <Button variant="outlined">Cancel</Button>
           </AlertDialogPrimitive.Cancel>
           <AlertDialogPrimitive.Action asChild>
-            <Button>Confirm</Button>
+            <Button onClick={onConfirm}>Confirm</Button>
           </AlertDialogPrimitive.Action>
         </div>
       </AlertDialogPrimitive.Content>
