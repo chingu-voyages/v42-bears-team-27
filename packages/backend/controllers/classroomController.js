@@ -161,6 +161,13 @@ const updateClassroomEvent = async (req, res) => {
       new: true,
     });
     if (!updatedEvent) return res.status(500).send('error updating the event!');
+    // Remove event from database if there's no tasks
+    if (updatedEvent.tasks.length === 0) {
+      const deleted = await Event.findByIdAndDelete(requestId);
+      if (!deleted) {
+        return res.status(400).json('event not found!');
+      }
+    }
 
     return res.json({ message: 'Event updated!' });
   } catch (err) {
