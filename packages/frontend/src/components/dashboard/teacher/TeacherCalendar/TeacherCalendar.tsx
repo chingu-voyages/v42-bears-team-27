@@ -2,7 +2,7 @@
 import { useState, useMemo } from 'react';
 import useSWR from 'swr';
 import { isSameDay, format } from 'date-fns';
-import { MdAdd } from 'react-icons/md';
+import { MdAdd, MdCheck, MdEdit } from 'react-icons/md';
 import { BsEraser } from 'react-icons/bs';
 
 import {
@@ -50,6 +50,7 @@ const TeacherCalendar: React.FC = () => {
   );
 
   const [activeDay, setActiveDay] = useState<Date>(new Date());
+  const [isEditEvent, setIsEditEvent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<string | null>(null);
 
@@ -71,6 +72,7 @@ const TeacherCalendar: React.FC = () => {
 
   const changedActiveDayHandler = (date: Date) => {
     setActiveDay(date);
+    setIsEditEvent(false);
   };
 
   const addTaskHandler = async (newTask: Omit<ITask, '_id'>) => {
@@ -143,6 +145,36 @@ const TeacherCalendar: React.FC = () => {
     }
   };
 
+  const editEventHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const updatedDueDate = e.currentTarget.dueDate.value;
+
+    try {
+      if (activeDayEvent) {
+        // If there is already an event on the active
+        // then update that existing classroom event with the new data
+        const updateEvent = {
+          _id: activeDayEvent._id,
+          dueDate: updatedDueDate,
+        };
+        // Submit form data
+        const msg = await putClassroomEvent(updateEvent);
+        // Fetch updated events
+        mutateEventsData();
+        // Update alert with api response message
+        setAlert(msg);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
+
+      setError(`Unexpected error ${err}`);
+    }
+
+    setIsEditEvent(false);
+  };
+
   return (
     <div
       sx={{
@@ -171,7 +203,7 @@ const TeacherCalendar: React.FC = () => {
       >
         <Dialog>
           <DialogTrigger asChild>
-            <IconButton sx={{ position: 'absolute', top: 3, right: 3 }}>
+            <IconButton sx={{ position: 'absolute', top: 3, right: 5 }}>
               <MdAdd size={32} />
             </IconButton>
           </DialogTrigger>
@@ -195,14 +227,63 @@ const TeacherCalendar: React.FC = () => {
           </DialogContent>
         </Dialog>
 
+        {activeDayEvent && !isEditEvent && (
+          <IconButton
+            sx={{ position: 'absolute', top: '20px', right: 3 }}
+            // @ts-ignore
+            form="edit-form"
+            type="submit"
+            onClick={() => setIsEditEvent(true)}
+          >
+            <MdEdit size={24} />
+          </IconButton>
+        )}
+
         <h2 sx={{ variant: 'text.h4', textAlign: 'center' }}>
           Tasks Assigned:
         </h2>
-        <p sx={{ textAlign: 'center' }}>{`${
-          activeDayEvent
-            ? `Due Date: ${format(new Date(activeDayEvent.dueDate), 'PP')}`
-            : 'No tasks'
-        }`}</p>
+
+        {activeDayEvent ? (
+          <div
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {!isEditEvent ? (
+              <p sx={{ textAlign: 'center', flexGrow: 1 }}>{`Due Date: ${format(
+                new Date(activeDayEvent.dueDate),
+                'PP',
+              )}`}</p>
+            ) : (
+              <form sx={{ my: 3 }} onSubmit={editEventHandler}>
+                <label htmlFor="due-date">
+                  Update Due Date:
+                  <input
+                    sx={{ ml: 3 }}
+                    id="due-date"
+                    type="date"
+                    name="dueDate"
+                    defaultValue={format(
+                      new Date(activeDayEvent.dueDate),
+                      'yyyy-MM-dd',
+                    )}
+                  />
+                </label>
+                <IconButton
+                  sx={{ position: 'absolute', top: '20px', right: 3 }}
+                  // @ts-ignore
+                  type="submit"
+                >
+                  <MdCheck size={24} />
+                </IconButton>
+              </form>
+            )}
+          </div>
+        ) : (
+          <p sx={{ textAlign: 'center', py: 3, m: 0 }}>No tasks</p>
+        )}
 
         {activeDayEvent && (
           <div sx={{ height: '60%', overflowY: 'auto' }}>
@@ -231,9 +312,11 @@ const TeacherCalendar: React.FC = () => {
                   </p>
                   <p>{titleCase(`${subject} - ${topic}`)}</p>
                 </div>
-                <IconButton onClick={() => removeTaskHandler(_id)}>
-                  <BsEraser size={24} />
-                </IconButton>
+                {isEditEvent && (
+                  <IconButton onClick={() => removeTaskHandler(_id)}>
+                    <BsEraser size={24} />
+                  </IconButton>
+                )}
               </div>
             ))}
           </div>
