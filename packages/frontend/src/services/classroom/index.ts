@@ -1,7 +1,7 @@
 import type { IClassroom, IEvent, ITask } from 'interfaces';
 
 // POST REQUESTS
-export const postClassroomEvent = (newEvent: Omit<IEvent, 'id'>) =>
+export const postClassroomEvent = (newEvent: Omit<IEvent, '_id' | 'tasks'>) =>
   fetch(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/events/create`,
     {
@@ -13,12 +13,18 @@ export const postClassroomEvent = (newEvent: Omit<IEvent, 'id'>) =>
       body: JSON.stringify(newEvent),
     },
   )
-    .then(() => 'Success: Created!')
+    .then((res) => {
+      if (!res.ok) {
+        throw res.json();
+      }
+
+      return res.json();
+    })
     .catch((error) => {
       throw error;
     });
 
-export const postClassroomTask = (newTask: Omit<ITask, 'id'>) =>
+export const postClassroomTask = (newTask: Omit<ITask, '_id'>) =>
   fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/tasks/create`, {
     method: 'POST',
     credentials: 'include',
@@ -27,7 +33,13 @@ export const postClassroomTask = (newTask: Omit<ITask, 'id'>) =>
     },
     body: JSON.stringify(newTask),
   })
-    .then(() => 'Success: Created!')
+    .then((res) => {
+      if (!res.ok) {
+        throw res.json();
+      }
+
+      return res.json();
+    })
     .catch((error) => {
       throw error;
     });
@@ -65,42 +77,58 @@ export const putClassroomEvent = (updatedEvent: Partial<IEvent>) =>
       body: JSON.stringify(updatedEvent),
     },
   )
-    .then(() => 'Success: Updated!')
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Not authenticated');
+      }
+
+      return res.json();
+    })
     .catch((error) => {
       throw error;
     });
 
 // DELETE REQUESTS
-export const deleteClassroomEvent = (deletedEvent: Partial<IEvent>) =>
+export const deleteClassroomEvent = (eventId: string) =>
   fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/events/${deletedEvent._id}`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/events/${eventId}`,
     {
       method: 'DELETE',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(deletedEvent),
     },
   )
-    .then(() => 'Success: Deleted!')
+    .then((res) => {
+      if (!res.ok) {
+        throw res.json();
+      }
+
+      return res.json();
+    })
     .catch((error) => {
       throw error;
     });
 
-export const deleteClassroomTask = (deletedTask: Partial<ITask>) =>
+export const deleteClassroomTask = (taskId: string) =>
   fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/tasks/${deletedTask._id}`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/tasks/${taskId}`,
     {
       method: 'DELETE',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(deletedTask),
     },
   )
-    .then(() => 'Success: Deleted!')
+    .then((res) => {
+      if (!res.ok) {
+        throw res.json();
+      }
+
+      return res.json();
+    })
     .catch((error) => {
       throw error;
     });

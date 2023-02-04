@@ -91,6 +91,14 @@ const theme: Theme = {
         },
       },
     },
+    danger: {
+      bg: 'error',
+      color: 'white',
+      border: '2px solid currentColor ',
+      '&:hover': {
+        bg: '#dc3c31',
+      },
+    },
   },
 };
 

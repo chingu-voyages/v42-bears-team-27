@@ -95,15 +95,15 @@ const getClassroomEvent = async (req, res) => {
   try {
     const classroom = await Classroom.findById(user.classroom);
     if (!classroom) {
-      return res.status(400).json({ error: 'Classroom not found' });
+      return res.status(400).json({ message: 'Classroom not found' });
     }
     // TODO send only one request to DB & make sure event is inside teacher classroom
     const event = await Event.findById(requestId).populate('tasks');
-    if (!event) return res.status(400).json('event not found!');
+    if (!event) return res.status(400).json({ message: 'event not found!' });
 
     return res.json(event);
   } catch (err) {
-    return res.status(500).json({ err });
+    return res.status(500).json(err);
   }
 };
 
@@ -117,12 +117,12 @@ const getClassroomEvents = async (_, res) => {
       },
     });
     if (!events) {
-      return res.status(400).json({ error: 'Classroom not found' });
+      return res.status(400).json({ message: 'Classroom not found' });
     }
 
     return res.json(events);
   } catch (err) {
-    return res.status(500).json({ err });
+    return res.status(500).json(err);
   }
 };
 
@@ -132,10 +132,10 @@ const addClassroomEvent = async (req, res) => {
   try {
     const classroom = await Classroom.findById(classroomId);
     if (!classroom) {
-      return res.status(400).json({ error: 'Classroom not found' });
+      return res.status(400).json({ message: 'Classroom not found' });
     }
     if (!classroom.teacher.equals(teacherId)) {
-      return res.status(401).json({ error: 'Unauthorized access' });
+      return res.status(401).json({ message: 'Unauthorized access' });
     }
 
     const newEvent = await Event.create({
@@ -144,15 +144,15 @@ const addClassroomEvent = async (req, res) => {
       dueDate: new Date(dueDate),
     });
     if (!newEvent) {
-      return res.status(500).json({ error: 'Server error' });
+      return res.status(500).json({ message: 'Server error' });
     }
     // Update tasks refs
     classroom.events.push(newEvent._id);
     await classroom.save();
 
-    return res.json({ message: 'Event created!', id: newEvent._id });
+    return res.json({ message: 'Event created!', _id: newEvent._id });
   } catch (err) {
-    return res.status(500).json('Server error');
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -163,10 +163,12 @@ const updateClassroomEvent = async (req, res) => {
   try {
     const { events } = await Classroom.findById(classroomId);
     if (!events) {
-      return res.status(400).json({ error: 'Classroom not found' });
+      return res.status(400).json({ message: 'Classroom not found' });
     }
     if (!events.includes(requestId)) {
-      return res.status(401).json({ error: 'Event is not in your classroom' });
+      return res
+        .status(401)
+        .json({ message: 'Event is not in your classroom' });
     }
 
     const update = {
@@ -181,7 +183,7 @@ const updateClassroomEvent = async (req, res) => {
 
     return res.json({ message: 'Event updated!' });
   } catch (err) {
-    return res.status(500).json({ err });
+    return res.status(500).json(err);
   }
 };
 
@@ -191,10 +193,10 @@ const deleteClassroomEvent = async (req, res) => {
   try {
     const classroom = await Classroom.findById(classroomId);
     if (!classroom) {
-      return res.status(400).json('classroom not found!');
+      return res.status(400).json({ message: 'classroom not found!' });
     }
     if (!classroom.teacher.equals(teacherId)) {
-      return res.status(401).json({ error: 'Unauthorized access' });
+      return res.status(401).json({ message: 'Unauthorized access' });
     }
 
     const deletedEvent = await Event.findByIdAndDelete(requestId);
@@ -237,10 +239,10 @@ const addTask = async (req, res) => {
   try {
     const event = await Event.findById(eventId);
     if (!event) {
-      return res.status(400).json({ error: 'Event not found' });
+      return res.status(400).json({ message: 'Event not found' });
     }
     if (!event.classroom.equals(classroomId)) {
-      return res.status(401).json({ error: 'Unauthorized access' });
+      return res.status(401).json({ message: 'Unauthorized access' });
     }
 
     const newTask = await Task.create({
@@ -250,7 +252,7 @@ const addTask = async (req, res) => {
       topic,
     });
     if (!newTask) {
-      return res.status(500).json({ error: 'Server error' });
+      return res.status(500).json({ message: 'Server error' });
     }
     // Add task to event
     event.tasks.push(newTask._id);
@@ -259,7 +261,7 @@ const addTask = async (req, res) => {
     // Add task on each student
     const classroom = await Classroom.findById(classroomId);
     if (!classroom) {
-      return res.status(500).json({ error: 'Classroom not found' });
+      return res.status(500).json({ message: 'Classroom not found' });
     }
 
     classroom.students.map(async (studentId) => {
@@ -268,40 +270,40 @@ const addTask = async (req, res) => {
       await student.save();
     });
 
-    return res.json({ message: 'Task created!', id: newTask._id });
+    return res.json({ message: 'Task created!', _id: newTask._id });
   } catch (err) {
-    return res.status(500).json({ error: err });
+    return res.status(500).json(err);
   }
 };
 
-// const updateTask = async (req, res) => {
-// }
+// const updateTask = async (req, res) => {}
+
 const deleteTask = async (req, res) => {
   const { classroom: classroomId } = res.locals.user;
   const { id: requestId } = req.params;
   try {
     const classroom = await Classroom.findById(classroomId);
     if (!classroom) {
-      return res.status(400).json('classroom not found!');
+      return res.status(400).json({ message: 'classroom not found!' });
     }
     const task = await Task.findById(requestId);
     if (!task) {
-      return res.status(400).json('task not found!');
+      return res.status(400).json({ message: 'task not found!' });
     }
     if (!classroom.events.includes(task.event)) {
-      return res.status(401).json({ error: 'Unauthorized access' });
+      return res.status(401).json({ message: 'Unauthorized access' });
     }
 
     // delete task
     const deletedTask = await Task.findByIdAndDelete(requestId);
     if (!deletedTask) {
-      return res.status(400).json('task not found!');
+      return res.status(400).json({ message: 'task not found!' });
     }
 
     // delete task from event
     const event = await Event.findById(deletedTask.event);
     if (!event) {
-      return res.status(400).json('Event not found!');
+      return res.status(400).json({ message: 'Event not found!' });
     }
     event.tasks.pull(deletedTask._id);
     await event.save();
@@ -318,7 +320,7 @@ const deleteTask = async (req, res) => {
 
     return res.json({ message: 'task deleted' });
   } catch (err) {
-    return res.status(500).json({ error: err });
+    return res.status(500).json(err);
   }
 };
 
