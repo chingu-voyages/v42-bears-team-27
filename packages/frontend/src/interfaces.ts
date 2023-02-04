@@ -79,8 +79,3 @@ export interface IClassroom {
   subjects: ID[];
   events: ID[];
 }
-
-// export interface IPopulateStudent {
-//   _id: ID;
-//   fullName: string;
-// }
