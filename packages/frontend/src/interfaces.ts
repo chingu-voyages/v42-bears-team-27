@@ -71,11 +71,7 @@ export interface IClassroom {
   _id: ID;
   name: string;
   teacher: ID;
-  students: {
-    _id: ID;
-    fullName: string;
-    tasks: IStudentTask[];
-  }[];
+  students: IStudent[];
   subjects: ID[];
   events: ID[];
 }
