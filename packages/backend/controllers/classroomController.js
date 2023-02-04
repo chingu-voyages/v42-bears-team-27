@@ -211,11 +211,10 @@ const deleteClassroomEvent = async (req, res) => {
         res.status(400).json('task not found!');
       }
       // delete tasks from students
-      // ---------- DEBUG -------------
       classroom.students.map(async (studentId) => {
         const student = await Student.findById(studentId);
         const filterTasks = student.tasks.filter(
-          (el) => el.taskID !== deletedTask._id,
+          (el) => el.taskID.valueOf() !== deletedTask._id.valueOf(),
         );
         student.tasks = filterTasks;
         await student.save();
@@ -312,7 +311,7 @@ const deleteTask = async (req, res) => {
     classroom.students.map(async (studentId) => {
       const student = await Student.findById(studentId);
       const filterTasks = student.tasks.filter(
-        (el) => el.taskID !== deletedTask._id,
+        (el) => el.taskID.valueOf() !== deletedTask._id.valueOf(),
       );
       student.tasks = filterTasks;
       await student.save();

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import useSWR from 'swr';
 import {
   createColumnHelper,
@@ -23,18 +24,30 @@ const columns = [
 ];
 
 const StudentTable: React.FC = () => {
-  const { data } = useSWR<IClassroom>('/api/v0/classroom', fetcher);
-  const studentsData = data?.students;
-  if (studentsData) {
-    data.students.forEach((student, i) => {
-      studentsData[i].numberTasks = student.tasks.filter(
+  const { data: classroomData } = useSWR<IClassroom>(
+    '/api/v0/classroom',
+    fetcher,
+  );
+
+  const studentsData = useMemo(() => {
+    if (!classroomData) {
+      return [];
+    }
+
+    return [...classroomData.students].map((student) => {
+      const numberOfTaskUncompleted = student.tasks.filter(
         (task) => task.completed === false,
       ).length;
+
+      return {
+        ...student,
+        numberTasks: numberOfTaskUncompleted,
+      };
     });
-  }
+  }, [classroomData]);
 
   const table = useReactTable({
-    data: studentsData || [],
+    data: studentsData,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
