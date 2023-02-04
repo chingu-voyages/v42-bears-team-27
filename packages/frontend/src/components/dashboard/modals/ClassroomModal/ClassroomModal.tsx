@@ -1,6 +1,8 @@
 import { useContext, useState } from 'react';
+import useSWR from 'swr';
 import { MdAdd } from 'react-icons/md';
 
+import { fetcher } from 'src/services';
 import {
   Button,
   Dialog,
@@ -8,7 +10,11 @@ import {
   DialogTrigger,
   IconButton,
 } from 'src/components/ui';
-import type { INewStudentCredentials, ITeacher } from 'src/interfaces';
+import type {
+  INewStudentCredentials,
+  ITeacher,
+  IClassroom,
+} from 'src/interfaces';
 import { AuthContext } from 'src/store/auth';
 import { postCreateNewStudent } from 'src/services/student';
 import NewStudentForm from './NewStudentForm';
@@ -19,6 +25,9 @@ const ClassroomModal: React.FC = () => {
   const [showAddStudentForm, setShowAddStudentForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<string | null>(null);
+
+  const { data } = useSWR<IClassroom>('/api/v0/classroom', fetcher);
+  const studentsData = data?.students;
 
   const registerNewStudentHandler = async (
     newStudent: INewStudentCredentials,
@@ -56,7 +65,9 @@ const ClassroomModal: React.FC = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outlined">View Classroom</Button>
+        <Button onClick={() => setShowAddStudentForm(false)} variant="outlined">
+          View Classroom
+        </Button>
       </DialogTrigger>
       <DialogContent
         title={showAddStudentForm ? 'Invite a Student' : 'Classroom'}
@@ -97,6 +108,7 @@ const ClassroomModal: React.FC = () => {
                         borderRadius: '50%',
                       }}
                     />
+                    {/* Bug with "no comma name" fullName */}
                     <p sx={{ variant: 'text.h4' }}>{`${
                       (authCtx.user as ITeacher).title
                     }.${(authCtx.user as ITeacher).fullName
@@ -113,11 +125,55 @@ const ClassroomModal: React.FC = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     columnGap: 3,
+                    flexWrap: 'wrap',
                   }}
                 >
-                  <IconButton onClick={() => setShowAddStudentForm(true)}>
-                    <MdAdd size={32} />
-                  </IconButton>
+                  {studentsData &&
+                    studentsData.map((student) => (
+                      <div
+                        key={student._id}
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <div
+                          sx={{
+                            width: 64,
+                            height: 64,
+                            p: 3,
+                            bg: 'gray',
+                            borderRadius: '50%',
+                          }}
+                        />
+                        <p sx={{ variant: 'text.h4' }}>{student.fullName}</p>
+                      </div>
+                    ))}
+                  <div
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <div
+                      sx={{
+                        width: 64,
+                        height: 64,
+                        p: 3,
+                        bg: 'gray',
+                        borderRadius: '50%',
+                      }}
+                    >
+                      <IconButton onClick={() => setShowAddStudentForm(true)}>
+                        <MdAdd sx={{ color: 'primary' }} size={32} />
+                      </IconButton>
+                    </div>
+                    <p sx={{ variant: 'text.h4' }}>&nbsp;</p>
+                  </div>
                 </div>
               </div>
             </>

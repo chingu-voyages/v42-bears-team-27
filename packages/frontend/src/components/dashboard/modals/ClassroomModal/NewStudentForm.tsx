@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import validator from 'validator';
 
 import { Button, TextField } from 'src/components/ui';
 import type { INewStudentCredentials } from 'src/interfaces';
-import validator from 'validator';
 
 import useInput from 'src/hooks/use-input';
 

@@ -6,21 +6,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
-import type { IStudent } from 'src/interfaces';
+import type { IClassroom } from 'src/interfaces';
 import { fetcher } from 'src/services';
-
-// const DUMMY_STUDENTS_DATA: IStudent[] = [
-//   {
-//     id: '0',
-//     fullName: 'Smith, Lucas',
-//     tasks: 2,
-//   },
-//   {
-//     id: '2',
-//     fullName: 'Adams, John',
-//     tasks: 1,
-//   },
-// ];
 
 const columnHelper = createColumnHelper<any>();
 
@@ -29,17 +16,22 @@ const columns = [
     header: () => 'Full Name',
     cell: (info) => info.renderValue(),
   }),
-  columnHelper.accessor('tasks', {
+  columnHelper.accessor('numberTasks', {
     header: () => 'Tasks',
     cell: (info) => info.renderValue(),
   }),
 ];
 
 const StudentTable: React.FC = () => {
-  const { data: studentsData } = useSWR<IStudent[]>(
-    '/api/v0/classroom/students',
-    fetcher,
-  );
+  const { data } = useSWR<IClassroom>('/api/v0/classroom', fetcher);
+  const studentsData = data?.students;
+  if (studentsData) {
+    data.students.forEach((student, i) => {
+      studentsData[i].numberTasks = student.tasks.filter(
+        (task) => task.completed === false,
+      ).length;
+    });
+  }
 
   const table = useReactTable({
     data: studentsData || [],
