@@ -1,13 +1,14 @@
 import { useState, useMemo } from 'react';
+import useSWR from 'swr';
 
 import { Button } from 'src/components/ui';
 import type { ISubject, ITask, ITopic } from 'src/interfaces';
+import { fetcher } from 'src/services';
 import { titleCase } from 'src/utils';
 
 type Props = {
-  subjects: ISubject[];
   error: string | null;
-  onSubmit: (data: Omit<ITask, 'id'>) => void;
+  onSubmit: (data: Omit<ITask, '_id' | 'event'>) => void;
 };
 
 // TODO: Add validators for input fields
@@ -15,20 +16,29 @@ type Props = {
 // topicValidator = (value: string) => value.trim().length > 0;
 // typeValidator = (value: string) => value.trim().length > 0;
 
-const CreateTaskForm: React.FC<Props> = ({ subjects, error, onSubmit }) => {
+const CreateTaskForm: React.FC<Props> = ({ error, onSubmit }) => {
+  const { data: subjectsData, isLoading } = useSWR<ISubject[]>(
+    '/api/v0/classroom/subjects',
+    fetcher,
+  );
+
   const [subject, setSubject] = useState('');
   const [topic, setTopic] = useState('');
   const [type, setType] = useState('');
 
   const selectedSubject = useMemo<ISubject | null>(() => {
-    const subjectIdx = subjects.findIndex((item) => item.title === subject);
+    if (!subjectsData) {
+      return null;
+    }
+
+    const subjectIdx = subjectsData.findIndex((item) => item.title === subject);
 
     if (subjectIdx === -1) {
       return null;
     }
 
-    return subjects[subjectIdx];
-  }, [subject, subjects]);
+    return subjectsData[subjectIdx];
+  }, [subject, subjectsData]);
 
   const selectedTopic = useMemo<ITopic | null>(() => {
     const topicIdx =
@@ -54,6 +64,22 @@ const CreateTaskForm: React.FC<Props> = ({ subjects, error, onSubmit }) => {
     onSubmit(data);
   };
 
+  if (isLoading) {
+    return (
+      <p
+        sx={{
+          variant: 'text.h3',
+          position: 'absolute',
+          top: '40%',
+          left: '50%',
+          translate: '-50% -50%',
+        }}
+      >
+        Loading Form...
+      </p>
+    );
+  }
+
   return (
     <form
       sx={{
@@ -69,7 +95,7 @@ const CreateTaskForm: React.FC<Props> = ({ subjects, error, onSubmit }) => {
     >
       <fieldset>
         <legend>Choose the subject</legend>
-        {subjects.map(({ _id: id, title }) => (
+        {(subjectsData as ISubject[]).map(({ _id: id, title }) => (
           <label key={id} sx={{ display: 'block' }} htmlFor={id}>
             {titleCase(title)}
             <input
