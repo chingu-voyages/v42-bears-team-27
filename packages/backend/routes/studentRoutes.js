@@ -2,16 +2,14 @@ const router = require('express').Router();
 
 const {
   validateStudent,
-  authenticateStudent,
   checkStudentAuthenticated,
   checkTeacherAuthenticated,
 } = require('../middlewares');
 
 const {
   createStudent,
-  loginStudent,
-  testStudent,
-} = require('../controllers/studentControllers');
+  getStudent,
+} = require('../controllers/studentController');
 
 // "http://localhost:5000/api/v0/student/create"
 router.post(
@@ -20,7 +18,6 @@ router.post(
   validateStudent,
   createStudent,
 );
-router.post('/login', authenticateStudent, loginStudent);
-router.get('/test', checkStudentAuthenticated, testStudent);
+router.get('/', checkStudentAuthenticated, getStudent);
 
 module.exports = router;

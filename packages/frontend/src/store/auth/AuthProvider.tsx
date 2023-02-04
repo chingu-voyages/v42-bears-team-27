@@ -1,88 +1,91 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 
-import type { IUserCredentials, IUserData } from 'interfaces';
-import { AuthContext, type IAuthContext } from './auth-context';
+import type { INewTeacherCredentials, IUserCredentials } from 'src/interfaces';
+import { useLocalstorageState } from 'src/hooks';
+import {
+  postCreateNewTeacher,
+  postLoginExistingUser,
+  postLogoutExistingUser,
+} from 'src/services';
+import type { IAuthContext, User, UserRole } from './auth-context';
+import { AuthContext } from './auth-context';
 
 type Props = {
   children: React.ReactNode;
 };
 
 const AuthProvider: React.FC<Props> = ({ children }) => {
-  const [user, setUser] = useState<IUserData | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [jsonToken, setJSONToken] = useState<string | null>(null);
+  const [user, setUser] = useLocalstorageState<User | null>(
+    'app:user-data',
+    null,
+  );
+  const [role, setRole] = useLocalstorageState<UserRole | null>(
+    'app:user-role',
+    null,
+  );
+  const [isLoggedIn, setIsLoggedIn] = useLocalstorageState(
+    'app:logged-in',
+    false,
+  );
 
-  const signupHandler = async (userCredentials: any) => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/teacher/create`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userCredentials),
-      },
-    );
+  const signupTeacherHandler = async (
+    teacherCredentials: INewTeacherCredentials,
+  ) => {
+    try {
+      const teacherData = await postCreateNewTeacher(teacherCredentials);
+      setUser({ ...teacherData });
+      setRole('teacher');
+      setIsLoggedIn(true);
+    } catch (err) {
+      if (err instanceof Error) {
+        return err.message;
+      }
 
-    if (!res.ok) {
-      return 'Error: Failed to signup!';
+      return `Unexpected error ${err}`;
     }
-
-    const { token, ...userData }: any = await res.json();
-
-    setUser({ role: 'teacher', ...userData });
-    setIsLoggedIn(true);
-    setJSONToken(token);
 
     return 'Success: Signed up!';
   };
 
   const loginHandler = async (
     userCredentials: IUserCredentials,
-    userRole: 'student' | 'teacher',
+    userRole: UserRole,
   ) => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/${userRole}/login`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userCredentials),
-      },
-    );
+    try {
+      const userData = await postLoginExistingUser(userCredentials, userRole);
+      setUser({ ...userData });
+      setRole(userRole);
+      setIsLoggedIn(true);
+    } catch (err) {
+      if (err instanceof Error) {
+        return err.message;
+      }
 
-    if (!res.ok) {
-      return 'Error: Failed to login!';
+      return `Unexpected error ${err}`;
     }
-
-    const { token, ...userData }: any = await res.json();
-
-    setUser({ role: userRole, ...userData });
-    setIsLoggedIn(true);
-    setJSONToken(token);
 
     return 'Success: Logged in!';
   };
 
-  const logoutHandler = () => {
+  const logoutHandler = async () => {
+    // NOTE: Can add feedback whether or not logout wsa successful
+    await postLogoutExistingUser();
     setUser(null);
+    setRole(null);
     setIsLoggedIn(false);
-    setJSONToken(null);
   };
 
   const authContext: IAuthContext = useMemo(
     () => ({
       user,
+      role,
       isLoggedIn,
-      jsonToken,
-      onSignup: signupHandler,
+      onSignup: signupTeacherHandler,
       onLogin: loginHandler,
       onLogout: logoutHandler,
     }),
-    [user, isLoggedIn, jsonToken],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isLoggedIn, role, user],
   );
 
   return (

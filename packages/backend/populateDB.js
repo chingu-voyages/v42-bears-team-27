@@ -19,7 +19,7 @@ const mongoose = require('mongoose');
 const Subject = require('./models/subjectModel');
 
 const mongoDB = userArgs[0];
-mongoose.connect(mongoDB);
+mongoose.connect(mongoDB); // TODO add DB from .env file & add commando to package.json
 mongoose.Promise = global.Promise;
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));

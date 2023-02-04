@@ -1,3 +1,5 @@
+/* eslint-disable import/extensions */
+/* eslint-disable import/no-unresolved */
 const router = require('express').Router();
 
 const { validateTeacher } = require('../validators/teacherValidator');

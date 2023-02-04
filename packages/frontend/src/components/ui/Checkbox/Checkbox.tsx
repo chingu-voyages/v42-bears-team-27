@@ -2,10 +2,10 @@
 import type { RefAttributes, ForwardRefExoticComponent } from 'react';
 import { forwardRef } from 'react';
 import type { ThemeUIStyleObject } from 'theme-ui';
-import * as RadixCheckbox from '@radix-ui/react-checkbox';
+import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { MdCheck } from 'react-icons/md';
 
-export interface CheckboxProps extends RadixCheckbox.CheckboxProps {
+export interface CheckboxProps extends CheckboxPrimitive.CheckboxProps {
   /**
    * Label for the component
    */
@@ -20,9 +20,12 @@ export interface CheckboxProps extends RadixCheckbox.CheckboxProps {
 
 export const Checkbox: ForwardRefExoticComponent<
 CheckboxProps & RefAttributes<HTMLButtonElement>
-> = forwardRef(({ children, id, label, size = 18, sx, ...rest }, ref) => (
-  <div sx={{ display: 'flex', alignItems: 'center', color: 'primary', ...sx }}>
-    <RadixCheckbox.Root
+> = forwardRef(({ children, key, id, label, size = 18, sx, ...rest }, ref) => (
+  <div
+    key={key}
+    sx={{ display: 'flex', alignItems: 'center', color: 'primary', ...sx }}
+  >
+    <CheckboxPrimitive.Root
       ref={ref}
       id={id}
       sx={{
@@ -34,10 +37,10 @@ CheckboxProps & RefAttributes<HTMLButtonElement>
       }}
       {...rest}
     >
-      <RadixCheckbox.Indicator>
+      <CheckboxPrimitive.Indicator>
         <MdCheck size={size} />
-      </RadixCheckbox.Indicator>
-    </RadixCheckbox.Root>
+      </CheckboxPrimitive.Indicator>
+    </CheckboxPrimitive.Root>
     {label && (
       <label
         htmlFor={id}

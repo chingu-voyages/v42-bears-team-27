@@ -58,6 +58,8 @@ module.exports = {
     // disabled type-aware linting due to performance considerations
     '@typescript-eslint/return-await': 'off',
     'no-return-await': 'error',
+    // disabled for compatibility with mongoDB objects including "_id"
+    'no-underscore-dangle': 'off',
   },
   overrides: [
     // Only uses Testing Library lint rules in test files
