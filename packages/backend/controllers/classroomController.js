@@ -213,7 +213,7 @@ const deleteClassroomEvent = async (req, res) => {
       classroom.students.map(async (studentId) => {
         const student = await Student.findById(studentId);
         const filterTasks = student.tasks.filter(
-          (el) => el.taskID !== task._id,
+          (el) => el.taskID !== deletedTask._id,
         );
         student.tasks = filterTasks;
         await student.save();
