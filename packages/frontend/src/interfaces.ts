@@ -27,11 +27,21 @@ export interface ITeacher {
 export interface IStudent {
   _id: ID;
   fullName: string;
-  tasks: number;
+  inbox: {
+    messageID: ID;
+    hasBeenRead: boolean;
+  }[];
+  tasks: IStudentTask[];
+}
+
+export interface IStudentTask {
+  taskID: ID;
+  completed: boolean;
 }
 
 export interface ITask {
   _id: ID;
+  event: ID;
   type: TaskType;
   subject: string;
   topic: string;
@@ -61,7 +71,11 @@ export interface IClassroom {
   _id: ID;
   name: string;
   teacher: ID;
-  students: ID[];
+  students: {
+    _id: ID;
+    fullName: string;
+    tasks: IStudentTask[];
+  }[];
   subjects: ID[];
   events: ID[];
 }

@@ -6,7 +6,10 @@ const Task = require('../models/taskModel');
 const getClassroom = async (_, res) => {
   const { user } = res.locals;
   try {
-    const classroom = await Classroom.findById(user.classroom);
+    const classroom = await Classroom.findById(user.classroom).populate(
+      'students',
+      'fullName tasks',
+    );
     if (!classroom) {
       return res.status(400).json({ message: 'Classroom not found' });
     }
@@ -38,8 +41,11 @@ const updateClassroom = async (req, res) => {
         new: true,
       },
     );
+    if (!updatedClassroom) {
+      return res.status(500).json({ error: 'Classroom was not updated' });
+    }
 
-    return res.json(updatedClassroom);
+    return res.json({ message: 'Classroom updated!' });
   } catch (err) {
     return res.status(500).json({ err });
   }
@@ -153,6 +159,7 @@ const addClassroomEvent = async (req, res) => {
 const updateClassroomEvent = async (req, res) => {
   const { classroom: classroomId } = res.locals.user;
   const { id: requestId } = req.params;
+  const { dueDate, setAt } = req.body;
   try {
     const { events } = await Classroom.findById(classroomId);
     if (!events) {
@@ -163,8 +170,8 @@ const updateClassroomEvent = async (req, res) => {
     }
 
     const update = {
-      ...(!req.body.dueDate ? {} : { dueDate: req.body.dueDate }),
-      ...(!req.body.setAt ? {} : { setAt: req.body.setAt }),
+      ...(!dueDate ? {} : { dueDate }),
+      ...(!setAt ? {} : { setAt }),
     };
 
     const updatedEvent = await Event.findByIdAndUpdate(requestId, update, {
@@ -209,10 +216,11 @@ const deleteClassroomEvent = async (req, res) => {
         res.status(400).json('task not found!');
       }
       // delete tasks from students
+      // ---------- DEBUG -------------
       classroom.students.map(async (studentId) => {
         const student = await Student.findById(studentId);
         const filterTasks = student.tasks.filter(
-          (el) => el.taskID !== task._id,
+          (el) => el.taskID !== deletedTask._id,
         );
         student.tasks = filterTasks;
         await student.save();
@@ -243,7 +251,7 @@ const addTask = async (req, res) => {
     }
 
     const newTask = await Task.create({
-      classroom: classroomId,
+      event: eventId,
       type,
       subject,
       topic,
@@ -256,20 +264,20 @@ const addTask = async (req, res) => {
     await event.save();
 
     // Add task on each student
-    const classroom = await Event.findById(classroomId);
+    const classroom = await Classroom.findById(classroomId);
     if (!classroom) {
-      return res.status(400).json({ error: 'Classroom not found' });
+      return res.status(500).json({ error: 'Classroom not found' });
     }
 
     classroom.students.map(async (studentId) => {
       const student = await Student.findById(studentId);
-      student.events.push(newTask._id);
+      student.tasks.push({ taskID: newTask._id });
       await student.save();
     });
 
     return res.json({ message: 'Task created!', id: newTask._id });
   } catch (err) {
-    return res.status(500).json('Server error');
+    return res.status(500).json({ error: err });
   }
 };
 
@@ -283,7 +291,7 @@ const deleteTask = async (req, res) => {
     if (!classroom) {
       return res.status(400).json('classroom not found!');
     }
-    const task = await Task.findBy(requestId);
+    const task = await Task.findById(requestId);
     if (!task) {
       return res.status(400).json('task not found!');
     }
@@ -298,7 +306,7 @@ const deleteTask = async (req, res) => {
     }
 
     // delete task from event
-    const event = await Task.findById(deletedTask.event);
+    const event = await Event.findById(deletedTask.event);
     if (!event) {
       return res.status(400).json('Event not found!');
     }
@@ -317,7 +325,7 @@ const deleteTask = async (req, res) => {
 
     return res.json({ message: 'task deleted' });
   } catch (err) {
-    return res.status(500).json('Server error');
+    return res.status(500).json({ error: err });
   }
 };
 
@@ -332,6 +340,5 @@ module.exports = {
   updateClassroomEvent,
   deleteClassroomEvent,
   addTask,
-  // updateTask,
   deleteTask,
 };

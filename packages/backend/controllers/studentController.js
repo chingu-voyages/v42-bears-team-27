@@ -80,13 +80,37 @@ const createStudent = async (req, res) => {
 
 // To check if still authenticated when continuing the session
 const getStudent = async (_, res) => {
-  const { _id, fullName, inbox } = res.locals.user;
+  const { _id, fullName, inbox, tasks } = res.locals.user;
   return res.json({
     _id,
     fullName,
     inbox,
+    tasks,
   });
 };
+
+// const readMessage = async (req, res) => {
+// };
+
+// const completeTask = async (req, res) => {
+//   const { id: studentId } = res.locals.user;
+//   const { id: taskId } = req.params;
+//   try {
+//     const student = await Student.findById(studentId);
+//     if(student){
+//       student.tasks.forEach((task, i) => {
+//         if (task.taskID.toString() === taskId) {
+//           student.tasks[i] = !student.tasks[i];
+//         }
+//       });
+//       await student.save();
+//     }
+
+//   return res.json({ message: 'task ' });
+// } catch (err) {
+//   return res.status(500).json({ error: err });
+// }
+// };
 
 module.exports = {
   createStudent,
