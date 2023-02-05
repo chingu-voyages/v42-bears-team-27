@@ -32,10 +32,11 @@ exports[`<Button /> Snapshots should match snapshot 1`] = `
 }
 
 .emotion-0:hover {
-  background-color: #424c5a;
+  background-color: var(--theme-ui-colors-primaryShade);
 }
 
 .emotion-1 {
+  color: var(--theme-ui-colors-text);
   font-family: "Nunito",sans-serif;
   font-size: inherit;
   font-weight: 400;
@@ -87,10 +88,11 @@ exports[`<Button /> Snapshots should match snapshot when rendered as link 1`] = 
 }
 
 .emotion-0:hover {
-  background-color: #424c5a;
+  background-color: var(--theme-ui-colors-primaryShade);
 }
 
 .emotion-1 {
+  color: var(--theme-ui-colors-text);
   font-family: "Nunito",sans-serif;
   font-size: inherit;
   font-weight: 400;
@@ -112,9 +114,10 @@ exports[`<Button /> Snapshots should match snapshot when rendered as link 1`] = 
 
 exports[`<Button /> Snapshots should match snapshot with outlined variant 1`] = `
 .emotion-0 {
-  background-color: white;
-  color: var(--theme-ui-colors-primary);
+  background-color: var(--theme-ui-colors-background);
+  color: var(--theme-ui-colors-text);
   border: 2px solid currentColor;
+  border-color: var(--theme-ui-colors-primary);
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -142,10 +145,11 @@ exports[`<Button /> Snapshots should match snapshot with outlined variant 1`] = 
 }
 
 .emotion-0:hover {
-  background-color: #e6e6e6;
+  background-color: var(--theme-ui-colors-secondaryShade);
 }
 
 .emotion-1 {
+  color: var(--theme-ui-colors-text);
   font-family: "Nunito",sans-serif;
   font-size: inherit;
   font-weight: 400;
@@ -199,10 +203,11 @@ exports[`<Button /> Snapshots should match snapshot with rounded prop 1`] = `
 }
 
 .emotion-0:hover {
-  background-color: #424c5a;
+  background-color: var(--theme-ui-colors-primaryShade);
 }
 
 .emotion-1 {
+  color: var(--theme-ui-colors-text);
   font-family: "Nunito",sans-serif;
   font-size: inherit;
   font-weight: 400;
@@ -256,10 +261,11 @@ exports[`<Button /> Snapshots should match snapshot with size prop equals lg 1`]
 }
 
 .emotion-0:hover {
-  background-color: #424c5a;
+  background-color: var(--theme-ui-colors-primaryShade);
 }
 
 .emotion-1 {
+  color: var(--theme-ui-colors-text);
   font-family: "Nunito",sans-serif;
   font-size: inherit;
   font-weight: 400;
@@ -313,10 +319,11 @@ exports[`<Button /> Snapshots should match snapshot with size prop equals sm 1`]
 }
 
 .emotion-0:hover {
-  background-color: #424c5a;
+  background-color: var(--theme-ui-colors-primaryShade);
 }
 
 .emotion-1 {
+  color: var(--theme-ui-colors-text);
   font-family: "Nunito",sans-serif;
   font-size: inherit;
   font-weight: 400;
