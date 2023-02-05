@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import useSWR from 'swr';
 
 import AuthLayout from 'src/layouts/AuthLayout';
+import Loader from 'src/components/common/Loader';
 import { TeacherNav } from 'src/components/dashboard/navs';
 import TeacherCalendar from 'src/components/dashboard/teacher/TeacherCalendar';
 import {
@@ -25,26 +26,18 @@ const Home: NextPageWithLayout = () => {
     error,
   } = useSWR<IClassroom>('/api/v0/classroom', fetcher);
 
-  if (!authCtx || isLoading) {
-    return (
-      <p
-        sx={{
-          variant: 'text.h3',
-          position: 'absolute',
-          top: '40%',
-          left: '50%',
-          translate: '-50% -50%',
-        }}
-      >
-        Loading Dashboard...
-      </p>
-    );
+  if (!authCtx) {
+    return <Loader>Loading Dashboard...</Loader>;
   }
 
   if (error) {
     // Assuming any error when fetching data means that user cookies have expired,
     // therefore logout the user from the app since they're not authenticated
     authCtx.onLogout();
+  }
+
+  if (isLoading) {
+    return <Loader>Loading Data...</Loader>;
   }
 
   return (
@@ -94,7 +87,7 @@ const Home: NextPageWithLayout = () => {
 Home.getLayout = function getLayout(page: ReactElement) {
   return (
     <AuthLayout
-      title="RemoteClass"
+      title="Home"
       description="Dashboard where you can manage your classroom and do many other things"
     >
       {page}

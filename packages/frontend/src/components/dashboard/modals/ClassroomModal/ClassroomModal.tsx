@@ -4,6 +4,7 @@ import { MdAdd } from 'react-icons/md';
 
 import { fetcher } from 'src/services';
 import {
+  Avatar,
   Button,
   Dialog,
   DialogContent,
@@ -17,6 +18,7 @@ import type {
 } from 'src/interfaces';
 import { AuthContext } from 'src/store/auth';
 import { postCreateNewStudent } from 'src/services/student';
+import { extractStringInitials } from 'src/utils';
 import NewStudentForm from './NewStudentForm';
 
 const ClassroomModal: React.FC = () => {
@@ -99,14 +101,12 @@ const ClassroomModal: React.FC = () => {
                       justifyContent: 'center',
                     }}
                   >
-                    <div
-                      sx={{
-                        width: 64,
-                        height: 64,
-                        p: 3,
-                        bg: 'gray',
-                        borderRadius: '50%',
-                      }}
+                    <Avatar
+                      width={64}
+                      height={64}
+                      alt={extractStringInitials(
+                        (authCtx.user as ITeacher).fullName,
+                      )}
                     />
                     {/* Bug with "no comma name" fullName */}
                     <p sx={{ variant: 'text.h4' }}>{`${
@@ -139,18 +139,29 @@ const ClassroomModal: React.FC = () => {
                           justifyContent: 'center',
                         }}
                       >
-                        <div
-                          sx={{
-                            width: 64,
-                            height: 64,
-                            p: 3,
-                            bg: 'gray',
-                            borderRadius: '50%',
-                          }}
+                        <Avatar
+                          width={64}
+                          height={64}
+                          alt={extractStringInitials(student.fullName)}
                         />
                         <p sx={{ variant: 'text.h4' }}>{student.fullName}</p>
                       </div>
                     ))}
+                  <div
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Avatar
+                      width={64}
+                      height={64}
+                      alt={extractStringInitials('Homer Simpson')}
+                    />
+                    <p sx={{ variant: 'text.h4' }}>Homer Simpson</p>
+                  </div>
                   <div
                     sx={{
                       display: 'flex',
