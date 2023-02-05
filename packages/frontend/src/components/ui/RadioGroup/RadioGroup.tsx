@@ -33,9 +33,9 @@ export interface RadioProps extends RadioGroupPrimitive.RadioGroupItemProps {
 
 export const Radio: ForwardRefExoticComponent<
 RadioProps & RefAttributes<HTMLButtonElement>
-> = forwardRef(({ key, id, label, sx, ...rest }, ref) => (
+> = forwardRef(({ id, label, sx, ...rest }, ref) => (
   <div
-    key={key}
+    key={id}
     sx={{ display: 'flex', alignItems: 'center', columnGap: 3, ...sx }}
   >
     <RadioGroupPrimitive.Item
