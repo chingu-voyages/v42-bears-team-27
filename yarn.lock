@@ -7762,6 +7762,7 @@ __metadata:
     jest-environment-jsdom: ^29.3.1
     jest-transform-stub: ^2.0.0
     next: 13.1.1
+    next-progress: ^2.2.0
     react: 18.2.0
     react-calendar: ^4.0.0
     react-dom: 18.2.0
@@ -10775,6 +10776,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"next-progress@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "next-progress@npm:2.2.0"
+  dependencies:
+    nprogress: ^0.2.0
+  peerDependencies:
+    next: ">=6.0.0"
+    react: ">=16.0.0"
+  checksum: ef0e2c66c6990a6d0cf20c28896461ab32a3322972d52f3cb3ee2d2d58bdc2b620a402b1d7df9e0340b230d9ec9a9457584871ea0b8b890b1fc334d1886d2b97
+  languageName: node
+  linkType: hard
+
 "next@npm:13.1.1":
   version: 13.1.1
   resolution: "next@npm:13.1.1"
@@ -11167,6 +11180,13 @@ __metadata:
     gauge: ^4.0.3
     set-blocking: ^2.0.0
   checksum: ae238cd264a1c3f22091cdd9e2b106f684297d3c184f1146984ecbe18aaa86343953f26b9520dedd1b1372bc0316905b736c1932d778dbeb1fcf5a1001390e2a
+  languageName: node
+  linkType: hard
+
+"nprogress@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "nprogress@npm:0.2.0"
+  checksum: 66b7bec5d563ecf2d1c3d2815e6d5eb74ed815eee8563e0afa63d3f185ab1b9cf2ddd97e1ded263b9995c5019d26d600320e849e50f3747984daa033744619dc
   languageName: node
   linkType: hard
 
