@@ -1,2 +1,2 @@
-/* eslint-disable import/prefer-default-export */
 export { default as titleCase } from './titleCase';
+export { default as extractStringInitials } from './extractStringInitials';
