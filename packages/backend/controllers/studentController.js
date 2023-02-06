@@ -107,7 +107,9 @@ const getStudentTasks = async (req, res) => {
 
     if (req.query.eventID) {
       // If eventID is provided in query then filter out tasks only for that event
-      tasks = student.tasks.filter((task) => task.event === req.query.eventID);
+      tasks = student.tasks.filter(
+        (task) => task.event.valueOf() === req.query.eventID,
+      );
     }
 
     return res.json(tasks);
