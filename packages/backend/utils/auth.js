@@ -97,3 +97,29 @@ passport.use(
       }),
   ),
 );
+
+passport.use(
+  'user-cookie',
+  new CookieStrategy(
+    {
+      cookieName: 'auth',
+      signed: true,
+      passReqToCallback: true,
+    },
+    async (req, token, callback) => {
+      try {
+        const teacher = await Teacher.findById(JSON.parse(token)._id);
+        // console.log(teacher)
+        if (!teacher) {
+          const student = await Student.findById(JSON.parse(token)._id);
+          if (student) {
+            return callback(null, student);
+          }
+        }
+        return callback(null, teacher);
+      } catch (error) {
+        return callback(error);
+      }
+    },
+  ),
+);
