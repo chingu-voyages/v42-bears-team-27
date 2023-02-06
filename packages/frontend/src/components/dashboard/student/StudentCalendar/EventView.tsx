@@ -1,54 +1,56 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from 'react';
+import useSWR from 'swr';
+import type { ThemeUIStyleObject } from 'theme-ui';
 import {
   MdOutlineCheckBox,
   MdOutlineCheckBoxOutlineBlank,
 } from 'react-icons/md';
 
+import Loader from 'src/components/common/Loader';
 import type { IStudentTask, ITask } from 'src/interfaces';
+import { fetcher } from 'src/services';
 import { titleCase } from 'src/utils';
 
 // TODO: Refactor IStudentTask interface so this is not needed
 interface IPopulatedStudentTask extends Omit<IStudentTask, 'taskID'> {
   _id: string;
-  task: ITask;
+  taskID: string | ITask;
 }
 
-// const DUMMY_TASKS_DATA: IPopulatedStudentTask[] = [
-//   {
-//     _id: '0',
-//     task: {
-//       _id: '0',
-//       event: '1234',
-//       subject: 'english',
-//       topic: 'punctuation',
-//       type: 'lesson',
-//     },
-//     completed: true,
-//     event: '1234',
-//   },
-// ];
+const containerStyles: ThemeUIStyleObject = {
+  variant: 'text.label',
+  position: 'relative',
+  height: 288,
+  color: 'primary',
+  border: '1px solid',
+  borderColor: 'gray',
+  p: 3,
+};
 
-const EventView: React.FC = () => {
-  const [tasks] = useState<IPopulatedStudentTask[]>([]);
+type Props = {
+  eventId: string | null;
+};
+
+const EventView: React.FC<Props> = ({ eventId }) => {
+  const { data: tasksData, isLoading } = useSWR<IPopulatedStudentTask[]>(
+    eventId ? `/api/v0/student/tasks?eventID=${eventId}` : null,
+    fetcher,
+  );
+
+  if (isLoading) {
+    return (
+      <div sx={containerStyles}>
+        <Loader>Loading Tasks...</Loader>
+      </div>
+    );
+  }
 
   return (
-    <div
-      sx={{
-        variant: 'text.label',
-        position: 'relative',
-        height: 240,
-        color: 'primary',
-        border: '1px solid',
-        borderColor: 'gray',
-        p: 3,
-      }}
-    >
+    <div sx={containerStyles}>
       <h2 sx={{ variant: 'text.h4', textAlign: 'center' }}>Your Tasks:</h2>
 
-      <div sx={{ height: '40%', overflowY: 'auto' }}>
-        {tasks.length > 0 ? (
-          tasks.map(({ _id, task, completed }) => {
+      <div sx={{ height: '60%', overflowY: 'auto' }}>
+        {tasksData ? (
+          tasksData.map(({ _id, taskID: task, completed }) => {
             if (typeof task === 'string') {
               return null;
             }
