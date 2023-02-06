@@ -9,6 +9,7 @@ const {
 const {
   createStudent,
   getStudent,
+  getStudentTasks,
 } = require('../controllers/studentController');
 
 // "http://localhost:5000/api/v0/student/create"
@@ -19,5 +20,6 @@ router.post(
   createStudent,
 );
 router.get('/', checkStudentAuthenticated, getStudent);
+router.get('/tasks', checkStudentAuthenticated, getStudentTasks);
 
 module.exports = router;

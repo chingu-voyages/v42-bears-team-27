@@ -265,7 +265,7 @@ const addTask = async (req, res) => {
 
     classroom.students.map(async (studentId) => {
       const student = await Student.findById(studentId);
-      student.tasks.push({ taskID: newTask._id });
+      student.tasks.push({ taskID: newTask._id, event: eventId });
       await student.save();
     });
 
