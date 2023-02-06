@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import validator from 'validator';
 
 import { Button, TextField, Checkbox } from 'src/components/ui';
@@ -21,6 +21,8 @@ const nameValidator = (value: string) => {
 };
 
 const ClassroomCreation: React.FC = () => {
+  const { mutate } = useSWRConfig();
+
   const { data: subjectsData } = useSWR<ISubject[]>(
     '/api/v0/classroom/subjects',
     fetcher,
@@ -76,8 +78,9 @@ const ClassroomCreation: React.FC = () => {
       // Submit form data
       const msg = await putClassroom(data);
       // Update alert with api response message
-      setAlert(msg);
+      setAlert(JSON.stringify(msg));
       nameResetHandler();
+      mutate('/api/v0/classroom');
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

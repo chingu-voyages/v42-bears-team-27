@@ -1,5 +1,5 @@
 type ID = string;
-type TaskType = 'lesson' | 'exercise' | 'test';
+type TaskType = 'lesson' | 'exercise';
 
 export interface IUserCredentials {
   email: string;

@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { MdAdd, MdCheck, MdEdit } from 'react-icons/md';
 import { BsEraser } from 'react-icons/bs';
 
+import Loader from 'src/components/common/Loader';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -36,7 +37,11 @@ type Props = {
 
 const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
   const { mutate } = useSWRConfig();
-  const { data: eventData, mutate: mutateEventData } = useSWR<IEvent>(
+  const {
+    data: eventData,
+    isLoading,
+    mutate: mutateEventData,
+  } = useSWR<IEvent>(
     eventId ? `/api/v0/classroom/event/${eventId}` : null,
     fetcher,
   );
@@ -171,134 +176,155 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
         p: 3,
       }}
     >
-      <Dialog>
-        <DialogTrigger asChild>
-          <IconButton sx={{ position: 'absolute', top: 3, right: 5 }}>
-            <MdAdd size={32} />
-          </IconButton>
-        </DialogTrigger>
-        <DialogContent
-          title="Create New Task"
-          width="min(90%, 640px)"
-          height="80vh"
-        >
-          <CreateTaskForm error={error} onSubmit={addTaskHandler} />
-          {alert && (
-            <p sx={{ variant: 'text.h4', color: 'info', textAlign: 'center' }}>
-              {alert}
-            </p>
-          )}
-        </DialogContent>
-      </Dialog>
-      <div>
-        {eventData && !isEditMode && (
-          <IconButton
-            sx={{ position: 'absolute', top: '20px', right: 3 }}
-            onClick={() => setIsEditMode(true)}
-          >
-            <MdEdit size={24} />
-          </IconButton>
-        )}
+      {!isLoading ? (
+        <>
+          <Dialog>
+            <DialogTrigger asChild>
+              <IconButton sx={{ position: 'absolute', top: 3, right: 5 }}>
+                <MdAdd size={32} />
+              </IconButton>
+            </DialogTrigger>
+            <DialogContent
+              title="Create New Task"
+              width="min(90%, 640px)"
+              height="80vh"
+            >
+              <CreateTaskForm error={error} onSubmit={addTaskHandler} />
+              {alert && (
+                <p
+                  sx={{
+                    variant: 'text.h4',
+                    color: 'info',
+                    textAlign: 'center',
+                  }}
+                >
+                  {alert}
+                </p>
+              )}
+            </DialogContent>
+          </Dialog>
 
-        <h2 sx={{ variant: 'text.h4', textAlign: 'center' }}>
-          Tasks Assigned:
-        </h2>
+          <div>
+            {eventData && !isEditMode && (
+              <IconButton
+                sx={{ position: 'absolute', top: '20px', right: 3 }}
+                onClick={() => setIsEditMode(true)}
+              >
+                <MdEdit size={24} />
+              </IconButton>
+            )}
 
-        <div
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          {eventData &&
-            (!isEditMode ? (
-              <p sx={{ textAlign: 'center', flexGrow: 1 }}>{`Due Date: ${format(
-                new Date(eventData.dueDate),
-                'PP',
-              )}`}</p>
-            ) : (
-              <form sx={{ my: 3 }} onSubmit={editEventHandler}>
-                <label htmlFor="due-date">
-                  Update Due Date:
-                  <input
-                    sx={{ ml: 3 }}
-                    id="due-date"
-                    type="date"
-                    name="dueDate"
-                    defaultValue={format(
-                      new Date(eventData.dueDate),
-                      'yyyy-MM-dd',
+            <h2 sx={{ variant: 'text.h4', textAlign: 'center' }}>
+              Tasks Assigned:
+            </h2>
+
+            <div
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {eventData &&
+                (!isEditMode ? (
+                  <p
+                    sx={{ textAlign: 'center', flexGrow: 1 }}
+                  >{`Due Date: ${format(
+                    new Date(eventData.dueDate),
+                    'PP',
+                  )}`}</p>
+                ) : (
+                  <form sx={{ my: 3 }} onSubmit={editEventHandler}>
+                    <label htmlFor="due-date">
+                      Update Due Date:
+                      <input
+                        sx={{ ml: 3 }}
+                        id="due-date"
+                        type="date"
+                        name="dueDate"
+                        defaultValue={format(
+                          new Date(eventData.dueDate),
+                          'yyyy-MM-dd',
+                        )}
+                      />
+                    </label>
+                    <IconButton
+                      sx={{ position: 'absolute', top: '20px', right: 3 }}
+                      // @ts-ignore
+                      type="submit"
+                    >
+                      <MdCheck size={24} />
+                    </IconButton>
+                  </form>
+                ))}
+            </div>
+
+            <div sx={{ height: '40%', overflowY: 'auto' }}>
+              {eventData?.tasks && eventData.tasks.length > 0 ? (
+                eventData.tasks.map(({ _id, type, subject, topic }) => (
+                  <div
+                    key={_id}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      columnGap: 1,
+                      maxWidth: '95%',
+                      width: 400,
+                      mx: 'auto',
+                    }}
+                  >
+                    <div
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        columnGap: 1,
+                      }}
+                    >
+                      <p sx={{ width: 128 }}>
+                        {`${type === 'lesson' ? '🔵' : '🟡'} ${titleCase(
+                          type,
+                        )}:`}
+                      </p>
+                      <p>{titleCase(`${subject} - ${topic}`)}</p>
+                    </div>
+                    {isEditMode && (
+                      <IconButton onClick={() => removeTaskHandler(_id)}>
+                        <BsEraser size={24} />
+                      </IconButton>
                     )}
-                  />
-                </label>
-                <IconButton
-                  sx={{ position: 'absolute', top: '20px', right: 3 }}
-                  // @ts-ignore
-                  type="submit"
-                >
-                  <MdCheck size={24} />
-                </IconButton>
-              </form>
-            ))}
-        </div>
+                  </div>
+                ))
+              ) : (
+                <p sx={{ textAlign: 'center', py: 3, m: 0 }}>No tasks</p>
+              )}
+            </div>
 
-        <div sx={{ height: '40%', overflowY: 'auto' }}>
-          {eventData?.tasks && eventData.tasks.length > 0 ? (
-            eventData.tasks.map(({ _id, type, subject, topic }) => (
-              <div
-                key={_id}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  columnGap: 1,
-                  maxWidth: '95%',
-                  width: 400,
-                  mx: 'auto',
-                }}
-              >
-                <div
-                  sx={{ display: 'flex', alignItems: 'center', columnGap: 1 }}
-                >
-                  <p sx={{ width: 128 }}>
-                    {`${type === 'lesson' ? '🔵' : '🟡'} ${titleCase(type)}:`}
-                  </p>
-                  <p>{titleCase(`${subject} - ${topic}`)}</p>
-                </div>
-                {isEditMode && (
-                  <IconButton onClick={() => removeTaskHandler(_id)}>
-                    <BsEraser size={24} />
-                  </IconButton>
-                )}
-              </div>
-            ))
-          ) : (
-            <p sx={{ textAlign: 'center', py: 3, m: 0 }}>No tasks</p>
-          )}
-        </div>
-
-        {isEditMode && (
-          <AlertDialog open={open} onOpenChange={setOpen}>
-            <AlertDialogTrigger asChild>
-              <Button
-                sx={{ variant: 'buttons.danger', mx: 'auto' }}
-                rounded={false}
-              >
-                Delete Event
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent
-              sx={{ p: 4 }}
-              title="Are you sure you want to delete this event?"
-              description="Once this event is deleted, all students progress for this event would be lost"
-              width={480}
-              height="min-content"
-              onConfirm={removeEventHandler}
-            />
-          </AlertDialog>
-        )}
-      </div>
+            {isEditMode && (
+              <AlertDialog open={open} onOpenChange={setOpen}>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    sx={{ variant: 'buttons.danger', mx: 'auto' }}
+                    rounded={false}
+                  >
+                    Delete Event
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent
+                  sx={{ p: 4 }}
+                  title="Are you sure you want to delete this event?"
+                  description="Once this event is deleted, all students progress for this event would be lost"
+                  width={480}
+                  height="min-content"
+                  onConfirm={removeEventHandler}
+                />
+              </AlertDialog>
+            )}
+          </div>
+        </>
+      ) : (
+        <Loader>Loading View...</Loader>
+      )}
     </div>
   );
 };
