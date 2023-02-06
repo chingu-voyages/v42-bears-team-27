@@ -1,31 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMemo, useState } from 'react';
+import useSWR from 'swr';
 import { endOfWeek, isSameDay, startOfWeek } from 'date-fns';
 
-import Loader from 'src/components/common/Loader';
 import { Calendar } from 'src/components/ui';
 import type { IEvent } from 'src/interfaces';
+import { fetcher } from 'src/services';
 import EventView from './EventView';
 
-// const DUMMY_EVENTS_DATA: IEvent[] = [
-//   {
-//     _id: '0',
-//     dueDate: new Date().toISOString(),
-//     setAt: new Date().toISOString(),
-//     tasks: [
-//       {
-//         _id: '0',
-//         event: '1234',
-//         subject: 'english',
-//         topic: 'punctuation',
-//         type: 'lesson',
-//       },
-//     ],
-//   },
-// ];
-
 const StudentCalendar = () => {
-  const [eventsData] = useState<IEvent[]>([]);
+  const { data: eventsData } = useSWR<IEvent[]>(
+    '/api/v0/classroom/events',
+    fetcher,
+  );
+
   const [activeDay, setActiveDay] = useState<Date>(new Date());
 
   const activeDayEvent = useMemo(() => {
@@ -77,13 +64,7 @@ const StudentCalendar = () => {
         value={activeDay}
         onClickDay={changedActiveDayHandler}
       />
-      {activeDayEvent ? (
-        <EventView />
-      ) : (
-        <div sx={{ position: 'relative', bottom: -6 }}>
-          <Loader sx={{ position: 'absolute' }}>Loading Tasks...</Loader>
-        </div>
-      )}
+      <EventView eventId={activeDayEvent?._id ?? null} />
     </div>
   );
 };
