@@ -38,6 +38,10 @@ const StudentSchema = new mongoose.Schema(
         },
       },
     ],
+    socketID: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,

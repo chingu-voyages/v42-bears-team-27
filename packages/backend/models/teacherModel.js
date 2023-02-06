@@ -25,6 +25,10 @@ const TeacherSchema = new mongoose.Schema(
       ref: 'Classroom',
       required: true,
     },
+    socketID: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,
