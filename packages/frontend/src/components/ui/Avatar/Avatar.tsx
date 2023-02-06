@@ -2,6 +2,7 @@ import type { RefAttributes, ForwardRefExoticComponent } from 'react';
 import { forwardRef } from 'react';
 import type { ThemeUIStyleObject } from 'theme-ui';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
+import stc from 'string-to-color';
 
 export interface AvatarProps extends AvatarPrimitive.AvatarImageProps {
   sx?: ThemeUIStyleObject;
@@ -19,8 +20,17 @@ AvatarProps & RefAttributes<HTMLImageElement>
       {...rest}
     />
     <AvatarPrimitive.Fallback
-      delayMs={600}
-      sx={{ variant: 'text.label', color: 'primary' }}
+      sx={{
+        variant: 'text.label',
+        color: 'text',
+        width,
+        height,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: stc(alt),
+        borderRadius: 'inherit',
+      }}
     >
       {alt}
     </AvatarPrimitive.Fallback>

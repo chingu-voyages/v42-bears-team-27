@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import useSWR from 'swr';
 
-import { Button } from 'src/components/ui';
+import Loader from 'src/components/common/Loader';
+import { Button, Radio, RadioGroup } from 'src/components/ui';
 import type { ISubject, ITask, ITopic } from 'src/interfaces';
 import { fetcher } from 'src/services';
 import { titleCase } from 'src/utils';
@@ -59,25 +60,13 @@ const CreateTaskForm: React.FC<Props> = ({ error, onSubmit }) => {
     const data = {
       subject,
       topic,
-      type: title as 'lesson' | 'exercise' | 'test',
+      type: title as 'lesson' | 'exercise',
     };
     onSubmit(data);
   };
 
   if (isLoading) {
-    return (
-      <p
-        sx={{
-          variant: 'text.h3',
-          position: 'absolute',
-          top: '40%',
-          left: '50%',
-          translate: '-50% -50%',
-        }}
-      >
-        Loading Form...
-      </p>
-    );
+    return <Loader>Loading Form...</Loader>;
   }
 
   return (
@@ -86,68 +75,88 @@ const CreateTaskForm: React.FC<Props> = ({ error, onSubmit }) => {
         maxWidth: 480,
         width: '95%',
         mx: 'auto',
-        '& > fieldset': {
+        '& > label, & > p': {
           variant: 'text.label',
-          mb: 3,
+          my: 3,
         },
       }}
       onSubmit={submitHandler}
     >
-      <fieldset>
-        <legend>Choose the subject</legend>
-        {(subjectsData as ISubject[]).map(({ _id: id, title }) => (
-          <label key={id} sx={{ display: 'block' }} htmlFor={id}>
-            {titleCase(title)}
-            <input
-              id={id}
-              type="radio"
-              name="subject"
-              value={title}
-              checked={subject === title}
-              onChange={(e) => {
-                setSubject(e.currentTarget.value);
-                setTopic('');
-              }}
-            />
-          </label>
-        ))}
-      </fieldset>
-      <fieldset>
-        <legend>Choose the topic</legend>
-        {selectedSubject?.topics.map(({ _id: id, title }) => (
-          <label key={id} sx={{ display: 'block' }} htmlFor={id}>
-            {titleCase(title)}
-            <input
-              id={id}
-              type="radio"
-              name="topic"
-              value={title}
-              checked={topic === title}
-              onChange={(e) => {
-                setTopic(e.currentTarget.value);
-                setType('');
-              }}
-            />
-          </label>
-        )) ?? <p>Select a subject to show a list of topics</p>}
-      </fieldset>
-      <fieldset>
-        <legend>Choose the type of task</legend>
-        {selectedTopic?.types.map((title, idx) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <label key={idx} sx={{ display: 'block' }} htmlFor={String(idx)}>
-            {titleCase(title)}
-            <input
-              id={String(idx)}
-              type="radio"
-              name="type"
-              value={title}
-              checked={type === title}
-              onChange={(e) => setType(e.currentTarget.value as typeof type)}
-            />
-          </label>
-        )) ?? <p>Select a topic to show a list of types</p>}
-      </fieldset>
+      <label htmlFor="subject-select">
+        Select the subject
+        <RadioGroup
+          id="subject-select"
+          sx={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            columnGap: 3,
+            my: 3,
+            width: '100%',
+          }}
+          onValueChange={(value) => {
+            setSubject(value);
+            setTopic('');
+          }}
+        >
+          {(subjectsData as ISubject[]).map(({ _id: id, title }) => (
+            <Radio key={id} id={id} label={titleCase(title)} value={title} />
+          ))}
+        </RadioGroup>
+      </label>
+      {selectedSubject ? (
+        <label htmlFor="topic-select">
+          Select the topic
+          <RadioGroup
+            id="topic-select"
+            sx={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              columnGap: 3,
+              my: 3,
+              width: '100%',
+            }}
+            onValueChange={(value) => {
+              setTopic(value);
+              setType('');
+            }}
+          >
+            {selectedSubject.topics.map(({ _id: id, title }) => (
+              <Radio
+                key={id}
+                id={id}
+                label={titleCase(title)}
+                value={title}
+                checked={title === topic}
+              />
+            ))}
+          </RadioGroup>
+        </label>
+      ) : (
+        <p>Select a subject to show a list of topics</p>
+      )}
+      {selectedTopic ? (
+        <label htmlFor="task-select">
+          Choose the type of task
+          <RadioGroup
+            id="task-select"
+            sx={{ my: 3 }}
+            onValueChange={(value) => setType(value)}
+          >
+            {selectedTopic.types.map((taskType, idx) => (
+              <Radio
+                // eslint-disable-next-line react/no-array-index-key
+                key={idx}
+                id={String(idx)}
+                label={titleCase(taskType)}
+                value={taskType}
+                checked={taskType === type}
+              />
+            ))}
+          </RadioGroup>
+        </label>
+      ) : (
+        <p>Select a topic to show a list of types</p>
+      )}
       <Button sx={{ width: '100%' }} rounded={false} type="submit">
         Add Task
       </Button>

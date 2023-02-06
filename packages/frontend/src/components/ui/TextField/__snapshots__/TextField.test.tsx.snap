@@ -13,6 +13,7 @@ exports[`<TextField /> Snapshots should match snapshot 1`] = `
 }
 
 .emotion-1 {
+  color: var(--theme-ui-colors-text);
   font-family: "Roboto",sans-serif;
   font-size: 18px;
   font-weight: 400;
@@ -26,6 +27,7 @@ exports[`<TextField /> Snapshots should match snapshot 1`] = `
 }
 
 .emotion-3 {
+  color: var(--theme-ui-colors-primary);
   font-family: "Roboto",sans-serif;
   font-size: 14px;
   font-weight: 400;
@@ -36,13 +38,12 @@ exports[`<TextField /> Snapshots should match snapshot 1`] = `
   padding-bottom: 16px;
   padding-left: 26px;
   padding-right: 32px;
-  color: var(--theme-ui-colors-primary);
   border: 2px solid;
-  border-color: var(--theme-ui-colors-gray);
+  border-color: gray;
 }
 
 .emotion-3:placeholder-shown {
-  color: var(--theme-ui-colors-gray);
+  color: gray;
 }
 
 <div>
@@ -79,6 +80,7 @@ exports[`<TextField /> Snapshots should match snapshot when rendered as textarea
 }
 
 .emotion-1 {
+  color: var(--theme-ui-colors-text);
   font-family: "Roboto",sans-serif;
   font-size: 18px;
   font-weight: 400;
@@ -92,6 +94,7 @@ exports[`<TextField /> Snapshots should match snapshot when rendered as textarea
 }
 
 .emotion-3 {
+  color: var(--theme-ui-colors-primary);
   font-family: "Roboto",sans-serif;
   font-size: 14px;
   font-weight: 400;
@@ -102,13 +105,12 @@ exports[`<TextField /> Snapshots should match snapshot when rendered as textarea
   padding-bottom: 16px;
   padding-left: 26px;
   padding-right: 32px;
-  color: var(--theme-ui-colors-primary);
   border: 2px solid;
-  border-color: var(--theme-ui-colors-gray);
+  border-color: gray;
 }
 
 .emotion-3:placeholder-shown {
-  color: var(--theme-ui-colors-gray);
+  color: gray;
 }
 
 <div>
