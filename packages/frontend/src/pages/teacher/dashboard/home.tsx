@@ -26,7 +26,7 @@ const Home: NextPageWithLayout = () => {
     error,
   } = useSWR<IClassroom>('/api/v0/classroom', fetcher);
 
-  if (!authCtx) {
+  if (!authCtx?.user) {
     return <Loader>Loading Dashboard...</Loader>;
   }
 
