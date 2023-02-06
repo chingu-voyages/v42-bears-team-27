@@ -155,21 +155,6 @@ const ClassroomModal: React.FC = () => {
                       justifyContent: 'center',
                     }}
                   >
-                    <Avatar
-                      width={64}
-                      height={64}
-                      alt={extractStringInitials('Homer Simpson')}
-                    />
-                    <p sx={{ variant: 'text.h4' }}>Homer Simpson</p>
-                  </div>
-                  <div
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
                     <div
                       sx={{
                         width: 64,
