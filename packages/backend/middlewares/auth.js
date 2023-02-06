@@ -52,6 +52,17 @@ const checkTeacherAuthenticated = (req, res, next) => {
   })(req, res);
 };
 
+// Student or Teacher
+const checkUserAuthenticated = (req, res, next) => {
+  passport.authenticate('user-cookie', { session: false }, (error, user) => {
+    if (error || !user) {
+      return res.status(401).json({ message: 'You are not authenticated' });
+    }
+    res.locals.user = user;
+    return next();
+  })(req, res);
+};
+
 // Compare JWT User and body or params User id, so users can't see other users details
 const checkSameUser = (req, res, next) => {
   if (res.locals.user._id.toString() === req.body.id) {
@@ -68,5 +79,6 @@ module.exports = {
   checkStudentAuthenticated,
   authenticateTeacher,
   checkTeacherAuthenticated,
+  checkUserAuthenticated,
   checkSameUser,
 };

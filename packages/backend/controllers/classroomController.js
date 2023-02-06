@@ -97,7 +97,7 @@ const getClassroomEvent = async (req, res) => {
     if (!classroom) {
       return res.status(400).json({ message: 'Classroom not found' });
     }
-    // TODO send only one request to DB & make sure event is inside teacher classroom
+    // TODO send only one request to DB & make sure event is inside user classroom
     const event = await Event.findById(requestId).populate('tasks');
     if (!event) return res.status(400).json({ message: 'event not found!' });
 
