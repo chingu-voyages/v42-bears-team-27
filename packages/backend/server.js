@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 
-const { initializeSocketConnection, getSocketConnection } = require('./socket');
+const { initializeSocketConnection } = require('./socket');
 const routes = require('./routes');
 
 const corsOptions = () => {
@@ -27,13 +27,6 @@ const app = express();
 const httpServer = createServer(app);
 initializeSocketConnection(httpServer, corsOptions);
 
-const io = getSocketConnection();
-io.on('connection', (socket) => {
-  console.log(`user connected on socket with id ${socket.id}`);
-  socket.on('disconnect', () => {
-    console.log(`user disconnected on socket with id ${socket.id}`);
-  });
-});
 // Database
 mongoose.set('strictQuery', false);
 mongoose

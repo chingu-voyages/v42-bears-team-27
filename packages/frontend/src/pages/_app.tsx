@@ -6,6 +6,7 @@ import { ThemeProvider } from 'theme-ui';
 
 import ErrorBoundary from 'src/components/common/ErrorBoundary';
 import { AuthProvider } from 'src/store/auth';
+import useSocket from 'src/hooks/use-socket';
 import theme from '../theme';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -18,6 +19,11 @@ type AppPropsWithLayout = AppProps & {
 
 const App: React.FC<AppPropsWithLayout> = ({ Component, pageProps }) => {
   const getLayout = Component.getLayout ?? ((page) => page);
+  const { socket } = useSocket({
+    uri: `${process.env.NEXT_PUBLIC_SERVER_URL}`,
+    options: {},
+  });
+  socket?.emit('socket-created');
 
   return (
     <ThemeProvider theme={theme}>

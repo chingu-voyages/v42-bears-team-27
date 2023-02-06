@@ -1,7 +1,4 @@
-const { getSocketConnection } = require('../socket');
-
 const loginTeacher = async (req, res) => {
-  const io = getSocketConnection();
   const { user } = res.locals;
   req.login(user, { session: false }, (error) => {
     if (error) {
@@ -11,17 +8,6 @@ const loginTeacher = async (req, res) => {
       _id: user._id,
       email: user.email,
     };
-
-    io.on('teacher-signed-in', (socket) => {
-      console.log(
-        `teacher with id ${user._id} connected on socket with id ${socket.id}`,
-      );
-      socket.on('teacher-signed-out', () => {
-        console.log(
-          `teacher with id ${user._id} disconnected on socket with id ${socket.id}`,
-        );
-      });
-    });
 
     return res
       .cookie('auth', JSON.stringify(payload), {
@@ -39,7 +25,6 @@ const loginTeacher = async (req, res) => {
 };
 
 const loginStudent = async (req, res) => {
-  const io = getSocketConnection();
   const { user } = res.locals;
   req.login(user, { session: false }, (error) => {
     if (error) {
@@ -49,17 +34,6 @@ const loginStudent = async (req, res) => {
       _id: user._id,
       email: user.email,
     };
-
-    io.on('teacher-signed-in', (socket) => {
-      console.log(
-        `student with id ${user._id} connected on socket with id ${socket.id}`,
-      );
-      socket.on('teacher-signed-out', () => {
-        console.log(
-          `student with id ${user._id} disconnected on socket with id ${socket.id}`,
-        );
-      });
-    });
 
     res
       .cookie('auth', JSON.stringify(payload), {
