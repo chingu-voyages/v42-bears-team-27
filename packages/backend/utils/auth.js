@@ -98,6 +98,7 @@ passport.use(
   ),
 );
 
+// Student & Teacher Auth Strategies
 passport.use(
   'user-cookie',
   new CookieStrategy(
@@ -109,7 +110,6 @@ passport.use(
     async (req, token, callback) => {
       try {
         const teacher = await Teacher.findById(JSON.parse(token)._id);
-        // console.log(teacher)
         if (!teacher) {
           const student = await Student.findById(JSON.parse(token)._id);
           if (student) {
