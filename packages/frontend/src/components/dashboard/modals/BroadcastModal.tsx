@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { MdSend } from 'react-icons/md';
 import validator from 'validator';
 
 import useInput from 'src/hooks/use-input';
 
+import { SocketContext } from 'src/store/socket/socket-context';
 import {
   Button,
   Dialog,
@@ -31,6 +32,8 @@ const messageValidator = (value: string) => {
 };
 
 const BroadcastModal: React.FC = () => {
+  const socketCtx = useContext(SocketContext);
+
   const {
     value: enteredHeadline,
     hasErrors: enteredHeadlineHasErrors,
@@ -65,6 +68,7 @@ const BroadcastModal: React.FC = () => {
       // Submit form data
       const msg = await postBroadcastMessageToStudents(data);
       // Update alert with api response message
+      socketCtx?.socket?.emit('new-message-sent');
       setAlert(msg);
       // Reset form values
       headlineResetHandler();
