@@ -19,6 +19,6 @@ const lessonSchema = new mongoose.Schema({
   },
 });
 
-const Lesson = mongoose.model('Event', lessonSchema);
+const Lesson = mongoose.model('Lesson', lessonSchema);
 
 module.exports = Lesson;
