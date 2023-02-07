@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 // import useSWR from 'swr';
-// import { MdAdd } from 'react-icons/md';
+import stc from 'string-to-color';
 
 // import { fetcher } from 'src/services';
-import { Button } from 'src/components/ui';
 import type { IStudent } from 'src/interfaces';
+import { Button } from 'src/components/ui';
 import { AuthContext } from 'src/store/auth';
 
 type Props = {
@@ -12,8 +12,32 @@ type Props = {
   student?: IStudent | null;
 };
 
+interface IMockProfile {
+  _id: string;
+  timeSpent: {
+    [key: string]: number;
+  };
+  points: {
+    [key: string]: number;
+  };
+}
+const mockProfile: IMockProfile = {
+  _id: '4a1658s45s634x65f465',
+  timeSpent: {
+    Mathematics: 1300000,
+    Geography: 500000,
+  },
+  points: {
+    Mathematics: 24,
+    Geography: 12,
+  },
+};
+const totalTime = Object.values(mockProfile.timeSpent).reduce((a, b) => b + a);
+const totalPoints = Object.values(mockProfile.points).reduce((a, b) => b + a);
+
 const StudentProfileModal: React.FC<Props> = ({ setForm, student }) => {
   const authCtx = useContext(AuthContext);
+  // const { data } = useSWR<IClassroom>(`/api/v0/student/profile/${student?._id}`, fetcher);
 
   if (!authCtx || !student) {
     return (
@@ -38,12 +62,71 @@ const StudentProfileModal: React.FC<Props> = ({ setForm, student }) => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: '2em',
       }}
     >
-      <p>Time Spent</p>
-      <p>Points Achieved</p>
-      <p>{JSON.stringify(student?.tasks)}</p>
+      <p sx={{ variant: 'text.h4', mt: 4 }}>Time Spent</p>
+      <div
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          width: 500,
+          height: 60,
+          border: '2px solid #32a1ce',
+          borderRadius: '5px',
+        }}
+      >
+        {mockProfile &&
+          Object.keys(mockProfile.points).map((el) => (
+            <div
+              key={el}
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: stc(el),
+                color: 'white',
+                width: `${
+                  (100 * mockProfile.points[el as keyof IMockProfile]) /
+                  totalPoints
+                }%`,
+              }}
+            >
+              {el}
+            </div>
+          ))}
+      </div>
+      <p sx={{ variant: 'text.h4', mt: 5 }}>Points Achieved</p>
+      <div
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          width: 500,
+          height: 60,
+          border: '2px solid #32a1ce',
+          borderRadius: '5px',
+          mb: 6,
+        }}
+      >
+        {mockProfile &&
+          Object.keys(mockProfile.timeSpent).map((el) => (
+            <div
+              key={el}
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: stc(el),
+                color: 'white',
+                width: `${
+                  (100 * mockProfile.timeSpent[el as keyof IMockProfile]) /
+                  totalTime
+                }%`,
+              }}
+            >
+              {el}
+            </div>
+          ))}
+      </div>
 
       {authCtx.role === 'teacher' && (
         <Button
