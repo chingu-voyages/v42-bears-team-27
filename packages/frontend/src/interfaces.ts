@@ -64,7 +64,9 @@ export interface ITopic {
 
 export interface ISubject {
   _id: ID;
+  slug: string;
   title: string;
+  imageUrl: string;
   topics: ITopic[];
 }
 
