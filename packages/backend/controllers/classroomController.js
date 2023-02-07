@@ -68,7 +68,7 @@ const deleteClassroom = async (_, res) => {
 };
 
 /// Classroom Subjects
-const getClassroomSubjects = async (_, res) => {
+const getClassroomSubjects = async (req, res) => {
   const { classroom: classroomId } = res.locals.user;
   try {
     const classroom = await Classroom.findById(classroomId).populate(
@@ -83,7 +83,14 @@ const getClassroomSubjects = async (_, res) => {
     //   return res.status(401).json({ message: 'Unauthorized access' });
     // }
 
-    return res.json(classroom.subjects);
+    let { subjects } = classroom;
+
+    if (req.query.name) {
+      // If name is provided in query then find subjects with exact name
+      subjects = subjects.filter((subject) => subject.slug === req.query.name);
+    }
+
+    return res.json(subjects);
   } catch (err) {
     return res.status(500).json(err);
   }
