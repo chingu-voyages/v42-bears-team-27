@@ -2,6 +2,8 @@
 const Classroom = require('../models/classroomModel');
 const Student = require('../models/studentModel');
 const Task = require('../models/taskModel');
+const Lesson = require('../models/lessonModel');
+const Exercise = require('../models/exerciseModel');
 const { generatePassword, sendEmail } = require('../utils');
 
 const createStudent = async (req, res) => {
@@ -169,7 +171,42 @@ const getStudentProfile = async (req, res) => {
       } else {
         timeSpent[task.subject] += studentTask.timeSpent;
       }
-      // Calculate points from...
+      // Calculate points
+      let taskPoints;
+      switch (studentTask.type) {
+        case 'lesson':
+          Lesson.findById(studentTask.lesson, (error, lesson) => {
+            if (error) {
+              return res.status(400).json({
+                message: 'type not found',
+              });
+            }
+            taskPoints = lesson.points;
+            return null;
+          });
+          break;
+        case 'exercise':
+          Exercise.findById(studentTask.lesson, (error, exercise) => {
+            if (error) {
+              return res.status(400).json({
+                message: 'exercise not found',
+              });
+            }
+            taskPoints = exercise.points;
+            return null;
+          });
+          break;
+        default:
+          return res.status(400).json({
+            message: 'type not found',
+          });
+      }
+      if (!points[task.subject]) {
+        points[task.subject] = taskPoints;
+      } else {
+        points[task.subject] += taskPoints;
+      }
+
       return null;
     });
 

@@ -233,7 +233,7 @@ const deleteClassroomEvent = async (req, res) => {
 /// Classroom Tasks
 const addTask = async (req, res) => {
   const { classroom: classroomId } = res.locals.user;
-  const { event: eventId, type, subject, topic } = req.body;
+  const { event: eventId, type, subject, topic, lesson, exercise } = req.body;
   try {
     const event = await Event.findById(eventId);
     if (!event) {
@@ -248,6 +248,8 @@ const addTask = async (req, res) => {
       type,
       subject,
       topic,
+      lesson,
+      exercise,
     });
     if (!newTask) {
       return res.status(500).json({ message: 'Server error' });

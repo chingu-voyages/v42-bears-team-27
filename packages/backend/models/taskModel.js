@@ -11,6 +11,14 @@ const taskSchema = new mongoose.Schema({
     required: true,
     enum: ['lesson', 'exercise', 'test'],
   },
+  lesson: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Lesson',
+  },
+  exercise: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Exercise',
+  },
   subject: {
     type: String,
     required: true,
