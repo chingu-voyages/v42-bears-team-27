@@ -50,6 +50,19 @@ module.exports = {
         removeSocketIDsFromDB(userData);
       });
 
+      socket.on('new-message-sent', async (recipientIDs) => {
+        console.log(
+          'new-message-sent event recieved from socketID ',
+          socket.id,
+        );
+        recipientIDs.forEach(async (studentID) => {
+          const { socketID } = await Student.findById(studentID);
+          if (socketID) {
+            socket.to(socketID).emit('revalidate-notifications-endpoint');
+          }
+        });
+      });
+
       socket.on('disconnect', () => {
         console.log(`user disconnected on socket with id ${socket.id}`);
       });
