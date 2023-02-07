@@ -11,11 +11,11 @@ import {
   DialogTrigger,
   IconButton,
 } from 'src/components/ui';
-import useSocket from 'src/hooks/use-socket';
 import type { IEvent, ISubject, ITask } from 'src/interfaces';
 import { fetcher, postClassroomEvent, putClassroomEvent } from 'src/services';
 import { titleCase } from 'src/utils';
 import { AuthContext } from 'src/store/auth/auth-context';
+import { SocketContext } from 'src/store/socket/socket-context';
 import CreateTaskForm from './CreateTaskForm';
 
 // const DUMMY_EVENTS_DATA: IEvent[] = [
@@ -41,12 +41,8 @@ import CreateTaskForm from './CreateTaskForm';
 // ];
 
 const TeacherCalendar: React.FC = () => {
-  const { socket } = useSocket({
-    uri: `${process.env.NEXT_PUBLIC_SERVER_URL}`,
-    options: {},
-  });
-
   const authCtx = useContext(AuthContext);
+  const socketCtx = useContext(SocketContext);
 
   const { data: eventsData, mutate: mutateEventsData } = useSWR<IEvent[]>(
     '/api/v0/classroom/events',
@@ -61,7 +57,10 @@ const TeacherCalendar: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<string | null>(null);
 
-  socket?.emit('user-logged-in', { ...authCtx?.user, role: authCtx?.role });
+  socketCtx?.socket?.emit('user-logged-in', {
+    ...authCtx?.user,
+    role: authCtx?.role,
+  });
 
   const activeDayEvent = useMemo<IEvent | null>(() => {
     if (!eventsData) {
