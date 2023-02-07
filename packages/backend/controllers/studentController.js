@@ -44,7 +44,9 @@ const createStudent = async (req, res) => {
     // Add existing tasks to Student
     const studentTasks = [];
     studentClassroom.events.map((event) =>
-      event.tasks.map((task) => studentTasks.push({ taskID: task })),
+      event.tasks.map((task) =>
+        studentTasks.push({ taskID: task, event: event._id }),
+      ),
     );
     newStudent.tasks = studentTasks;
     await newStudent.save();
