@@ -24,7 +24,7 @@ router.get('/', checkUserAuthenticated, getClassroom);
 router.put('/', checkTeacherAuthenticated, updateClassroom);
 router.delete('/:id', checkTeacherAuthenticated, deleteClassroom);
 
-router.get('/subjects', checkTeacherAuthenticated, getClassroomSubjects);
+router.get('/subjects', checkUserAuthenticated, getClassroomSubjects);
 
 router.get('/event/:id', checkUserAuthenticated, getClassroomEvent);
 router.get('/events', checkUserAuthenticated, getClassroomEvents);
