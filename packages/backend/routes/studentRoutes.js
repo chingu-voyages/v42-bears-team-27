@@ -4,11 +4,13 @@ const {
   validateStudent,
   checkStudentAuthenticated,
   checkTeacherAuthenticated,
+  checkUserAuthenticated,
 } = require('../middlewares');
 
 const {
   createStudent,
   getStudent,
+  getStudentProfile,
   getStudentTasks,
 } = require('../controllers/studentController');
 
@@ -20,6 +22,7 @@ router.post(
   createStudent,
 );
 router.get('/', checkStudentAuthenticated, getStudent);
+router.get('/profile/:id', checkUserAuthenticated, getStudentProfile);
 router.get('/tasks', checkStudentAuthenticated, getStudentTasks);
 
 module.exports = router;

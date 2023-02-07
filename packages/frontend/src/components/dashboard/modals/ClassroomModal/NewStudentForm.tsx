@@ -67,6 +67,7 @@ const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
           onBlur={fullNameBlurHandler}
           label="Student’s Full Name"
           type="text"
+          autoFocus
         />
       </div>
       <div sx={{ py: 3 }}>

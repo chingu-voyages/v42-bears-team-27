@@ -71,7 +71,7 @@ export interface ISubject {
 export interface IClassroom {
   _id: ID;
   name: string;
-  teacher: ID;
+  teacher: ITeacher;
   students: IStudent[];
   subjects: ID[];
   events: ID[];
