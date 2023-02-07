@@ -37,6 +37,7 @@ export interface IStudent {
 export interface IStudentTask {
   taskID: ID;
   completed: boolean;
+  event: ID | IEvent;
 }
 
 export interface ITask {
