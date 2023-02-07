@@ -210,14 +210,6 @@ const getStudentProfile = async (req, res) => {
       return null;
     });
 
-    // _id: studentId,
-    //   timeSpent: {
-    //   Mathematics: 1300000,
-    //     Geography: 500000,
-    // },
-    // points: {
-    //   Mathematics: 24,
-    //     Geography: 12,
     return res.json({
       _id: studentId,
       timeSpent,
@@ -228,9 +220,35 @@ const getStudentProfile = async (req, res) => {
   }
 };
 
+const updateStudentTask = async (req, res) => {
+  const { user } = res.locals;
+  const { task: taskId, time, completed } = res.body;
+  try {
+    const student = await Student.findById(user._id);
+    // Check if student exists
+    if (!student) {
+      return res.status(400).json({ message: 'Student not found' });
+    }
+    if (taskId) {
+      student.tasks.find((x) => x.taskID.toString() === taskId).timeSpent +=
+        time;
+    }
+    if (typeof completed !== 'undefined') {
+      student.tasks.find((x) => x.taskID.toString() === taskId).completed =
+        completed;
+    }
+    await student.save();
+
+    return res.json({ message: 'Student task updated!' });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
 module.exports = {
   createStudent,
   getStudent,
   getStudentProfile,
   getStudentTasks,
+  updateStudentTask,
 };
