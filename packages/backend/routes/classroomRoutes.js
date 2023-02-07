@@ -20,6 +20,7 @@ const {
   deleteTask,
 } = require('../controllers/classroomController');
 
+// "http://localhost:5000/api/v0/classroom"
 router.get('/', checkUserAuthenticated, getClassroom);
 router.put('/', checkTeacherAuthenticated, updateClassroom);
 router.delete('/:id', checkTeacherAuthenticated, deleteClassroom);

@@ -14,7 +14,7 @@ const {
   getStudentTasks,
 } = require('../controllers/studentController');
 
-// "http://localhost:5000/api/v0/student/create"
+// "http://localhost:5000/api/v0/student"
 router.post(
   '/create',
   checkTeacherAuthenticated,
