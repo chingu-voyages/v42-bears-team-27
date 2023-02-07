@@ -274,7 +274,19 @@ const addTask = async (req, res) => {
   }
 };
 
-// const updateTask = async (req, res) => {}
+// const updateTask = async (req, res) => {
+//   const { id: requestId } = req.params;
+//   try {
+//     const task = await Task.findById(requestId);
+//     if (!task) {
+//       return res.status(400).json({ message: 'task not found!' });
+//     }
+//     // TODO update task
+//     return res.json({ message: 'task updated!' });
+//   } catch (err) {
+//     return res.status(500).json(err);
+//   }
+// }
 
 const deleteTask = async (req, res) => {
   const { classroom: classroomId } = res.locals.user;
@@ -333,5 +345,6 @@ module.exports = {
   updateClassroomEvent,
   deleteClassroomEvent,
   addTask,
+  // updateTask,
   deleteTask,
 };
