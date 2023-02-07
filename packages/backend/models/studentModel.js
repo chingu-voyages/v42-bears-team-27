@@ -50,6 +50,10 @@ const StudentSchema = new mongoose.Schema(
           type: Boolean,
           default: false,
         },
+        timeSpent: {
+          type: Number,
+          default: 0,
+        },
       },
     ],
   },
