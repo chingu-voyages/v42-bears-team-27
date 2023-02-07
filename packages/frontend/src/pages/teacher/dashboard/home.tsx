@@ -26,7 +26,7 @@ const Home: NextPageWithLayout = () => {
     error,
   } = useSWR<IClassroom>('/api/v0/classroom', fetcher);
 
-  if (!authCtx?.user) {
+  if (!authCtx?.user || isLoading) {
     return <Loader>Loading Dashboard...</Loader>;
   }
 
@@ -36,16 +36,12 @@ const Home: NextPageWithLayout = () => {
     authCtx.onLogout();
   }
 
-  if (isLoading) {
-    return <Loader>Loading Data...</Loader>;
-  }
-
   return (
     <>
       <TeacherNav
         heading={classroomData?.name ? `Classroom: ${classroomData.name}` : ''}
       />
-      {!classroomData?.name ? (
+      {classroomData && !classroomData.name ? (
         <ClassroomCreation />
       ) : (
         <>

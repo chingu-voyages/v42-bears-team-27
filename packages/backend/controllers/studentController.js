@@ -1,6 +1,7 @@
 /* eslint spaced-comment: 0 */
 const Classroom = require('../models/classroomModel');
 const Student = require('../models/studentModel');
+const Task = require('../models/taskModel');
 const { generatePassword, sendEmail } = require('../utils');
 
 const createStudent = async (req, res) => {
@@ -141,8 +142,56 @@ const getStudentTasks = async (req, res) => {
 // }
 // };
 
+const getStudentProfile = async (req, res) => {
+  // const { _id, fullName, inbox, tasks } = res.locals.user;
+  const { id: studentId } = req.params;
+  try {
+    const student = await Student.findById(studentId);
+    if (!student) {
+      return res.status(400).json({
+        message: 'student not found',
+      });
+    }
+
+    const timeSpent = {};
+    const points = {};
+    student.tasks.map(async (studentTask) => {
+      const task = await Task.findById(studentTask.taskID);
+      if (!task) {
+        return res.status(400).json({
+          message: 'task not found',
+        });
+      }
+      if (!timeSpent[task.subject]) {
+        timeSpent[task.subject] = studentTask.timeSpent;
+      } else {
+        timeSpent[task.subject] += studentTask.timeSpent;
+      }
+      // Calculate points from...
+      return null;
+    });
+
+    // _id: studentId,
+    //   timeSpent: {
+    //   Mathematics: 1300000,
+    //     Geography: 500000,
+    // },
+    // points: {
+    //   Mathematics: 24,
+    //     Geography: 12,
+    return res.json({
+      _id: studentId,
+      timeSpent,
+      points,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+};
+
 module.exports = {
   createStudent,
   getStudent,
+  getStudentProfile,
   getStudentTasks,
 };
