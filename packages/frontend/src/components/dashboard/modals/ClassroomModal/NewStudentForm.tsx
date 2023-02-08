@@ -5,11 +5,19 @@ import type { INewStudentCredentials } from 'src/interfaces';
 
 import useInput from 'src/hooks/use-input';
 
-const fullNameValidator = (value: string) => {
+const forenameValidator = (value: string) => {
   const trimmed = value.trim();
   return (
     !validator.isEmpty(trimmed) &&
-    validator.isLength(trimmed, { min: 3, max: 60 })
+    validator.isLength(trimmed, { min: 3, max: 25 })
+  );
+};
+
+const surnameValidator = (value: string) => {
+  const trimmed = value.trim();
+  return (
+    !validator.isEmpty(trimmed) &&
+    validator.isLength(trimmed, { min: 3, max: 25 })
   );
 };
 
@@ -25,12 +33,20 @@ type Props = {
 
 const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
   const {
-    value: enteredFullName,
-    hasErrors: enteredFullNameHasErrors,
-    inputChangeHandler: fullNameChangedHandler,
-    inputBlurHandler: fullNameBlurHandler,
-    inputResetHandler: fullNameResetHandler,
-  } = useInput(fullNameValidator, '');
+    value: enteredForename,
+    hasErrors: enteredForenameHasErrors,
+    inputChangeHandler: forenameChangedHandler,
+    inputBlurHandler: forenameBlurHandler,
+    inputResetHandler: forenameResetHandler,
+  } = useInput(forenameValidator, '');
+
+  const {
+    value: enteredSurname,
+    hasErrors: enteredSurnameHasErrors,
+    inputChangeHandler: surnameChangedHandler,
+    inputBlurHandler: surnameBlurHandler,
+    inputResetHandler: surnameResetHandler,
+  } = useInput(surnameValidator, '');
 
   const {
     value: enteredEmail,
@@ -43,12 +59,18 @@ const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    const sanitizedFullName = validator.escape(enteredFullName);
+    const sanitizedForename = validator.escape(enteredForename);
+    const sanitizedSurname = validator.escape(enteredSurname);
     const sanitizedEmail = validator.escape(enteredEmail);
 
-    const data = { fullName: sanitizedFullName, email: sanitizedEmail };
+    const data = {
+      forename: sanitizedForename,
+      surname: sanitizedSurname,
+      email: sanitizedEmail,
+    };
     // Reset form values
-    fullNameResetHandler();
+    forenameResetHandler();
+    surnameResetHandler();
     emailResetHandler();
     // Submit form data
     onSubmit(data);
@@ -59,15 +81,28 @@ const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
       <div sx={{ py: 3 }}>
         <TextField
           sx={{
-            borderColor: enteredFullNameHasErrors ? 'red' : 'gray',
+            borderColor: enteredForenameHasErrors ? 'red' : 'gray',
           }}
-          placeholder="Forename, Surname"
-          value={enteredFullName}
-          onChange={(e) => fullNameChangedHandler(e.currentTarget.value)}
-          onBlur={fullNameBlurHandler}
-          label="Student’s Full Name"
+          placeholder="Forename"
+          value={enteredForename}
+          onChange={(e) => forenameChangedHandler(e.currentTarget.value)}
+          onBlur={forenameBlurHandler}
+          label="Student’s Forename"
           type="text"
           autoFocus
+        />
+      </div>
+      <div sx={{ py: 3 }}>
+        <TextField
+          sx={{
+            borderColor: enteredSurnameHasErrors ? 'red' : 'gray',
+          }}
+          placeholder="Surname"
+          value={enteredSurname}
+          onChange={(e) => surnameChangedHandler(e.currentTarget.value)}
+          onBlur={surnameBlurHandler}
+          label="Student’s Surname"
+          type="text"
         />
       </div>
       <div sx={{ py: 3 }}>

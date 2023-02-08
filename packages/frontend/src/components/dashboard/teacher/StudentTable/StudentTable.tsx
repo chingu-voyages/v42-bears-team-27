@@ -12,9 +12,14 @@ import { fetcher } from 'src/services';
 
 const columnHelper = createColumnHelper<any>();
 
+// TODO add sorting by Surname
 const columns = [
-  columnHelper.accessor('fullName', {
-    header: () => 'Full Name',
+  columnHelper.accessor('surname', {
+    header: () => 'Surname',
+    cell: (info) => info.renderValue(),
+  }),
+  columnHelper.accessor('forename', {
+    header: () => 'Forename',
     cell: (info) => info.renderValue(),
   }),
   columnHelper.accessor('numberTasks', {

@@ -14,8 +14,8 @@ const getClassroom = async (_, res) => {
   const { user } = res.locals;
   try {
     const classroom = await Classroom.findById(user.classroom)
-      .populate('students', 'fullName tasks')
-      .populate('teacher', 'title fullName');
+      .populate('students', 'forename surname tasks')
+      .populate('teacher', 'title forename surname');
     if (!classroom) {
       return res.status(400).json({ message: 'Classroom not found' });
     }

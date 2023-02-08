@@ -9,20 +9,35 @@ exports.validateTeacher = [
     .withMessage('Title can be at most 10 characters')
     .bail(),
 
-  check('fullName')
+  check('forename')
     .trim()
     .escape()
 
     .notEmpty()
-    .withMessage('User name can not be empty')
+    .withMessage('forename can not be empty')
     .bail()
 
     .isLength({ min: 3 })
-    .withMessage('User name must be at least 3 characters')
+    .withMessage('forename must be at least 3 characters')
     .bail()
 
     .isLength({ max: 25 })
-    .withMessage('User name can be at most 25 characters')
+    .withMessage('forename can be at most 25 characters')
+    .bail(),
+  check('surname')
+    .trim()
+    .escape()
+
+    .notEmpty()
+    .withMessage('surname can not be empty')
+    .bail()
+
+    .isLength({ min: 3 })
+    .withMessage('surname must be at least 3 characters')
+    .bail()
+
+    .isLength({ max: 25 })
+    .withMessage('surname can be at most 25 characters')
     .bail(),
 
   check('email')
