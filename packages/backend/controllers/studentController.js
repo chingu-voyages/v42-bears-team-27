@@ -78,7 +78,45 @@ const getStudent = async (_, res) => {
   });
 };
 
+const markMessageAsRead = async (req, res) => {
+  const { messageID } = req.body;
+  const { id: studentID } = res.locals.user;
+
+  Student.findById(studentID)
+    .then((doc) => {
+      let messageFound = false;
+      doc.inbox.forEach((item) => {
+        if (item.messageID.equals(messageID)) {
+          messageFound = true;
+          // eslint-disable-next-line dot-notation
+          item['hasBeenRead'] = true; // eslint-disable-line no-param-reassign
+          doc.save();
+        }
+      });
+
+      if (messageFound) {
+        return res
+          .status(200)
+          .json({ message: 'successfully marked message as read' });
+      }
+
+      return res
+        .status(400)
+        .json({ message: `message with ID ${messageID} not found` });
+    })
+    .catch((err) => {
+      console.log(
+        `Error while trying to update message.hasBeenRead to true for 
+         student ${studentID} and message ${messageID}, ${err}`,
+      );
+      return res.status(500).json({
+        message: `internal server error`,
+      });
+    });
+};
+
 module.exports = {
   createStudent,
   getStudent,
+  markMessageAsRead,
 };
