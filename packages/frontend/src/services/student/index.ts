@@ -15,3 +15,24 @@ export const postCreateNewStudent = (newStudent: any) =>
     .catch((error) => {
       throw error;
     });
+
+// PUT REQUESTS
+
+// task = {
+//  task: ID,
+//  time?: Number, -> time (in ms) to add to existing spent time
+//  completed?: Boolean
+// }
+export const putStudentTask = (task: any) =>
+  fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/student/task`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(task),
+  })
+    .then(() => 'Success: Updated!')
+    .catch((error) => {
+      throw error;
+    });
