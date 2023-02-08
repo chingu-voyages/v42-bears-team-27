@@ -8,25 +8,29 @@ export interface IUserCredentials {
 
 export interface INewTeacherCredentials {
   title: string;
-  fullName: string;
+  forename: string;
+  surname: string;
   email: string;
   password: string;
 }
 
 export interface INewStudentCredentials {
-  fullName: string;
+  forename: string;
+  surname: string;
   email: string;
 }
 
 export interface ITeacher {
   _id: ID;
   title: string;
-  fullName: string;
+  forename: string;
+  surname: string;
 }
 
 export interface IStudent {
   _id: ID;
-  fullName: string;
+  forename: string;
+  surname: string;
   inbox: {
     messageID: ID;
     hasBeenRead: boolean;

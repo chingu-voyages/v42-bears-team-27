@@ -1,20 +1,35 @@
 const { check, validationResult } = require('express-validator');
 
 exports.validateStudent = [
-  check('fullName')
+  check('forename')
     .trim()
     .escape()
 
     .notEmpty()
-    .withMessage('fullName can not be empty')
+    .withMessage('forename can not be empty')
     .bail()
 
     .isLength({ min: 3 })
-    .withMessage('fullName must be at least 3 characters')
+    .withMessage('forename must be at least 3 characters')
     .bail()
 
-    .isLength({ max: 60 })
-    .withMessage('fullName can be at most 60 characters')
+    .isLength({ max: 25 })
+    .withMessage('forename can be at most 25 characters')
+    .bail(),
+  check('surname')
+    .trim()
+    .escape()
+
+    .notEmpty()
+    .withMessage('surname can not be empty')
+    .bail()
+
+    .isLength({ min: 3 })
+    .withMessage('surname must be at least 3 characters')
+    .bail()
+
+    .isLength({ max: 25 })
+    .withMessage('surname can be at most 25 characters')
     .bail(),
 
   check('email')
