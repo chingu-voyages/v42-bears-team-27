@@ -50,18 +50,52 @@ module.exports = {
         removeSocketIDsFromDB(userData);
       });
 
-      socket.on('new-message-sent', async (recipientIDs) => {
-        console.log(
-          'new-message-sent event recieved from socketID ',
-          socket.id,
-        );
-        recipientIDs.forEach(async (studentID) => {
-          const { socketID } = await Student.findById(studentID);
-          if (socketID) {
-            socket.to(socketID).emit('revalidate-notifications-endpoint');
+      socket.on(
+        'new-message-sent',
+        async (isBroadcast, teacherID, studentID = '') => {
+          console.log(
+            'new-message-sent event recieved from socketID ',
+            socket.id,
+          );
+
+          // helper function
+          const sendNotificationToStudent = async (id) => {
+            const student = await Student.findById(id);
+
+            if (!student) {
+              console.log(
+                `message recipient student with id ${id} not found in DB`,
+              );
+              return;
+            }
+
+            const { socketID } = student;
+
+            if (socketID) {
+              socket.to(socketID).emit('revalidate-notifications-endpoint');
+            }
+          };
+
+          if (!isBroadcast) {
+            sendNotificationToStudent(studentID);
+            return;
           }
-        });
-      });
+
+          const teacher = await Teacher.findById(teacherID);
+
+          if (!teacher) {
+            console.log(
+              `message sender teacher with id ${teacherID} not found in DB`,
+            );
+            return;
+          }
+
+          const { classroom } = teacher;
+          const { students } = classroom;
+
+          students.forEach((student) => sendNotificationToStudent(student._id));
+        },
+      );
 
       socket.on('disconnect', () => {
         console.log(`user disconnected on socket with id ${socket.id}`);
