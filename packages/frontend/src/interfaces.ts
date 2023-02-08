@@ -43,13 +43,11 @@ export interface IStudentTask {
 export interface IExercise {
   topic: string;
   subject: ID | ISubject;
-  points: number;
 }
 
 export interface ILesson {
   topic: string;
   subject: ID | ISubject;
-  points: number;
 }
 
 export interface IEventTask {
