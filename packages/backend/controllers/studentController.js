@@ -99,6 +99,10 @@ const getStudentTasks = async (req, res) => {
       path: 'tasks',
       populate: {
         path: 'taskID',
+        populate: {
+          path: 'assignment',
+          populate: 'subject',
+        },
       },
     });
     // Check if student exists
