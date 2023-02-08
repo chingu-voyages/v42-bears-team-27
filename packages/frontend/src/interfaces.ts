@@ -55,6 +55,20 @@ export interface IEvent {
   tasks: ITask[];
 }
 
+export interface ILessonContent {
+  _id: ID;
+  pages: {
+    _id: ID;
+    text: string;
+  }[];
+}
+
+export interface ILesson {
+  topic: string;
+  subject: ID | ISubject;
+  content: ILessonContent;
+}
+
 export interface ITopic {
   _id: ID;
   slug: string;
