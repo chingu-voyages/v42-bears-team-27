@@ -204,7 +204,11 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
             </DialogContent>
           </Dialog>
 
-          <div>
+          <div
+            sx={{
+              display: 'inline',
+            }}
+          >
             {eventData && !isEditMode && (
               <IconButton
                 sx={{ position: 'absolute', top: '20px', right: 3 }}
@@ -259,7 +263,12 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
                 ))}
             </div>
 
-            <div sx={{ height: '40%', overflowY: 'auto' }}>
+            <div
+              sx={{
+                height: isEditMode ? '40%' : '62%',
+                overflowY: 'auto',
+              }}
+            >
               {eventData?.tasks && eventData.tasks.length > 0 ? (
                 eventData.tasks.map(({ _id, assignmentModel }) => (
                   <TaskItem
