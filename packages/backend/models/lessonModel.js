@@ -11,6 +11,13 @@ const lessonSchema = new mongoose.Schema({
     ref: 'Subject',
     required: true,
   },
+  content: {
+    pages: [
+      {
+        text: String,
+      },
+    ],
+  },
 });
 
 const Lesson = mongoose.model('Lesson', lessonSchema);
