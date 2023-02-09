@@ -55,9 +55,9 @@ const ClassroomModal: React.FC = () => {
       case 'newStudent':
         return 'Invite a Student';
       case 'studentProfile':
-        return `${selectStudent?.fullName}`;
+        return `${selectStudent?.forename} ${selectStudent?.surname}`;
       case 'directMessage':
-        return `Send a message to ${selectStudent?.fullName}`;
+        return `Send a message to ${selectStudent?.forename} ${selectStudent?.surname}`;
       default:
         return 'Classroom';
     }
@@ -126,11 +126,11 @@ const ClassroomModal: React.FC = () => {
                     <Avatar
                       width={64}
                       height={64}
-                      alt={extractStringInitials(data.teacher.fullName)}
+                      alt={extractStringInitials(data.teacher.forename)}
                     />
-                    {/* Bug with "no comma name" fullName */}
-                    <p sx={{ variant: 'text.h4' }}>{`${data.teacher.title}
-                      .${data.teacher.fullName.split(',')[1].trim()}`}</p>
+                    <p
+                      sx={{ variant: 'text.h4' }}
+                    >{`${data.teacher.forename} ${data.teacher.surname}`}</p>
                   </div>
                 </div>
               </div>
@@ -174,9 +174,9 @@ const ClassroomModal: React.FC = () => {
                         <Avatar
                           width={64}
                           height={64}
-                          alt={extractStringInitials(student.fullName)}
+                          alt={extractStringInitials(student.forename)}
                         />
-                        <p sx={{ variant: 'text.h4' }}>{student.fullName}</p>
+                        <p sx={{ variant: 'text.h4' }}>{student.forename}</p>
                       </button>
                     ))}
                   {authCtx.role === 'teacher' && (

@@ -16,7 +16,15 @@ const titleValidator = (value: string) => {
   );
 };
 
-const fullNameValidator = (value: string) => {
+const forenameValidator = (value: string) => {
+  const trimmed = value.trim();
+  return (
+    !validator.isEmpty(trimmed) &&
+    validator.isLength(trimmed, { min: 3, max: 25 })
+  );
+};
+
+const surnameValidator = (value: string) => {
   const trimmed = value.trim();
   return (
     !validator.isEmpty(trimmed) &&
@@ -54,12 +62,20 @@ const NewTeacherForm: React.FC<Props> = ({ error, onSubmit }) => {
   } = useInput(titleValidator, '');
 
   const {
-    value: enteredFullName,
-    hasErrors: enteredFullNameHasErrors,
-    inputChangeHandler: fullNameChangedHandler,
-    inputBlurHandler: fullNameBlurHandler,
-    inputResetHandler: fullNameResetHandler,
-  } = useInput(fullNameValidator, '');
+    value: enteredForename,
+    hasErrors: enteredForenameHasErrors,
+    inputChangeHandler: forenameChangedHandler,
+    inputBlurHandler: forenameBlurHandler,
+    inputResetHandler: forenameResetHandler,
+  } = useInput(forenameValidator, '');
+
+  const {
+    value: enteredSurname,
+    hasErrors: enteredSurnameHasErrors,
+    inputChangeHandler: surnameChangedHandler,
+    inputBlurHandler: surnameBlurHandler,
+    inputResetHandler: surnameResetHandler,
+  } = useInput(surnameValidator, '');
 
   const {
     value: enteredEmail,
@@ -91,14 +107,16 @@ const NewTeacherForm: React.FC<Props> = ({ error, onSubmit }) => {
     e.preventDefault();
 
     const sanitizedTitle = validator.escape(enteredTitle);
-    const sanitizedFullName = validator.escape(enteredFullName);
+    const sanitizedForename = validator.escape(enteredForename);
+    const sanitizedSurname = validator.escape(enteredSurname);
     const sanitizedEmail = validator.escape(enteredEmail);
     const sanitizedPassword = validator.escape(enteredPassword);
     const sanitizedConfirmPassword = validator.escape(enteredConfirmPassword);
 
     const data = {
       title: sanitizedTitle,
-      fullName: sanitizedFullName,
+      forename: sanitizedForename,
+      surname: sanitizedSurname,
       email: sanitizedEmail,
       password: sanitizedPassword,
       confirmPassword: sanitizedConfirmPassword,
@@ -108,7 +126,8 @@ const NewTeacherForm: React.FC<Props> = ({ error, onSubmit }) => {
       onSubmit(data);
 
       titleResetHandler();
-      fullNameResetHandler();
+      forenameResetHandler();
+      surnameResetHandler();
       emailResetHandler();
       passwordResetHandler();
       confirmPasswordResetHandler();
@@ -142,15 +161,27 @@ const NewTeacherForm: React.FC<Props> = ({ error, onSubmit }) => {
       />
       <TextField
         sx={{
-          borderColor: enteredFullNameHasErrors ? 'red' : 'gray',
+          borderColor: enteredForenameHasErrors ? 'red' : 'gray',
         }}
-        id="full-name"
+        id="forename"
         type="text"
-        label="Full Name"
-        placeholder="Firstname, Lastname"
-        value={enteredFullName}
-        onChange={(e) => fullNameChangedHandler(e.currentTarget.value)}
-        onBlur={fullNameBlurHandler}
+        label="Forename"
+        placeholder="Forename"
+        value={enteredForename}
+        onChange={(e) => forenameChangedHandler(e.currentTarget.value)}
+        onBlur={forenameBlurHandler}
+      />
+      <TextField
+        sx={{
+          borderColor: enteredSurnameHasErrors ? 'red' : 'gray',
+        }}
+        id="surname"
+        type="text"
+        label="Surname"
+        placeholder="Surname"
+        value={enteredSurname}
+        onChange={(e) => surnameChangedHandler(e.currentTarget.value)}
+        onBlur={surnameBlurHandler}
       />
       <TextField
         sx={{

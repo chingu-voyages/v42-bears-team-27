@@ -16,6 +16,8 @@ if (!userArgs[0].startsWith('mongodb')) {
 const async = require('async');
 const mongoose = require('mongoose');
 
+const Lesson = require('./models/lessonModel');
+const Exercise = require('./models/exerciseModel');
 const Subject = require('./models/subjectModel');
 
 const mongoDB = userArgs[0];
@@ -25,6 +27,8 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const subjects = [];
+const lessons = [];
+const exercises = [];
 
 function subjectCreate(slug, title, imageUrl, topics, cb) {
   const subjectDetail = { slug, title, imageUrl, topics };
@@ -43,6 +47,61 @@ function subjectCreate(slug, title, imageUrl, topics, cb) {
   });
 }
 
+function lessonCreate(topic, subject, cb) {
+  const lessonDetail = { topic, subject };
+  console.log(lessonDetail);
+
+  const lesson = new Lesson(lessonDetail);
+
+  lesson.save((err) => {
+    if (err) {
+      cb(err, null);
+      return;
+    }
+    console.log('New Lesson: ', lesson);
+    lessons.push(lesson);
+    cb(null, lesson);
+  });
+}
+
+function exerciseCreate(topic, subject, cb) {
+  const exerciseDetail = { topic, subject };
+  console.log(exerciseDetail);
+
+  const exercise = new Exercise(exerciseDetail);
+
+  exercise.save((err) => {
+    if (err) {
+      cb(err, null);
+      return;
+    }
+    console.log('New Exercise: ', exercise);
+    exercises.push(exercise);
+    cb(null, exercise);
+  });
+}
+
+async function subjectTopicsUpdate(id, slug, title, types, cb) {
+  const subjectTopicsDetail = { slug, title, types };
+  console.log(subjectTopicsDetail);
+
+  const subject = await Subject.findByIdAndUpdate(
+    id,
+    {
+      topics: subjectTopicsDetail,
+    },
+    { new: true },
+  );
+
+  if (!subject) {
+    cb(subject, null);
+    return;
+  }
+
+  console.log('Updated Subject: ', subject);
+  cb(null, subject);
+}
+
 function createSubjects(cb) {
   async.series(
     [
@@ -51,13 +110,7 @@ function createSubjects(cb) {
           'computer-science',
           'Computer Science',
           'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
-          [
-            {
-              slug: 'booleans',
-              title: 'Booleans',
-              types: ['lesson'],
-            },
-          ],
+          [],
           callback,
         );
       },
@@ -66,11 +119,57 @@ function createSubjects(cb) {
           'maths',
           'Maths',
           'https://images.unsplash.com/photo-1635372722656-389f87a941b7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80',
+          [],
+          callback,
+        );
+      },
+    ],
+    // optional callback
+    cb,
+  );
+}
+
+function createMaterials(cb) {
+  async.series(
+    [
+      (callback) => {
+        lessonCreate('Booleans', subjects[0], callback);
+      },
+      (callback) => {
+        exerciseCreate('Indices', subjects[1], callback);
+      },
+    ],
+    // optional callback
+    cb,
+  );
+}
+
+function updateSubjectsTopics(cb) {
+  async.series(
+    [
+      (callback) => {
+        subjectTopicsUpdate(
+          subjects[0],
+          'booleans',
+          'Booleans',
           [
             {
-              slug: 'indices',
-              title: 'Indices',
-              types: ['exercise'],
+              material: lessons[0],
+              materialModel: 'Lesson',
+            },
+          ],
+          callback,
+        );
+      },
+      (callback) => {
+        subjectTopicsUpdate(
+          subjects[0],
+          'indices',
+          'Indices',
+          [
+            {
+              material: exercises[0],
+              materialModel: 'Exercise',
             },
           ],
           callback,
@@ -83,7 +182,7 @@ function createSubjects(cb) {
 }
 
 async.series(
-  [createSubjects],
+  [createSubjects, createMaterials, updateSubjectsTopics],
   // Optional callback
   (err, results) => {
     if (err) console.log(`FINAL ERR: ${err}`);

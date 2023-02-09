@@ -2,7 +2,6 @@ import { useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { format } from 'date-fns';
 import { MdAdd, MdCheck, MdEdit } from 'react-icons/md';
-import { BsEraser } from 'react-icons/bs';
 
 import Loader from 'src/components/common/Loader';
 import {
@@ -15,7 +14,7 @@ import {
   DialogTrigger,
   IconButton,
 } from 'src/components/ui';
-import type { IEvent, ITask } from 'src/interfaces';
+import type { IEvent, IEventTask } from 'src/interfaces';
 import {
   fetcher,
   postClassroomEvent,
@@ -24,8 +23,9 @@ import {
   deleteClassroomTask,
   putClassroomEvent,
 } from 'src/services';
-import { titleCase } from 'src/utils';
 import CreateTaskForm from './CreateTaskForm';
+// eslint-disable-next-line import/no-named-as-default
+import TaskItem from './TaskItem';
 
 // eslint-disable-next-line no-promise-executor-return
 const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
@@ -51,7 +51,7 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<string | null>(null);
 
-  const addTaskHandler = async (newTask: Omit<ITask, '_id' | 'event'>) => {
+  const addTaskHandler = async (newTask: Omit<IEventTask, '_id' | 'event'>) => {
     try {
       if (eventData) {
         // If there is already an event on the active
@@ -261,39 +261,14 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
 
             <div sx={{ height: '40%', overflowY: 'auto' }}>
               {eventData?.tasks && eventData.tasks.length > 0 ? (
-                eventData.tasks.map(({ _id, type, subject, topic }) => (
-                  <div
+                eventData.tasks.map(({ _id, assignmentModel }) => (
+                  <TaskItem
                     key={_id}
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      columnGap: 1,
-                      maxWidth: '95%',
-                      width: 400,
-                      mx: 'auto',
-                    }}
-                  >
-                    <div
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        columnGap: 1,
-                      }}
-                    >
-                      <p sx={{ width: 128 }}>
-                        {`${type === 'lesson' ? '🔵' : '🟡'} ${titleCase(
-                          type,
-                        )}:`}
-                      </p>
-                      <p>{titleCase(`${subject} - ${topic}`)}</p>
-                    </div>
-                    {isEditMode && (
-                      <IconButton onClick={() => removeTaskHandler(_id)}>
-                        <BsEraser size={24} />
-                      </IconButton>
-                    )}
-                  </div>
+                    taskId={_id}
+                    type={assignmentModel}
+                    isEditMode={isEditMode}
+                    onRemoveTask={removeTaskHandler}
+                  />
                 ))
               ) : (
                 <p sx={{ textAlign: 'center', py: 3, m: 0 }}>No tasks</p>

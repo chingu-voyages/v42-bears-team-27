@@ -1,5 +1,5 @@
 type ID = string;
-type TaskType = 'lesson' | 'exercise';
+type TaskRef = 'Lesson' | 'Exercise';
 
 export interface IUserCredentials {
   email: string;
@@ -8,25 +8,29 @@ export interface IUserCredentials {
 
 export interface INewTeacherCredentials {
   title: string;
-  fullName: string;
+  forename: string;
+  surname: string;
   email: string;
   password: string;
 }
 
 export interface INewStudentCredentials {
-  fullName: string;
+  forename: string;
+  surname: string;
   email: string;
 }
 
 export interface ITeacher {
   _id: ID;
   title: string;
-  fullName: string;
+  forename: string;
+  surname: string;
 }
 
 export interface IStudent {
   _id: ID;
-  fullName: string;
+  forename: string;
+  surname: string;
   inbox: {
     messageID: ID;
     hasBeenRead: boolean;
@@ -40,19 +44,29 @@ export interface IStudentTask {
   event: ID | IEvent;
 }
 
-export interface ITask {
-  _id: ID;
-  event: ID;
-  type: TaskType;
-  subject: string;
+export interface IExercise {
   topic: string;
+  subject: ID | ISubject;
+}
+
+export interface IEventTask {
+  _id: ID;
+  event: ID | IEvent;
+  assignment: ID | ILesson | IExercise;
+  assignmentModel: TaskRef;
 }
 
 export interface IEvent {
   _id: ID;
   dueDate: string;
   setAt: string;
-  tasks: ITask[];
+  tasks: IEventTask[];
+}
+
+export interface ITopicType {
+  _id: ID;
+  material: ID | ILesson | IExercise;
+  materialModel: TaskRef;
 }
 
 export interface ILessonContent {
@@ -73,7 +87,7 @@ export interface ITopic {
   _id: ID;
   slug: string;
   title: string;
-  types: TaskType[];
+  types: (ID | ITopicType)[];
 }
 
 export interface ISubject {

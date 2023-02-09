@@ -47,7 +47,7 @@ const Home: NextPageWithLayout = () => {
         <>
           <p sx={{ variant: 'text.h3', color: 'primary', textAlign: 'center' }}>
             {`Good Morning, ${(authCtx.user as ITeacher).title}.${
-              (authCtx.user as ITeacher).fullName
+              (authCtx.user as ITeacher).surname
             }`}
           </p>
           <div
