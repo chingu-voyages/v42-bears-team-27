@@ -1,4 +1,5 @@
 #! /usr/bin/env node
+/* eslint-disable no-console */
 /* eslint-disable import/no-extraneous-dependencies */
 
 console.log(
@@ -47,8 +48,8 @@ function subjectCreate(slug, title, imageUrl, topics, cb) {
   });
 }
 
-function lessonCreate(topic, subject, cb) {
-  const lessonDetail = { topic, subject };
+function lessonCreate(topic, subject, content, cb) {
+  const lessonDetail = { topic, subject, content };
   console.log(lessonDetail);
 
   const lesson = new Lesson(lessonDetail);
@@ -133,7 +134,27 @@ function createMaterials(cb) {
   async.series(
     [
       (callback) => {
-        lessonCreate('Booleans', subjects[0], callback);
+        lessonCreate(
+          'Booleans',
+          subjects[0],
+          {
+            pages: [
+              {
+                headline: 'What are booleans?',
+                text: `Boolean is a formal notation for describing **logical relations**.\n![Three electric switches](https://freesvg.org/img/lumbricus-Light-switch-3-switches-two-off.png)\nFor example, in your household you have a switch in every room that switches lights either **on** or **off**.\n\n Likewise, boolean can represent these states as well using **true** or **false**.\n\n Many programming languages such as Python, C++, and JavaScript adopt this concept of booleans in the form of data types so that variables can store this useful state`,
+              },
+              {
+                headline: 'Logic Gates - OR Gate',
+                text: `There are many types of logic gates which can be used to create complex diagrams to illustrate **flowcharts**, for instance, a fire alarm system of a building.\n![Logic function OR](https://freesvg.org/img/Anonymous_logic_functions_-_digital_electronics_3.png)\nMore specifically will be looking at the **OR** gate first which is takes two inputs, and if either input is true, then it will pass through its "gate".`,
+              },
+              {
+                headline: 'Logic Gates - AND Gate',
+                text: `The next diagram you see is an **AND** gate.\n![Logic function AND](https://freesvg.org/img/Anonymous_logic_functions_-_digital_electronics_8.png)\nThis gate, unlike the **OR** gate, doesn't allow either input if they're true to pass, but instead that both inputs have to be true in order to pass through the gate.`,
+              },
+            ],
+          },
+          callback,
+        );
       },
       (callback) => {
         exerciseCreate('Indices', subjects[1], callback);
@@ -163,7 +184,7 @@ function updateSubjectsTopics(cb) {
       },
       (callback) => {
         subjectTopicsUpdate(
-          subjects[0],
+          subjects[1],
           'indices',
           'Indices',
           [
