@@ -1,9 +1,6 @@
 /* eslint spaced-comment: 0 */
 const Classroom = require('../models/classroomModel');
 const Student = require('../models/studentModel');
-const Task = require('../models/taskModel');
-const Lesson = require('../models/lessonModel');
-const Exercise = require('../models/exerciseModel');
 const { generatePassword, sendEmail } = require('../utils');
 
 const createStudent = async (req, res) => {
@@ -99,6 +96,63 @@ const getStudent = async (_, res) => {
   });
 };
 
+// const readMessage = async (req, res) => {
+// };
+
+const getStudentProfile = async (req, res) => {
+  const { id: studentId } = req.params;
+  try {
+    const student = await Student.findById(studentId).populate({
+      path: 'tasks',
+      populate: {
+        path: 'taskID',
+        populate: {
+          path: 'assignment',
+          populate: 'subject',
+        },
+      },
+    });
+    if (!student) {
+      return res.status(400).json({
+        message: 'student not found',
+      });
+    }
+
+    const timeSpent = {};
+    const points = {};
+    student.tasks.map(async (task) => {
+      // Calculate timeSpent
+      if (task.timeSpent > 0) {
+        if (!timeSpent[task.taskID.assignment.subject.title]) {
+          timeSpent[task.taskID.assignment.subject.title] = task.timeSpent;
+        } else {
+          timeSpent[task.taskID.assignment.subject.title] += task.timeSpent;
+        }
+      }
+      // Calculate points
+      if (task.completed) {
+        if (!points[task.taskID.assignment.subject.title]) {
+          points[task.taskID.assignment.subject.title] =
+            task.taskID.assignment.points;
+        } else {
+          points[task.taskID.assignment.subject.title] +=
+            task.taskID.assignment.points;
+        }
+      }
+
+      return null;
+    });
+
+    return res.json({
+      _id: studentId,
+      timeSpent,
+      points,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+};
+
 const getStudentTasks = async (req, res) => {
   const { user } = res.locals;
   try {
@@ -129,102 +183,6 @@ const getStudentTasks = async (req, res) => {
     return res.json(tasks);
   } catch (err) {
     return res.status(500).json(err);
-  }
-};
-
-// const readMessage = async (req, res) => {
-// };
-
-// const completeTask = async (req, res) => {
-//   const { id: studentId } = res.locals.user;
-//   const { id: taskId } = req.params;
-//   try {
-//     const student = await Student.findById(studentId);
-//     if(student){
-//       student.tasks.forEach((task, i) => {
-//         if (task.taskID.toString() === taskId) {
-//           student.tasks[i] = !student.tasks[i];
-//         }
-//       });
-//       await student.save();
-//     }
-
-//   return res.json({ message: 'task ' });
-// } catch (err) {
-//   return res.status(500).json({ error: err });
-// }
-// };
-
-const getStudentProfile = async (req, res) => {
-  const { id: studentId } = req.params;
-  try {
-    const student = await Student.findById(studentId);
-    if (!student) {
-      return res.status(400).json({
-        message: 'student not found',
-      });
-    }
-
-    const timeSpent = {};
-    const points = {};
-    student.tasks.map(async (studentTask) => {
-      const task = await Task.findById(studentTask.taskID);
-      if (!task) {
-        return res.status(400).json({
-          message: 'task not found',
-        });
-      }
-      if (!timeSpent[task.subject]) {
-        timeSpent[task.subject] = studentTask.timeSpent;
-      } else {
-        timeSpent[task.subject] += studentTask.timeSpent;
-      }
-      // Calculate points
-      let taskPoints;
-      switch (studentTask.type) {
-        case 'lesson':
-          Lesson.findById(studentTask.lesson, (error, lesson) => {
-            if (error) {
-              return res.status(400).json({
-                message: 'type not found',
-              });
-            }
-            taskPoints = lesson.points;
-            return null;
-          });
-          break;
-        case 'exercise':
-          Exercise.findById(studentTask.lesson, (error, exercise) => {
-            if (error) {
-              return res.status(400).json({
-                message: 'exercise not found',
-              });
-            }
-            taskPoints = exercise.points;
-            return null;
-          });
-          break;
-        default:
-          return res.status(400).json({
-            message: 'type not found',
-          });
-      }
-      if (!points[task.subject]) {
-        points[task.subject] = taskPoints;
-      } else {
-        points[task.subject] += taskPoints;
-      }
-
-      return null;
-    });
-
-    return res.json({
-      _id: studentId,
-      timeSpent,
-      points,
-    });
-  } catch (err) {
-    return res.status(500).json({ error: err });
   }
 };
 
