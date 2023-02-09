@@ -6,28 +6,15 @@ const taskSchema = new mongoose.Schema({
     ref: 'Event',
     required: true,
   },
-  type: {
-    type: String,
-    required: true,
-    enum: ['lesson', 'exercise', 'test'],
-  },
-  lesson: {
+  assignment: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Lesson',
+    required: true,
+    refPath: 'assignmentModel',
   },
-  exercise: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Exercise',
-  },
-  subject: {
+  assignmentModel: {
     type: String,
     required: true,
-    trim: true,
-  },
-  topic: {
-    type: String,
-    required: true,
-    trim: true,
+    enum: ['Lesson', 'Exercise'],
   },
 });
 

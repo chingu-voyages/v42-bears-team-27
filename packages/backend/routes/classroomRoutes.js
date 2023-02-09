@@ -15,6 +15,7 @@ const {
   addClassroomEvent,
   updateClassroomEvent,
   deleteClassroomEvent,
+  getTask,
   addTask,
   // updateTask,
   deleteTask,
@@ -33,6 +34,7 @@ router.post('/events/create', checkTeacherAuthenticated, addClassroomEvent);
 router.put('/events/:id', checkTeacherAuthenticated, updateClassroomEvent);
 router.delete('/events/:id', checkTeacherAuthenticated, deleteClassroomEvent);
 
+router.get('/task/:id', checkUserAuthenticated, getTask);
 router.post('/tasks/create', checkTeacherAuthenticated, addTask);
 // router.put('/tasks/:id', checkTeacherAuthenticated, updateTask);
 router.delete('/tasks/:id', checkTeacherAuthenticated, deleteTask);

@@ -7,8 +7,8 @@ const getClassroom = async (_, res) => {
   const { user } = res.locals;
   try {
     const classroom = await Classroom.findById(user.classroom)
-      .populate('students', 'fullName tasks')
-      .populate('teacher', 'title fullName');
+      .populate('students', 'forename surname tasks')
+      .populate('teacher', 'title forename surname');
     if (!classroom) {
       return res.status(400).json({ message: 'Classroom not found' });
     }
@@ -231,9 +231,28 @@ const deleteClassroomEvent = async (req, res) => {
 };
 
 /// Classroom Tasks
+const getTask = async (req, res) => {
+  const { id: taskId } = req.params;
+  try {
+    const task = await Task.findById(taskId).populate({
+      path: 'assignment',
+      populate: {
+        path: 'subject',
+      },
+    });
+    if (!task) {
+      return res.status(400).json({ message: 'Task not found' });
+    }
+
+    return res.json(task);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
 const addTask = async (req, res) => {
   const { classroom: classroomId } = res.locals.user;
-  const { event: eventId, type, subject, topic, lesson, exercise } = req.body;
+  const { event: eventId, assignment, assignmentModel } = req.body;
   try {
     const event = await Event.findById(eventId);
     if (!event) {
@@ -245,11 +264,8 @@ const addTask = async (req, res) => {
 
     const newTask = await Task.create({
       event: eventId,
-      type,
-      subject,
-      topic,
-      lesson,
-      exercise,
+      assignment,
+      assignmentModel,
     });
     if (!newTask) {
       return res.status(500).json({ message: 'Server error' });
@@ -346,6 +362,7 @@ module.exports = {
   addClassroomEvent,
   updateClassroomEvent,
   deleteClassroomEvent,
+  getTask,
   addTask,
   // updateTask,
   deleteTask,

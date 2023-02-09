@@ -7,11 +7,12 @@ const Exercise = require('../models/exerciseModel');
 const { generatePassword, sendEmail } = require('../utils');
 
 const createStudent = async (req, res) => {
-  /*  fullName: 'LastName, FirstName',
+  /*  forename: 'FirstName',
+      surname: 'LastName',
       email: '123@123.com,
       From Teacher Auth:
       classroom: '63c339704aa8be1b4851e7b5'  */
-  const { fullName, email } = req.body;
+  const { forename, surname, email } = req.body;
   const { classroom } = res.locals.user;
   const password = generatePassword(6);
   const hashedPassword = await Student.hashPassword(password);
@@ -25,7 +26,8 @@ const createStudent = async (req, res) => {
     }
 
     const newStudent = await Student.create({
-      fullName,
+      forename,
+      surname,
       email,
       password: hashedPassword,
       classroom,
@@ -67,7 +69,8 @@ const createStudent = async (req, res) => {
         .then(() =>
           res.status(201).json({
             message: 'Created Successfully',
-            fullName,
+            forename,
+            surname,
           }),
         )
         .catch((err) => res.status(400).json({ message: err }));
@@ -75,7 +78,8 @@ const createStudent = async (req, res) => {
     // development code:
     return res.status(201).json({
       message: 'Created Successfully',
-      fullName,
+      forename,
+      surname,
       password,
     });
   } catch (err) {
@@ -85,10 +89,11 @@ const createStudent = async (req, res) => {
 
 // To check if still authenticated when continuing the session
 const getStudent = async (_, res) => {
-  const { _id, fullName, inbox, tasks } = res.locals.user;
+  const { _id, forename, surname, inbox, tasks } = res.locals.user;
   return res.json({
     _id,
-    fullName,
+    forename,
+    surname,
     inbox,
     tasks,
   });
@@ -101,6 +106,10 @@ const getStudentTasks = async (req, res) => {
       path: 'tasks',
       populate: {
         path: 'taskID',
+        populate: {
+          path: 'assignment',
+          populate: 'subject',
+        },
       },
     });
     // Check if student exists
@@ -147,7 +156,6 @@ const getStudentTasks = async (req, res) => {
 // };
 
 const getStudentProfile = async (req, res) => {
-  // const { _id, fullName, inbox, tasks } = res.locals.user;
   const { id: studentId } = req.params;
   try {
     const student = await Student.findById(studentId);

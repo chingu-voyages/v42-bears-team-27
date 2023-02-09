@@ -21,9 +21,16 @@ const subjectSchema = new mongoose.Schema({
       },
       types: [
         {
-          type: String,
-          required: true,
-          enum: ['lesson', 'exercise', 'test'],
+          material: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            refPath: 'materialModel',
+          },
+          materialModel: {
+            type: String,
+            required: true,
+            enum: ['Lesson', 'Exercise'],
+          },
         },
       ],
     },
