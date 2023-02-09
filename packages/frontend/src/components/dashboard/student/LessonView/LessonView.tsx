@@ -11,9 +11,10 @@ import { fetcher } from 'src/services';
 
 type Props = {
   lessonId: string;
+  onLessonEnd: () => void;
 };
 
-const LessonView: React.FC<Props> = ({ lessonId }) => {
+const LessonView: React.FC<Props> = ({ lessonId, onLessonEnd }) => {
   const { data: lessonData, isLoading } = useSWR<ILesson>(
     lessonId ? `/api/v0/material/lessons/${lessonId}` : null,
     fetcher,
@@ -45,11 +46,12 @@ const LessonView: React.FC<Props> = ({ lessonId }) => {
 
     if (dir === 1) {
       if (pageIdx === lessonData.content.pages.length - 1) {
-        // Check if on the last page
-        return;
+        // If on last page of lesson call appropriate handler
+        onLessonEnd();
+      } else {
+        // Go one page forward
+        setPageIdx((prevIdx) => prevIdx + 1);
       }
-      // Go one page forward
-      setPageIdx((prevIdx) => prevIdx + 1);
     }
   };
 
