@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import type { ITopic } from 'src/interfaces';
+import type { ITopic, ITopicType } from 'src/interfaces';
 
 type Props = {
   topic: ITopic;
@@ -10,15 +10,25 @@ type Props = {
 const TopicItem: React.FC<Props> = ({ topic }) => {
   const { query } = useRouter();
 
-  const { slug, title } = topic;
+  const { title, types } = topic;
+
+  const foundMaterial = (types as ITopicType[]).find(
+    (type) => type.materialModel === 'Lesson',
+  );
+
+  if (!foundMaterial) {
+    return null;
+  }
 
   return (
     <li sx={{ display: 'flex' }}>
       <Link
         sx={{ variant: 'text.label' }}
         href={{
-          pathname: `./lessons/${slug}`,
-          query: { subject: query.subject },
+          pathname: `./lessons/${foundMaterial.material as string}`,
+          query: {
+            subject: query.subject,
+          },
         }}
       >
         {title}

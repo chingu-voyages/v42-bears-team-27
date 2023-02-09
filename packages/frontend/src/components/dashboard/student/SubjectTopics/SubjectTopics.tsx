@@ -1,6 +1,6 @@
 /* eslint-disable arrow-body-style */
 import React from 'react';
-import { ITopic } from 'src/interfaces';
+import { ITopic, ITopicType } from 'src/interfaces';
 import TopicItem from './TopicItem';
 
 type Props = {
@@ -12,7 +12,11 @@ const SubjectTopics: React.FC<Props> = ({ topics, type }) => {
   return (
     <ul sx={{ listStyle: 'none' }}>
       {topics.map((topic) => {
-        if (topic.types.indexOf(type) !== -1) {
+        if (
+          (topic.types as ITopicType[]).findIndex(
+            ({ materialModel }) => materialModel.toLowerCase() === type,
+          ) !== -1
+        ) {
           return <TopicItem key={topic._id} topic={topic} />;
         }
 
