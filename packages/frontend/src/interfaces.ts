@@ -73,6 +73,7 @@ export interface ILessonContent {
   _id: ID;
   pages: {
     _id: ID;
+    headline: string;
     text: string;
   }[];
 }
