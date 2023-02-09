@@ -78,14 +78,9 @@ const deleteClassroom = async (_, res) => {
 const getClassroomSubjects = async (_, res) => {
   const { id: teacherId, classroom } = res.locals.user;
   try {
-    const { teacher, subjects } = await Classroom.findById(classroom)
-      .populate('subjects')
-      .populate({
-        path: 'subjects',
-        populate: {
-          path: 'topics',
-        },
-      });
+    const { teacher, subjects } = await Classroom.findById(classroom).populate(
+      'subjects',
+    );
     if (!teacher) {
       return res.status(400).json({ error: 'Classroom not found' });
     }
@@ -246,14 +241,12 @@ const deleteClassroomEvent = async (req, res) => {
 const getTask = async (req, res) => {
   const { id: taskId } = req.params;
   try {
-    const task = await Task.findById(taskId)
-      .populate('assignment')
-      .populate({
-        path: 'assignment',
-        populate: {
-          path: 'subject',
-        },
-      });
+    const task = await Task.findById(taskId).populate({
+      path: 'assignment',
+      populate: {
+        path: 'subject',
+      },
+    });
     if (!task) {
       return res.status(400).json({ message: 'Task not found' });
     }
