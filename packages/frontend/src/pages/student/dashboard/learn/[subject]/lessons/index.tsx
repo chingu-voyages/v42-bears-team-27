@@ -39,7 +39,8 @@ const Lessons: NextPageWithLayout = () => {
     <div sx={{ m: 4 }}>
       {subjectData && (
         <>
-          <h2 sx={{ variant: 'text.h4' }}>{subjectData[0]?.title}</h2>
+          <h2 sx={{ variant: 'text.h3' }}>{subjectData[0]?.title}</h2>
+          <h3 sx={{ variant: 'text.h4', textAlign: 'center' }}>Lessons</h3>
           <SubjectTopics topics={subjectData[0]?.topics ?? []} type="lesson" />
         </>
       )}
