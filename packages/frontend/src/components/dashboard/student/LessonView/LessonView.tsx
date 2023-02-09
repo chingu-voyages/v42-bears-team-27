@@ -73,8 +73,7 @@ const LessonView = () => {
         justifyContent: 'space-between',
         maxWidth: '95%',
         width: '60rem',
-        height: '34rem',
-        p: 3,
+        p: 4,
         my: 5,
         mx: 'auto',
         overflowY: 'auto',
@@ -84,20 +83,38 @@ const LessonView = () => {
         borderRadius: 5,
       }}
     >
-      <h2 sx={{ variant: 'text.h3' }}>{lesson?.topic}</h2>
+      <div
+        sx={{
+          display: 'flex',
+          alignItems: 'baseline',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          columnGap: 3,
+        }}
+      >
+        <h1 sx={{ variant: 'text.h2' }}>
+          {lesson?.topic}
+          <span>:</span>
+        </h1>
+
+        <h2 sx={{ variant: 'text.h3' }}>{currPage.headline}</h2>
+      </div>
+
       <div
         sx={{
           variant: 'text.h4',
           flexGrow: 1,
           maxWidth: '95%',
           width: '75ch',
-          height: 'min-content',
+          textAlign: ['center', null, 'start'],
+          whiteSpace: 'pre-wrap',
           '& img': {
-            display: 'inline-block',
-            float: 'left',
-            width: 'min(32rem, 100%)',
+            display: [null, 'inline-block'],
+            float: [null, null, 'left'],
+            width: 'min(26rem, 95%)',
             height: 'auto',
-            mx: 3,
+            my: [1, null],
+            mx: ['auto', 3],
           },
         }}
       >
@@ -118,10 +135,10 @@ const LessonView = () => {
         }}
       >
         <IconButton onClick={() => navigatePagesHandler(-1)}>
-          <MdArrowBack />
+          <MdArrowBack size={32} />
         </IconButton>
         <IconButton onClick={() => navigatePagesHandler(1)}>
-          <MdArrowForward />
+          <MdArrowForward size={32} />
         </IconButton>
       </div>
     </div>
