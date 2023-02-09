@@ -188,7 +188,7 @@ const getStudentTasks = async (req, res) => {
 
 const updateStudentTask = async (req, res) => {
   const { user } = res.locals;
-  const { task: taskId, time, completed } = res.body;
+  const { task: taskId, addTime, completed } = req.body;
   try {
     const student = await Student.findById(user._id);
     // Check if student exists
@@ -197,7 +197,7 @@ const updateStudentTask = async (req, res) => {
     }
     if (taskId) {
       student.tasks.find((x) => x.taskID.toString() === taskId).timeSpent +=
-        time;
+        addTime;
     }
     if (typeof completed !== 'undefined') {
       student.tasks.find((x) => x.taskID.toString() === taskId).completed =
