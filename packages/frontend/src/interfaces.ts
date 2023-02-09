@@ -1,5 +1,5 @@
 type ID = string;
-type TaskType = 'lesson' | 'exercise';
+type TaskRef = 'Lesson' | 'Exercise';
 
 export interface IUserCredentials {
   email: string;
@@ -44,26 +44,41 @@ export interface IStudentTask {
   event: ID | IEvent;
 }
 
-export interface ITask {
-  _id: ID;
-  event: ID;
-  type: TaskType;
-  subject: string;
+export interface IExercise {
   topic: string;
+  subject: ID | ISubject;
+}
+
+export interface ILesson {
+  topic: string;
+  subject: ID | ISubject;
+}
+
+export interface IEventTask {
+  _id: ID;
+  event: ID | IEvent;
+  assignment: ID | ILesson | IExercise;
+  assignmentModel: TaskRef;
 }
 
 export interface IEvent {
   _id: ID;
   dueDate: string;
   setAt: string;
-  tasks: ITask[];
+  tasks: IEventTask[];
+}
+
+export interface ITopicType {
+  _id: ID;
+  material: ID | ILesson | IExercise;
+  materialModel: TaskRef;
 }
 
 export interface ITopic {
   _id: ID;
   slug: string;
   title: string;
-  types: TaskType[];
+  types: (ID | ITopicType)[];
 }
 
 export interface ISubject {
