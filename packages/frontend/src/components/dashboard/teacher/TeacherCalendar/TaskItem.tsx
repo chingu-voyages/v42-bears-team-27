@@ -28,8 +28,6 @@ const TaskItem: React.FC<Props> = ({
     return null;
   }
 
-  console.log(taskData);
-
   const { subject, topic } = taskData.assignment as ILesson | IExercise;
 
   if (typeof subject === 'string') {
