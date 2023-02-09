@@ -1,9 +1,9 @@
-import { useContext } from 'react';
-// import useSWR from 'swr';
+import { useContext, useMemo } from 'react';
+import useSWR from 'swr';
 import stc from 'string-to-color';
 
-// import { fetcher } from 'src/services';
-import type { IStudent } from 'src/interfaces';
+import { fetcher } from 'src/services';
+import type { IStudent, IStudentProfile } from 'src/interfaces';
 import { Button } from 'src/components/ui';
 import { AuthContext } from 'src/store/auth';
 
@@ -12,32 +12,27 @@ type Props = {
   student?: IStudent | null;
 };
 
-interface IMockProfile {
-  _id: string;
-  timeSpent: {
-    [key: string]: number;
-  };
-  points: {
-    [key: string]: number;
-  };
-}
-const mockProfile: IMockProfile = {
-  _id: '4a1658s45s634x65f465',
-  timeSpent: {
-    Mathematics: 1300000,
-    Geography: 500000,
-  },
-  points: {
-    Mathematics: 24,
-    Geography: 12,
-  },
-};
-const totalTime = Object.values(mockProfile.timeSpent).reduce((a, b) => b + a);
-const totalPoints = Object.values(mockProfile.points).reduce((a, b) => b + a);
-
 const StudentProfileModal: React.FC<Props> = ({ setForm, student }) => {
   const authCtx = useContext(AuthContext);
-  // const { data } = useSWR<IClassroom>(`/api/v0/student/profile/${student?._id}`, fetcher);
+  const { data } = useSWR<IStudentProfile>(
+    `/api/v0/student/profile/${student?._id}`,
+    fetcher,
+  );
+
+  const totalTime = useMemo(
+    () =>
+      data && JSON.stringify(data?.timeSpent) !== '{}'
+        ? Object.values(data.timeSpent).reduce((a, b) => b + a)
+        : 1,
+    [data],
+  );
+  const totalPoints = useMemo(
+    () =>
+      data && JSON.stringify(data?.points) !== '{}'
+        ? Object.values(data.points).reduce((a, b) => b + a)
+        : 1,
+    [data],
+  );
 
   if (!authCtx || !student) {
     return (
@@ -75,8 +70,8 @@ const StudentProfileModal: React.FC<Props> = ({ setForm, student }) => {
           borderRadius: '5px',
         }}
       >
-        {mockProfile &&
-          Object.keys(mockProfile.points).map((el) => (
+        {data &&
+          Object.keys(data.timeSpent).map((el) => (
             <div
               key={el}
               sx={{
@@ -86,8 +81,8 @@ const StudentProfileModal: React.FC<Props> = ({ setForm, student }) => {
                 backgroundColor: stc(el),
                 color: 'white',
                 width: `${
-                  (100 * mockProfile.points[el as keyof IMockProfile]) /
-                  totalPoints
+                  (100 * data.timeSpent[el as keyof IStudentProfile]) /
+                  totalTime
                 }%`,
               }}
             >
@@ -107,8 +102,8 @@ const StudentProfileModal: React.FC<Props> = ({ setForm, student }) => {
           mb: 6,
         }}
       >
-        {mockProfile &&
-          Object.keys(mockProfile.timeSpent).map((el) => (
+        {data &&
+          Object.keys(data.points).map((el) => (
             <div
               key={el}
               sx={{
@@ -118,8 +113,7 @@ const StudentProfileModal: React.FC<Props> = ({ setForm, student }) => {
                 backgroundColor: stc(el),
                 color: 'white',
                 width: `${
-                  (100 * mockProfile.timeSpent[el as keyof IMockProfile]) /
-                  totalTime
+                  (100 * data.points[el as keyof IStudentProfile]) / totalPoints
                 }%`,
               }}
             >
