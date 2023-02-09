@@ -99,39 +99,6 @@ const getStudent = async (_, res) => {
   });
 };
 
-const getStudentTasks = async (req, res) => {
-  const { user } = res.locals;
-  try {
-    const student = await Student.findById(user._id).populate({
-      path: 'tasks',
-      populate: {
-        path: 'taskID',
-        populate: {
-          path: 'assignment',
-          populate: 'subject',
-        },
-      },
-    });
-    // Check if student exists
-    if (!student) {
-      return res.status(400).json({ message: 'Student not found' });
-    }
-
-    let { tasks } = student;
-
-    if (req.query.eventID) {
-      // If eventID is provided in query then filter out tasks only for that event
-      tasks = student.tasks.filter(
-        (task) => task.event.valueOf() === req.query.eventID,
-      );
-    }
-
-    return res.json(tasks);
-  } catch (err) {
-    return res.status(500).json(err);
-  }
-};
-
 // const readMessage = async (req, res) => {
 // };
 
@@ -158,7 +125,16 @@ const getStudentTasks = async (req, res) => {
 const getStudentProfile = async (req, res) => {
   const { id: studentId } = req.params;
   try {
-    const student = await Student.findById(studentId);
+    const student = await Student.findById(studentId).populate({
+      path: 'tasks',
+      populate: {
+        path: 'taskID',
+        populate: {
+          path: 'assignment',
+          populate: 'subject',
+        },
+      },
+    });
     if (!student) {
       return res.status(400).json({
         message: 'student not found',
@@ -167,6 +143,8 @@ const getStudentProfile = async (req, res) => {
 
     const timeSpent = {};
     const points = {};
+    // TODO broken after merge with dev
+    // remove Task.find() and use populate from Student
     student.tasks.map(async (studentTask) => {
       const task = await Task.findById(studentTask.taskID);
       if (!task) {
@@ -225,6 +203,39 @@ const getStudentProfile = async (req, res) => {
     });
   } catch (err) {
     return res.status(500).json({ error: err });
+  }
+};
+
+const getStudentTasks = async (req, res) => {
+  const { user } = res.locals;
+  try {
+    const student = await Student.findById(user._id).populate({
+      path: 'tasks',
+      populate: {
+        path: 'taskID',
+        populate: {
+          path: 'assignment',
+          populate: 'subject',
+        },
+      },
+    });
+    // Check if student exists
+    if (!student) {
+      return res.status(400).json({ message: 'Student not found' });
+    }
+
+    let { tasks } = student;
+
+    if (req.query.eventID) {
+      // If eventID is provided in query then filter out tasks only for that event
+      tasks = student.tasks.filter(
+        (task) => task.event.valueOf() === req.query.eventID,
+      );
+    }
+
+    return res.json(tasks);
+  } catch (err) {
+    return res.status(500).json(err);
   }
 };
 
