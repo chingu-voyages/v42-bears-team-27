@@ -87,7 +87,9 @@ const ClassroomModal: React.FC = () => {
         </Button>
       </DialogTrigger>
       <DialogContent title={modalTitle()} width="95%" height="90vh">
-        <div sx={{ color: 'primary', textAlign: 'center' }}>
+        <div
+          sx={{ color: 'primary', textAlign: 'center', variant: 'text.label' }}
+        >
           {showForm === 'newStudent' && (
             <NewStudentForm
               error={error}

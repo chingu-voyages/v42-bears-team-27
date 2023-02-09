@@ -44,6 +44,16 @@ export interface IStudentTask {
   event: ID | IEvent;
 }
 
+export interface IStudentProfile {
+  _id: ID;
+  timeSpent: {
+    [key: string]: number;
+  };
+  points: {
+    [key: string]: number;
+  };
+}
+
 export interface IExercise {
   topic: string;
   subject: ID | ISubject;
