@@ -3,13 +3,6 @@ const Student = require('../models/studentModel');
 const Event = require('../models/eventModel');
 const Task = require('../models/taskModel');
 
-// NOTE: Need to import exercise and lesson to
-// create their schemas which is bad practice and poor db design!
-// eslint-disable-next-line no-unused-vars
-const Exercise = require('../models/exerciseModel');
-// eslint-disable-next-line no-unused-vars
-const Lesson = require('../models/lessonModel');
-
 const getClassroom = async (_, res) => {
   const { user } = res.locals;
   try {
@@ -308,7 +301,19 @@ const addTask = async (req, res) => {
   }
 };
 
-// const updateTask = async (req, res) => {}
+// const updateTask = async (req, res) => {
+//   const { id: requestId } = req.params;
+//   try {
+//     const task = await Task.findById(requestId);
+//     if (!task) {
+//       return res.status(400).json({ message: 'task not found!' });
+//     }
+//     // TODO update task
+//     return res.json({ message: 'task updated!' });
+//   } catch (err) {
+//     return res.status(500).json(err);
+//   }
+// }
 
 const deleteTask = async (req, res) => {
   const { classroom: classroomId } = res.locals.user;
@@ -368,5 +373,6 @@ module.exports = {
   deleteClassroomEvent,
   getTask,
   addTask,
+  // updateTask,
   deleteTask,
 };

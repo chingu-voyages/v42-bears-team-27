@@ -18,6 +18,10 @@ const lessonSchema = new mongoose.Schema({
       },
     ],
   },
+  points: {
+    type: Number,
+    default: 1,
+  },
 });
 
 const Lesson = mongoose.model('Lesson', lessonSchema);
