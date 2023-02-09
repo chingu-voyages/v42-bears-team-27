@@ -11,6 +11,10 @@ const lessonSchema = new mongoose.Schema({
     ref: 'Subject',
     required: true,
   },
+  points: {
+    type: Number,
+    default: 1,
+  },
 });
 
 const Lesson = mongoose.model('Lesson', lessonSchema);

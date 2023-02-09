@@ -14,6 +14,7 @@ const {
   broadcastMessage,
 } = require('../controllers/teacherController');
 
+// "http://localhost:5000/api/v0/teacher"
 router.post('/create', validateTeacher, createTeacher);
 router.get('/', checkTeacherAuthenticated, getTeacher);
 router.post(

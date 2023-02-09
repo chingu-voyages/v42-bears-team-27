@@ -1,7 +1,6 @@
 /* eslint spaced-comment: 0 */
 const Classroom = require('../models/classroomModel');
 const Student = require('../models/studentModel');
-const Task = require('../models/taskModel');
 const { generatePassword, sendEmail } = require('../utils');
 
 const createStudent = async (req, res) => {
@@ -97,6 +96,63 @@ const getStudent = async (_, res) => {
   });
 };
 
+// const readMessage = async (req, res) => {
+// };
+
+const getStudentProfile = async (req, res) => {
+  const { id: studentId } = req.params;
+  try {
+    const student = await Student.findById(studentId).populate({
+      path: 'tasks',
+      populate: {
+        path: 'taskID',
+        populate: {
+          path: 'assignment',
+          populate: 'subject',
+        },
+      },
+    });
+    if (!student) {
+      return res.status(400).json({
+        message: 'student not found',
+      });
+    }
+
+    const timeSpent = {};
+    const points = {};
+    student.tasks.map(async (task) => {
+      // Calculate timeSpent
+      if (task.timeSpent > 0) {
+        if (!timeSpent[task.taskID.assignment.subject.title]) {
+          timeSpent[task.taskID.assignment.subject.title] = task.timeSpent;
+        } else {
+          timeSpent[task.taskID.assignment.subject.title] += task.timeSpent;
+        }
+      }
+      // Calculate points
+      if (task.completed) {
+        if (!points[task.taskID.assignment.subject.title]) {
+          points[task.taskID.assignment.subject.title] =
+            task.taskID.assignment.points;
+        } else {
+          points[task.taskID.assignment.subject.title] +=
+            task.taskID.assignment.points;
+        }
+      }
+
+      return null;
+    });
+
+    return res.json({
+      _id: studentId,
+      timeSpent,
+      points,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+};
+
 const getStudentTasks = async (req, res) => {
   const { user } = res.locals;
   try {
@@ -130,72 +186,28 @@ const getStudentTasks = async (req, res) => {
   }
 };
 
-// const readMessage = async (req, res) => {
-// };
-
-// const completeTask = async (req, res) => {
-//   const { id: studentId } = res.locals.user;
-//   const { id: taskId } = req.params;
-//   try {
-//     const student = await Student.findById(studentId);
-//     if(student){
-//       student.tasks.forEach((task, i) => {
-//         if (task.taskID.toString() === taskId) {
-//           student.tasks[i] = !student.tasks[i];
-//         }
-//       });
-//       await student.save();
-//     }
-
-//   return res.json({ message: 'task ' });
-// } catch (err) {
-//   return res.status(500).json({ error: err });
-// }
-// };
-
-const getStudentProfile = async (req, res) => {
-  const { id: studentId } = req.params;
+const updateStudentTask = async (req, res) => {
+  const { user } = res.locals;
+  const { task: taskId, addTime, completed } = req.body;
   try {
-    const student = await Student.findById(studentId);
+    const student = await Student.findById(user._id);
+    // Check if student exists
     if (!student) {
-      return res.status(400).json({
-        message: 'student not found',
-      });
+      return res.status(400).json({ message: 'Student not found' });
     }
+    if (taskId) {
+      student.tasks.find((x) => x.taskID.toString() === taskId).timeSpent +=
+        addTime;
+    }
+    if (typeof completed !== 'undefined') {
+      student.tasks.find((x) => x.taskID.toString() === taskId).completed =
+        completed;
+    }
+    await student.save();
 
-    const timeSpent = {};
-    const points = {};
-    student.tasks.map(async (studentTask) => {
-      const task = await Task.findById(studentTask.taskID);
-      if (!task) {
-        return res.status(400).json({
-          message: 'task not found',
-        });
-      }
-      if (!timeSpent[task.subject]) {
-        timeSpent[task.subject] = studentTask.timeSpent;
-      } else {
-        timeSpent[task.subject] += studentTask.timeSpent;
-      }
-      // Calculate points from...
-      return null;
-    });
-
-    // _id: studentId,
-    //   timeSpent: {
-    //   Mathematics: 1300000,
-    //     Geography: 500000,
-    // },
-    // points: {
-    //   Mathematics: 24,
-    //     Geography: 12,
-    return res.json({
-      _id: studentId,
-      timeSpent,
-      points,
-    });
+    return res.json({ message: 'Student task updated!' });
   } catch (err) {
-    return res.status(500).json({ error: err });
+    return res.status(500).json(err);
   }
 };
 
@@ -204,4 +216,5 @@ module.exports = {
   getStudent,
   getStudentProfile,
   getStudentTasks,
+  updateStudentTask,
 };
