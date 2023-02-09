@@ -14,6 +14,7 @@ const lessonSchema = new mongoose.Schema({
   content: {
     pages: [
       {
+        headline: String,
         text: String,
       },
     ],
