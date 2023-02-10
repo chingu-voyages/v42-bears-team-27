@@ -70,6 +70,9 @@ const CreateTaskForm: React.FC<Props> = ({ error, onSubmit }) => {
       assignment: assignmentId,
       assignmentModel: materialModel,
     };
+    setSelectedSubject('');
+    setSelectedTopic('');
+    setSelectedType('');
     return onSubmit(data);
   };
 
@@ -107,7 +110,13 @@ const CreateTaskForm: React.FC<Props> = ({ error, onSubmit }) => {
           }}
         >
           {(subjectsData as ISubject[]).map(({ _id: id, title }) => (
-            <Radio key={id} id={id} label={title} value={title} />
+            <Radio
+              key={id}
+              id={id}
+              label={title}
+              value={title}
+              checked={title === selectedSubject}
+            />
           ))}
         </RadioGroup>
       </label>
