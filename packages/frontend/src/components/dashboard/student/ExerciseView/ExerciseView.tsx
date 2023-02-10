@@ -74,7 +74,11 @@ function examineReducer(state: typeof initialExamineState, action: ACTIONTYPE) {
   return initialExamineState;
 }
 
-const ExerciseView: React.FC = () => {
+type Props = {
+  onExerciseComplete: () => void;
+};
+
+const ExerciseView: React.FC<Props> = ({ onExerciseComplete }) => {
   const router = useRouter();
   const authCtx = useContext(AuthContext);
 
@@ -120,14 +124,8 @@ const ExerciseView: React.FC = () => {
       });
     }
 
-    // TODO: Update status of student task
-    // const updatedTask = {
-    //   task,
-    //   addTime,
-    //   completed: true,
-    // };
-    // await putStudentTask(updatedTask);
-
+    // Call appropriate handlers when exercise is finished
+    onExerciseComplete();
     setShowResults(true);
   };
 
