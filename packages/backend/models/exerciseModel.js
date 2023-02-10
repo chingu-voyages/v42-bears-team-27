@@ -11,6 +11,26 @@ const exerciseSchema = new mongoose.Schema({
     ref: 'Subject',
     required: true,
   },
+  content: {
+    pages: [
+      {
+        questions: [
+          {
+            prompt: {
+              type: String,
+              required: true,
+              trim: true,
+            },
+            answer: {
+              type: String,
+              required: true,
+              trim: true,
+            },
+          },
+        ],
+      },
+    ],
+  },
   points: {
     type: Number,
     default: 1,
