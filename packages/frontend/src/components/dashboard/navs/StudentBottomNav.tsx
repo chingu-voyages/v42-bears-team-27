@@ -35,7 +35,7 @@ const StudentBottomNav: React.FC = () => {
           <li>
             <ButtonLink
               sx={buttonLinkStyles}
-              href="./learn"
+              href="/student/dashboard/learn"
               variant="outlined"
               icon={<TbBooks size={32} />}
             >
@@ -45,7 +45,7 @@ const StudentBottomNav: React.FC = () => {
           <li>
             <ButtonLink
               sx={buttonLinkStyles}
-              href="./home"
+              href="/student/dashboard/home"
               variant="outlined"
               icon={<GrHomeRounded size={32} />}
             >
@@ -55,7 +55,7 @@ const StudentBottomNav: React.FC = () => {
           <li>
             <ButtonLink
               sx={buttonLinkStyles}
-              href="./profile"
+              href="/student/dashboard/profile"
               variant="outlined"
               icon={<VscAccount size={32} />}
             >
