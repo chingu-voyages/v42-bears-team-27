@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useColorMode } from 'theme-ui';
+import useSWR from 'swr';
 import {
   MdOutlineNotifications,
   MdOutlineSettings,
@@ -22,13 +23,19 @@ import {
   MenuRadioGroup,
   MenuRadioItem,
 } from 'src/components/ui';
+import type { IClassroom } from 'src/interfaces';
+import { AuthContext } from 'src/store/auth';
+import { fetcher } from 'src/services';
 import { ClassroomModal } from '../modals';
 
-type Props = {
-  heading?: string;
-};
+const StudentAppBar: React.FC = () => {
+  const authCtx = useContext(AuthContext);
 
-const StudentAppBar: React.FC<Props> = ({ heading }) => {
+  const { data: classroomData, error } = useSWR<IClassroom>(
+    '/api/v0/classroom',
+    fetcher,
+  );
+
   const [colorMode, setColorMode] = useColorMode();
   const [showSidebar, setShowSidebar] = useState(false);
 
@@ -39,6 +46,14 @@ const StudentAppBar: React.FC<Props> = ({ heading }) => {
   const toggleColorModeHandler = () => {
     setColorMode((prevState) => (prevState === 'light' ? 'dark' : 'light'));
   };
+
+  if (error) {
+    // Assuming any error when fetching data means that user cookies have expired,
+    // therefore logout the user from the app since they're not authenticated
+    authCtx?.onLogout();
+  }
+
+  const heading = classroomData?.name ? `Classroom: ${classroomData.name}` : '';
 
   return (
     <>
