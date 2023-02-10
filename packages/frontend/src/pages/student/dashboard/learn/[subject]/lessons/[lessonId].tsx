@@ -35,7 +35,7 @@ const LessonId: NextPageWithLayout = () => {
           // @ts-ignore
           task.taskID.assignment._id === router.query.lessonId &&
           // @ts-ignore
-          !task.taskID.assignment.completed
+          task.completed === false
         ) {
           return true;
         }
@@ -48,7 +48,7 @@ const LessonId: NextPageWithLayout = () => {
           // NOTE: Check line 30
           // @ts-ignore
           task: tasksData[foundTaskIdx].taskID._id,
-          time: Math.round(elapsedTime * 1000),
+          addTime: Math.round(elapsedTime * 1000),
           completed: true,
         };
         await putStudentTask(updatedTask);
