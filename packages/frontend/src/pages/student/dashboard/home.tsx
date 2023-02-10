@@ -1,20 +1,26 @@
 import type { ReactElement } from 'react';
-import { useContext } from 'react';
 
 import AuthLayout from 'src/layouts/AuthLayout';
-import Loader from 'src/components/common/Loader';
-import { AuthContext } from 'src/store/auth';
+import { StudentAppBar, StudentBottomNav } from 'src/components/dashboard/navs';
+import StudentCalendar from 'src/components/dashboard/student/StudentCalendar';
 import type { NextPageWithLayout } from '../../_app';
 
-const Home: NextPageWithLayout = () => {
-  const authCtx = useContext(AuthContext);
-
-  if (!authCtx) {
-    return <Loader>Loading Dashboard...</Loader>;
-  }
-
-  return <div>Home</div>;
-};
+const Home: NextPageWithLayout = () => (
+  <div
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      height: '100vh',
+    }}
+  >
+    <StudentAppBar />
+    <div sx={{ overflowY: 'auto' }}>
+      <StudentCalendar />
+    </div>
+    <StudentBottomNav />
+  </div>
+);
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return (
