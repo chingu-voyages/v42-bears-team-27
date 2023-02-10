@@ -54,9 +54,22 @@ export interface IStudentProfile {
   };
 }
 
+export interface IExerciseContent {
+  _id: ID;
+  page: {
+    _id: ID;
+    questions: {
+      _id: ID;
+      prompt: string;
+      answer: string;
+    }[];
+  };
+}
+
 export interface IExercise {
   topic: string;
   subject: ID | ISubject;
+  content: IExerciseContent;
 }
 
 export interface IEventTask {
