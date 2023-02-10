@@ -10,6 +10,7 @@ import { AuthContext } from 'src/store/auth';
 import { fetcher } from 'src/services';
 import type { NextPageWithLayout } from 'src/pages/_app';
 import SubjectTopics from 'src/components/dashboard/student/SubjectTopics';
+import { StudentAppBar, StudentBottomNav } from 'src/components/dashboard/navs';
 
 const Lessons: NextPageWithLayout = () => {
   const { query } = useRouter();
@@ -36,14 +37,28 @@ const Lessons: NextPageWithLayout = () => {
   }
 
   return (
-    <div sx={{ m: 4 }}>
-      {subjectData && (
-        <>
-          <h2 sx={{ variant: 'text.h3' }}>{subjectData[0]?.title}</h2>
-          <h3 sx={{ variant: 'text.h4', textAlign: 'center' }}>Lessons</h3>
-          <SubjectTopics topics={subjectData[0]?.topics ?? []} type="lesson" />
-        </>
-      )}
+    <div
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        height: '100vh',
+      }}
+    >
+      <StudentAppBar />
+      <div sx={{ flexGrow: 1, my: 4, mx: 5, overflowY: 'auto' }}>
+        {subjectData && (
+          <>
+            <h2 sx={{ variant: 'text.h3' }}>{subjectData[0]?.title}</h2>
+            <h3 sx={{ variant: 'text.h4' }}>Lessons</h3>
+            <SubjectTopics
+              topics={subjectData[0]?.topics ?? []}
+              type="lesson"
+            />
+          </>
+        )}
+      </div>
+      <StudentBottomNav />
     </div>
   );
 };
