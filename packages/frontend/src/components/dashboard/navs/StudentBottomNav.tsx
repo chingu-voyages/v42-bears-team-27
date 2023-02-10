@@ -6,55 +6,63 @@ import { VscAccount } from 'react-icons/vsc';
 
 import { ButtonLink } from 'src/components/ui';
 
-const navButtonStyles: ThemeUIStyleObject = {
-  flexWrap: 'wrap-reverse',
-  '& p': {
-    display: ['none', 'initial'],
-  },
+const buttonLinkStyles: ThemeUIStyleObject = {
+  flexDirection: 'column-reverse',
+  height: 'min-content',
+  bg: 'transparent',
+  border: 'none',
+  borderRadius: 3,
+  py: 2,
+  px: 3,
+  rowGap: 1,
 };
 
 const StudentBottomNav: React.FC = () => {
   return (
-    <footer sx={{ py: 3, px: 4, bg: 'muted' }}>
-      <nav
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          columnGap: '6.25rem',
-          height: 48,
-        }}
-      >
-        <div>
-          <ButtonLink
-            sx={navButtonStyles}
-            href="./learn"
-            variant="outlined"
-            icon={<TbBooks size={32} />}
-          >
-            Learn
-          </ButtonLink>
-        </div>
-        <div>
-          <ButtonLink
-            sx={navButtonStyles}
-            href="./home"
-            variant="outlined"
-            icon={<GrHomeRounded size={32} />}
-          >
-            Home
-          </ButtonLink>
-        </div>
-        <div>
-          <ButtonLink
-            sx={navButtonStyles}
-            href="./profile"
-            variant="outlined"
-            icon={<VscAccount size={32} />}
-          >
-            Profile
-          </ButtonLink>
-        </div>
+    <footer sx={{ bg: 'muted' }}>
+      <nav>
+        <ul
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            columnGap: '6.25rem',
+            listStyle: 'none',
+            m: 2,
+            p: 0,
+          }}
+        >
+          <li>
+            <ButtonLink
+              sx={buttonLinkStyles}
+              href="./learn"
+              variant="outlined"
+              icon={<TbBooks size={32} />}
+            >
+              Learn
+            </ButtonLink>
+          </li>
+          <li>
+            <ButtonLink
+              sx={buttonLinkStyles}
+              href="./home"
+              variant="outlined"
+              icon={<GrHomeRounded size={32} />}
+            >
+              Home
+            </ButtonLink>
+          </li>
+          <li>
+            <ButtonLink
+              sx={buttonLinkStyles}
+              href="./profile"
+              variant="outlined"
+              icon={<VscAccount size={32} />}
+            >
+              Profile
+            </ButtonLink>
+          </li>
+        </ul>
       </nav>
     </footer>
   );
