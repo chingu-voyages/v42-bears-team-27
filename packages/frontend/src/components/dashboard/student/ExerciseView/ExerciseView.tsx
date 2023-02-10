@@ -1,15 +1,32 @@
-import { useState, useReducer } from 'react';
+import { useState, useReducer, useContext } from 'react';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 import Loader from 'src/components/common/Loader';
-import {
-  AlertDialog,
-  AlertDialogContent,
-  Button,
-  Progress,
-} from 'src/components/ui';
+import { Button } from 'src/components/ui';
 import type { IExercise } from 'src/interfaces';
+import { AuthContext } from 'src/store/auth';
+import { fetcher } from 'src/services';
 import QuestionItem from './QuestionItem';
+import ResultsDialog from './ResultsDialog';
+
+const RESULT_MESSAGES = [
+  {
+    minScorePerc: 0,
+    text: `You've done not so well for this exercise... check out the lessson for this topic, and once you've done that, come back and score higher than ever before!`,
+    color: 'error',
+  },
+  {
+    minScorePerc: 40,
+    text: `Not your very best attempt, but this one's not your last!`,
+    color: 'warning',
+  },
+  {
+    minScorePerc: 60,
+    text: `You've outdid yourself on this one!`,
+    color: 'success',
+  },
+];
 
 const initialExamineState = {
   numberOfCorrect: 0,
@@ -22,13 +39,15 @@ const initialExamineState = {
   },
 };
 
+export interface IResults {
+  score: number;
+  message: { text: string; color: string };
+}
+
 type ACTIONTYPE =
   | { type: 'ADD_CORRECT' }
   | { type: 'REMOVE_CORRECT' }
-  | {
-    type: 'UPDATE_RESULTS';
-    payload: { score: number; message: { text: string; color: string } };
-  };
+  | { type: 'UPDATE_RESULTS'; payload: IResults };
 
 function examineReducer(state: typeof initialExamineState, action: ACTIONTYPE) {
   if (action.type === 'ADD_CORRECT') {
@@ -55,76 +74,36 @@ function examineReducer(state: typeof initialExamineState, action: ACTIONTYPE) {
   return initialExamineState;
 }
 
-// const DUMMY_EXERCISE_DATA: IExercise = {
-//   topic: 'Indices',
-//   subject: '2323',
-//   content: {
-//     _id: '323',
-//     page: {
-//       _id: '0',
-//       questions: [
-//         {
-//           _id: '01',
-//           prompt: 'What is 2^2?',
-//           answer: '4',
-//         },
-//         {
-//           _id: '02',
-//           prompt: 'What is 4^2?',
-//           answer: '16',
-//         },
-//         {
-//           _id: '03',
-//           prompt: 'What is 7^2?',
-//           answer: '49',
-//         },
-//         {
-//           _id: '04',
-//           prompt: 'What is 9^2?',
-//           answer: '81',
-//         },
-//       ],
-//     },
-//   },
-// };
-
-const RESULT_MESSAGES = [
-  {
-    minScorePerc: 0,
-    text: `You've done not so well for this exercise... check out the lessson for this topic, and once you've done that, come back and score higher than ever before!`,
-    color: 'error',
-  },
-  {
-    minScorePerc: 40,
-    text: `Not your very best attempt, but this one's not your last!`,
-    color: 'warning',
-  },
-  {
-    minScorePerc: 60,
-    text: `You've outdid yourself on this one!`,
-    color: 'success',
-  },
-];
-
 const ExerciseView: React.FC = () => {
   const router = useRouter();
-  const [exercise] = useState<IExercise>();
+  const authCtx = useContext(AuthContext);
+
+  const {
+    data: exerciseData,
+    isLoading,
+    error,
+  } = useSWR<IExercise>(
+    router.query?.exerciseId
+      ? `/api/v0/material/exercises/${router.query.exerciseId}`
+      : null,
+    fetcher,
+  );
+
   const [examineState, dispatchExamine] = useReducer(
     examineReducer,
     initialExamineState,
   );
-  const [showResultsModal, setShowResultsModal] = useState(false);
-
-  if (!exercise) {
-    return <Loader>Loading Exercise...</Loader>;
-  }
-
-  const { topic, content } = exercise;
+  const [showResults, setShowResults] = useState(false);
 
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!exerciseData) {
+      return;
+    }
+
     const percScore = Math.round(
-      (examineState.numberOfCorrect / exercise.content.page.questions.length) *
+      (examineState.numberOfCorrect /
+        exerciseData.content.page.questions.length) *
         100,
     );
     const resultMessage = RESULT_MESSAGES.find(
@@ -149,13 +128,23 @@ const ExerciseView: React.FC = () => {
     // };
     // await putStudentTask(updatedTask);
 
-    setShowResultsModal(true);
+    setShowResults(true);
   };
 
   const confirmHandler = () => {
     // Redirect back to current subject exercises
     router.replace(`../../${router.query.subject}/exercises`);
   };
+
+  if (isLoading || !exerciseData) {
+    return <Loader>Loading Exercise...</Loader>;
+  }
+
+  if (error) {
+    // Assuming any error when fetching data means that user cookies have expired,
+    // therefore logout the user from the app since they're not authenticated
+    authCtx?.onLogout();
+  }
 
   return (
     <div
@@ -172,7 +161,9 @@ const ExerciseView: React.FC = () => {
         borderRadius: 5,
       }}
     >
-      <h2 sx={{ variant: 'text.h3', textAlign: 'center', mb: 5 }}>{topic}</h2>
+      <h2 sx={{ variant: 'text.h3', textAlign: 'center', mb: 5 }}>
+        {exerciseData.topic}
+      </h2>
 
       <form onSubmit={submitHandler}>
         <div
@@ -183,7 +174,7 @@ const ExerciseView: React.FC = () => {
             gridGap: '0.5rem',
           }}
         >
-          {content.page.questions.map(({ _id, ...question }) => (
+          {exerciseData.content.page.questions.map(({ _id, ...question }) => (
             <QuestionItem
               key={_id}
               question={question}
@@ -197,45 +188,11 @@ const ExerciseView: React.FC = () => {
         </Button>
       </form>
 
-      <AlertDialog open={showResultsModal}>
-        <AlertDialogContent
-          sx={{
-            p: 3,
-            // NOTE: REALLY HACKY CSS HERE. Consider modifying this
-            // ui component to handle these sort of scenarios
-            '& div': {
-              justifyContent: 'center !important',
-              '& button:first-of-type': {
-                display: 'none',
-              },
-            },
-          }}
-          title="Here are your results from the exercise!"
-          description="If you have a task to complete this exercise, this will be automatically marked as complete since you've submitted your answers already"
-          width="32rem"
-          height="min-content"
-          onConfirm={confirmHandler}
-        >
-          <div sx={{ my: 4, mb: 5 }}>
-            <p
-              sx={{
-                variant: 'text.label',
-                textAlign: 'center',
-                color: examineState.results.message.color,
-              }}
-            >
-              {examineState.results.message.text}
-            </p>
-            <Progress
-              sx={{
-                mx: 'auto',
-                '& div': { bg: examineState.results.message.color },
-              }}
-              value={examineState.results.score}
-            />
-          </div>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ResultsDialog
+        open={showResults}
+        results={examineState.results}
+        onConfirm={confirmHandler}
+      />
     </div>
   );
 };
