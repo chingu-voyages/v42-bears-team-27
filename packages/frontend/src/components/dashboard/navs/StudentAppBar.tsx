@@ -28,7 +28,7 @@ type Props = {
   heading?: string;
 };
 
-const StudentNav: React.FC<Props> = ({ heading }) => {
+const StudentAppBar: React.FC<Props> = ({ heading }) => {
   const [colorMode, setColorMode] = useColorMode();
   const [showSidebar, setShowSidebar] = useState(false);
 
@@ -213,4 +213,4 @@ const StudentNav: React.FC<Props> = ({ heading }) => {
   );
 };
 
-export default StudentNav;
+export default StudentAppBar;
