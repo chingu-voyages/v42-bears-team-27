@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { MdAdd } from 'react-icons/md';
 
@@ -33,6 +33,21 @@ const ClassroomModal: React.FC = () => {
 
   const { data } = useSWR<IClassroom>('/api/v0/classroom', fetcher);
   const studentsData = data?.students;
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAlert(null), 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [alert]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setError(null), 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [error]);
+
   const registerNewStudentHandler = async (
     newStudent: INewStudentCredentials,
   ) => {
@@ -82,7 +97,14 @@ const ClassroomModal: React.FC = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button onClick={() => setShowForm('')} variant="outlined">
+        <Button
+          onClick={() => {
+            setShowForm('');
+            setError(null);
+            setAlert(null);
+          }}
+          variant="outlined"
+        >
           View Classroom
         </Button>
       </DialogTrigger>
