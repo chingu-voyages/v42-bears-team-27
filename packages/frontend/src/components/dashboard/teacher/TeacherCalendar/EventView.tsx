@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { format } from 'date-fns';
 import { MdAdd, MdCheck, MdEdit } from 'react-icons/md';
@@ -50,6 +50,20 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<string | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAlert(null), 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [alert]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setError(null), 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [error]);
 
   const addTaskHandler = async (newTask: Omit<IEventTask, '_id' | 'event'>) => {
     try {
@@ -180,7 +194,13 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
         <>
           <Dialog>
             <DialogTrigger asChild>
-              <IconButton sx={{ position: 'absolute', top: 3, right: 5 }}>
+              <IconButton
+                onClick={() => {
+                  setError(null);
+                  setAlert(null);
+                }}
+                sx={{ position: 'absolute', top: 3, right: 5 }}
+              >
                 <MdAdd size={32} />
               </IconButton>
             </DialogTrigger>

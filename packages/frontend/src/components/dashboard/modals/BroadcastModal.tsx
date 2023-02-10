@@ -50,6 +50,20 @@ const BroadcastModal: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<string | null>(null);
 
+  useEffect(() => {
+    const timer = setTimeout(() => setAlert(null), 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [alert]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setError(null), 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [error]);
+
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -94,7 +108,15 @@ const BroadcastModal: React.FC = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outlined">Broadcast Message</Button>
+        <Button
+          onClick={() => {
+            setError(null);
+            setAlert(null);
+          }}
+          variant="outlined"
+        >
+          Broadcast Message
+        </Button>
       </DialogTrigger>
       <DialogContent
         title="Send Message to your Classroom"

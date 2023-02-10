@@ -45,7 +45,7 @@ const DirectMessageModal: React.FC<Props> = ({ student }) => {
     inputBlurHandler: messageBlurHandler,
     inputResetHandler: messageResetHandler,
   } = useInput(messageValidator, '');
-
+  // TODO use error & alert from ClassroomModal.tsx
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<string | null>(null);
 
