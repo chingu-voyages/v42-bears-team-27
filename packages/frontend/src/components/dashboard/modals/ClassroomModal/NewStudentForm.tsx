@@ -89,6 +89,7 @@ const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
           onBlur={forenameBlurHandler}
           label="Student’s Forename"
           type="text"
+          required
           autoFocus
         />
       </div>
@@ -103,6 +104,7 @@ const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
           onBlur={surnameBlurHandler}
           label="Student’s Surname"
           type="text"
+          required
         />
       </div>
       <div sx={{ py: 3 }}>
@@ -116,6 +118,7 @@ const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
           onBlur={emailBlurHandler}
           label="Student’s E-mail"
           type="email"
+          required
         />
       </div>
       <div
