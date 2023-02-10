@@ -20,12 +20,12 @@ export const postCreateNewStudent = (newStudent: any) =>
 
 // task = {
 //  task: ID,
-//  time?: Number, -> time (in ms) to add to existing spent time
+//  addTime?: Number, -> time (in ms) to add to existing spent time
 //  completed?: Boolean
 // }
 export const putStudentTask = (task: any) =>
   fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/student/task`, {
-    method: 'POST',
+    method: 'PUT',
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',

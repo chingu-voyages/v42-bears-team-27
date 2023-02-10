@@ -59,11 +59,6 @@ export interface IExercise {
   subject: ID | ISubject;
 }
 
-export interface ILesson {
-  topic: string;
-  subject: ID | ISubject;
-}
-
 export interface IEventTask {
   _id: ID;
   event: ID | IEvent;
@@ -84,6 +79,21 @@ export interface ITopicType {
   materialModel: TaskRef;
 }
 
+export interface ILessonContent {
+  _id: ID;
+  pages: {
+    _id: ID;
+    headline: string;
+    text: string;
+  }[];
+}
+
+export interface ILesson {
+  topic: string;
+  subject: ID | ISubject;
+  content: ILessonContent;
+}
+
 export interface ITopic {
   _id: ID;
   slug: string;
@@ -93,7 +103,9 @@ export interface ITopic {
 
 export interface ISubject {
   _id: ID;
+  slug: string;
   title: string;
+  imageUrl: string;
   topics: ITopic[];
 }
 

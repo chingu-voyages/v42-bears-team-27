@@ -68,22 +68,31 @@ const deleteClassroom = async (_, res) => {
 };
 
 /// Classroom Subjects
-const getClassroomSubjects = async (_, res) => {
-  const { id: teacherId, classroom } = res.locals.user;
+const getClassroomSubjects = async (req, res) => {
+  const { classroom: classroomId } = res.locals.user;
   try {
-    const { teacher, subjects } = await Classroom.findById(classroom).populate(
+    const classroom = await Classroom.findById(classroomId).populate(
       'subjects',
     );
-    if (!teacher) {
-      return res.status(400).json({ error: 'Classroom not found' });
+    if (!classroom) {
+      return res.status(400).json({ message: 'Classroom not found' });
     }
-    if (!teacher._id.equals(teacherId)) {
-      return res.status(401).json({ error: 'Unauthorized access' });
+
+    // NOTE: Student + Teacher need access to room
+    // if (!teacher._id.equals(teacherId)) {
+    //   return res.status(401).json({ message: 'Unauthorized access' });
+    // }
+
+    let { subjects } = classroom;
+
+    if (req.query.name) {
+      // If name is provided in query then find subjects with exact name
+      subjects = subjects.filter((subject) => subject.slug === req.query.name);
     }
 
     return res.json(subjects);
   } catch (err) {
-    return res.status(500).json({ err });
+    return res.status(500).json(err);
   }
 };
 

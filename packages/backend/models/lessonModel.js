@@ -11,6 +11,14 @@ const lessonSchema = new mongoose.Schema({
     ref: 'Subject',
     required: true,
   },
+  content: {
+    pages: [
+      {
+        headline: String,
+        text: String,
+      },
+    ],
+  },
   points: {
     type: Number,
     default: 1,
