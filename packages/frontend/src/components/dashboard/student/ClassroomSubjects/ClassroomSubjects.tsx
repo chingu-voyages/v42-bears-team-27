@@ -6,7 +6,15 @@ type Props = {
 };
 
 const ClassroomSubjects: React.FC<Props> = ({ subjects }) => (
-  <div sx={{ display: 'flex', justifyContent: 'center', columnGap: 5, my: 5 }}>
+  <div
+    sx={{
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      gap: 5,
+      my: 5,
+    }}
+  >
     {subjects.map(({ _id, ...subject }) => (
       <SubjectCard key={_id} subject={subject} />
     ))}
