@@ -2,10 +2,11 @@ import { useContext, useMemo } from 'react';
 import useSWR from 'swr';
 import stc from 'string-to-color';
 
-import { fetcher } from 'src/services';
-import type { IStudent, IStudentProfile } from 'src/interfaces';
+import Loader from 'src/components/common/Loader';
 import { Button } from 'src/components/ui';
+import type { IStudent, IStudentProfile } from 'src/interfaces';
 import { AuthContext } from 'src/store/auth';
+import { fetcher } from 'src/services';
 
 type Props = {
   setForm: (form: string) => void;
@@ -14,40 +15,28 @@ type Props = {
 
 const StudentProfileModal: React.FC<Props> = ({ setForm, student }) => {
   const authCtx = useContext(AuthContext);
-  const { data } = useSWR<IStudentProfile>(
+  const { data: studentData, isLoading } = useSWR<IStudentProfile>(
     `/api/v0/student/profile/${student?._id}`,
     fetcher,
   );
 
   const totalTime = useMemo(
     () =>
-      data && JSON.stringify(data?.timeSpent) !== '{}'
-        ? Object.values(data.timeSpent).reduce((a, b) => b + a)
+      studentData && JSON.stringify(studentData?.timeSpent) !== '{}'
+        ? Object.values(studentData.timeSpent).reduce((a, b) => b + a)
         : 1,
-    [data],
+    [studentData],
   );
   const totalPoints = useMemo(
     () =>
-      data && JSON.stringify(data?.points) !== '{}'
-        ? Object.values(data.points).reduce((a, b) => b + a)
+      studentData && JSON.stringify(studentData?.points) !== '{}'
+        ? Object.values(studentData.points).reduce((a, b) => b + a)
         : 1,
-    [data],
+    [studentData],
   );
 
-  if (!authCtx || !student) {
-    return (
-      <p
-        sx={{
-          variant: 'text.h3',
-          position: 'absolute',
-          top: '40%',
-          left: '50%',
-          translate: '-50% -50%',
-        }}
-      >
-        Loading Profile...
-      </p>
-    );
+  if (isLoading) {
+    return <Loader>Loading Profile...</Loader>;
   }
 
   return (
@@ -70,8 +59,8 @@ const StudentProfileModal: React.FC<Props> = ({ setForm, student }) => {
           borderRadius: '5px',
         }}
       >
-        {data &&
-          Object.keys(data.timeSpent).map((el) => (
+        {studentData &&
+          Object.keys(studentData.timeSpent).map((el) => (
             <div
               key={el}
               sx={{
@@ -81,7 +70,7 @@ const StudentProfileModal: React.FC<Props> = ({ setForm, student }) => {
                 backgroundColor: stc(el),
                 color: 'white',
                 width: `${
-                  (100 * data.timeSpent[el as keyof IStudentProfile]) /
+                  (100 * studentData.timeSpent[el as keyof IStudentProfile]) /
                   totalTime
                 }%`,
               }}
@@ -102,8 +91,8 @@ const StudentProfileModal: React.FC<Props> = ({ setForm, student }) => {
           mb: 6,
         }}
       >
-        {data &&
-          Object.keys(data.points).map((el) => (
+        {studentData &&
+          Object.keys(studentData.points).map((el) => (
             <div
               key={el}
               sx={{
@@ -113,7 +102,8 @@ const StudentProfileModal: React.FC<Props> = ({ setForm, student }) => {
                 backgroundColor: stc(el),
                 color: 'white',
                 width: `${
-                  (100 * data.points[el as keyof IStudentProfile]) / totalPoints
+                  (100 * studentData.points[el as keyof IStudentProfile]) /
+                  totalPoints
                 }%`,
               }}
             >
@@ -122,7 +112,7 @@ const StudentProfileModal: React.FC<Props> = ({ setForm, student }) => {
           ))}
       </div>
 
-      {authCtx.role === 'teacher' && (
+      {authCtx?.role === 'teacher' && (
         <Button
           onClick={() => setForm('directMessage')}
           variant="outlined"
