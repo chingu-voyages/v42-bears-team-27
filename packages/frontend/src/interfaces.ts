@@ -20,6 +20,12 @@ export interface INewStudentCredentials {
   email: string;
 }
 
+export interface IDirectMessageStudent {
+  studentID: ID;
+  messageHeader: string;
+  messageBody: string;
+}
+
 export interface ITeacher {
   _id: ID;
   title: string;
