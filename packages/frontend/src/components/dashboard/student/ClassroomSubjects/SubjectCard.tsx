@@ -1,56 +1,82 @@
+import { useContext, useMemo } from 'react';
 import Image from 'next/image';
-import { useMemo } from 'react';
+import type { ThemeUIStyleObject } from 'theme-ui';
 import useSWR from 'swr';
 import stc from 'string-to-color';
 
-import { fetcher } from 'src/services';
+import Loader from 'src/components/common/Loader';
 import { ButtonLink, Progress } from 'src/components/ui';
-import type { ISubject } from 'src/interfaces';
+import type { IStudentTask, ISubject } from 'src/interfaces';
+import { AuthContext } from 'src/store/auth';
+import { fetcher } from 'src/services';
+
+const containerStyles: ThemeUIStyleObject = {
+  display: 'grid',
+  gridTemplateRows: '1fr 1fr',
+  width: '28rem',
+
+  bg: 'muted',
+};
 
 type Props = {
   subject: Omit<ISubject, '_id'>;
 };
 
-type PropsData = {
-  _id: string;
-  completed: boolean;
-  event: string;
-  taskID: any;
-};
-
 const SubjectCard: React.FC<Props> = ({ subject }) => {
   const { slug, title, imageUrl } = subject;
 
+  const authCtx = useContext(AuthContext);
+
   const {
     data: tasksData,
-    // isLoading,
-    // error,
-    // } = useSWR<IStudentTask[]>('/api/v0/student/tasks', fetcher,);
-  } = useSWR<PropsData[]>('/api/v0/student/tasks', fetcher);
+    isLoading,
+    error,
+  } = useSWR<IStudentTask[]>('/api/v0/student/tasks', fetcher);
 
   const percentageProgress = useMemo(() => {
     if (!tasksData) {
       return null;
     }
 
-    const filterData = tasksData.filter(
-      (task) => task.taskID.assignment.subject.slug === slug,
-    );
+    const filterData = tasksData.filter((task) => {
+      if (typeof task.taskID === 'string') {
+        return task;
+      }
+
+      // NOTE: Bad typing for taskID so doesn't recognise if it's
+      // possible to be something other than 'ID'
+      // @ts-ignore
+      return task.taskID.assignment.subject.slug === slug;
+    });
     const completed = filterData.filter((task) => task.completed).length;
     const total = filterData.length;
 
     return completed && total ? (completed / total) * 100 : 0;
   }, [tasksData, slug]);
 
+  if (isLoading) {
+    return (
+      <div
+        sx={{
+          position: 'relative',
+          height: '24rem',
+          opacity: 0.6,
+          ...containerStyles,
+        }}
+      >
+        <Loader>Loading...</Loader>
+      </div>
+    );
+  }
+
+  if (error) {
+    // Assuming any error when fetching data means that user cookies have expired,
+    // therefore logout the user from the app since they're not authenticated
+    authCtx?.onLogout();
+  }
+
   return (
-    <div
-      sx={{
-        display: 'grid',
-        gridTemplateRows: '1fr 1fr',
-        width: '28rem',
-        bg: 'muted',
-      }}
-    >
+    <div sx={containerStyles}>
       <div sx={{ position: 'relative', height: '16rem' }}>
         <Image
           sx={{ maxWidth: '100%', height: 'auto' }}
