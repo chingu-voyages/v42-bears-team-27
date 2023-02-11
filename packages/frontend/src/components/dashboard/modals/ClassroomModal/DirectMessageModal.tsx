@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MdSend } from 'react-icons/md';
 import validator from 'validator';
 
@@ -78,19 +78,7 @@ const DirectMessageModal: React.FC<Props> = ({ student }) => {
     }
   };
 
-  // TODO: The following warnings are not very helpful because they appear only once
-
-  useEffect(() => {
-    if (enteredHeadlineHasErrors) {
-      setAlert('WARNING: Headline input has errors');
-    }
-  }, [enteredHeadlineHasErrors]);
-
-  useEffect(() => {
-    if (enteredMessageHasErrors) {
-      setAlert('WARNING: Message input has errors');
-    }
-  }, [enteredMessageHasErrors]);
+  const formHasErrors = enteredHeadlineHasErrors || enteredMessageHasErrors;
 
   return (
     <div
@@ -112,32 +100,22 @@ const DirectMessageModal: React.FC<Props> = ({ student }) => {
         onSubmit={submitHandler}
       >
         <TextField
-          sx={{
-            mb: 20,
-            borderColor: enteredHeadlineHasErrors ? 'red' : 'gray',
-          }}
+          sx={{ mb: 20, borderColor: enteredHeadlineHasErrors && 'warning' }}
           id="headline"
           label="Headline"
           value={enteredHeadline}
-          onChange={(e) => {
-            setAlert(null);
-            headlineChangedHandler(e.currentTarget.value);
-          }}
-          onBlur={headlineBlurHandler}
           autoFocus
+          required
+          onChange={(e) => headlineChangedHandler(e.currentTarget.value)}
+          onBlur={headlineBlurHandler}
         />
         <TextFieldArea
-          sx={{
-            mb: 20,
-            borderColor: enteredMessageHasErrors ? 'red' : 'gray',
-          }}
+          sx={{ mb: 20, borderColor: enteredMessageHasErrors && 'warning' }}
           id="message"
           label="Message"
           value={enteredMessage}
-          onChange={(e) => {
-            setAlert(null);
-            messageChangedHandler(e.currentTarget.value);
-          }}
+          required
+          onChange={(e) => messageChangedHandler(e.currentTarget.value)}
           onBlur={messageBlurHandler}
         />
         <Button
@@ -145,6 +123,8 @@ const DirectMessageModal: React.FC<Props> = ({ student }) => {
           type="submit"
           rounded={false}
           icon={<MdSend />}
+          // @ts-ignore
+          disabled={formHasErrors}
         >
           Send Message
         </Button>
