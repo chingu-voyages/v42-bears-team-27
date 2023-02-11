@@ -2,7 +2,6 @@ import { useContext, useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { MdAdd } from 'react-icons/md';
 
-import { fetcher } from 'src/services';
 import {
   Avatar,
   Button,
@@ -15,9 +14,14 @@ import type {
   INewStudentCredentials,
   IClassroom,
   IStudent,
+  IDirectMessageStudent,
 } from 'src/interfaces';
 import { AuthContext } from 'src/store/auth';
-import { postCreateNewStudent } from 'src/services/student';
+import {
+  fetcher,
+  postCreateNewStudent,
+  postDirectMessageToStudent,
+} from 'src/services';
 import { extractStringInitials } from 'src/utils';
 import NewStudentForm from './NewStudentForm';
 import StudentProfileModal from './StudentProfileModal';
@@ -54,6 +58,23 @@ const ClassroomModal: React.FC = () => {
     try {
       // Submit form data
       const msg = await postCreateNewStudent(newStudent);
+      // Update alert with api response message
+      setAlert(msg);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
+
+      setError(`Unexpected error ${err}`);
+    }
+  };
+
+  const sendMessageToStudentHandler = async (
+    newMessage: IDirectMessageStudent,
+  ) => {
+    try {
+      // Send message to student from teacher
+      const msg = await postDirectMessageToStudent(newMessage);
       // Update alert with api response message
       setAlert(msg);
     } catch (err) {
@@ -125,7 +146,11 @@ const ClassroomModal: React.FC = () => {
             />
           )}
           {showForm === 'directMessage' && (
-            <DirectMessageModal student={selectStudent} />
+            <DirectMessageModal
+              student={selectStudent as IStudent}
+              error={error}
+              onSubmit={sendMessageToStudentHandler}
+            />
           )}
 
           {showForm === '' && (

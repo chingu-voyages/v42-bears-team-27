@@ -1,13 +1,9 @@
-import { useEffect, useState } from 'react';
-import { MdSend } from 'react-icons/md';
 import validator from 'validator';
-
-import useInput from 'src/hooks/use-input';
-
-import type { IStudent } from 'src/interfaces';
+import { MdSend } from 'react-icons/md';
 
 import { Button, TextField, TextFieldArea } from 'src/components/ui';
-import { postDirectMessageToStudent } from 'src/services';
+import useInput from 'src/hooks/use-input';
+import type { IDirectMessageStudent, IStudent } from 'src/interfaces';
 
 const headlineValidator = (value: string) => {
   const trimmed = value.trim();
@@ -26,10 +22,12 @@ const messageValidator = (value: string) => {
 };
 
 type Props = {
-  student: IStudent | null;
+  student: IStudent;
+  error: string | null;
+  onSubmit: (data: IDirectMessageStudent) => void;
 };
 
-const DirectMessageModal: React.FC<Props> = ({ student }) => {
+const DirectMessageModal: React.FC<Props> = ({ student, error, onSubmit }) => {
   const {
     value: enteredHeadline,
     hasErrors: enteredHeadlineHasErrors,
@@ -45,9 +43,6 @@ const DirectMessageModal: React.FC<Props> = ({ student }) => {
     inputBlurHandler: messageBlurHandler,
     inputResetHandler: messageResetHandler,
   } = useInput(messageValidator, '');
-  // TODO use error & alert from ClassroomModal.tsx
-  const [error, setError] = useState<string | null>(null);
-  const [alert, setAlert] = useState<string | null>(null);
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,41 +51,16 @@ const DirectMessageModal: React.FC<Props> = ({ student }) => {
     const sanitizedMessage = validator.escape(enteredMessage);
 
     const data = {
-      studentID: student?._id,
+      studentID: student._id,
       messageHeader: sanitizedHeadline,
       messageBody: sanitizedMessage,
     };
-
-    try {
-      // Submit form data
-      const msg = await postDirectMessageToStudent(data);
-      // Update alert with api response message
-      setAlert(msg);
-      // Reset form values
-      headlineResetHandler();
-      messageResetHandler();
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      }
-
-      setError(`Unexpected error ${err}`);
-    }
+    // Reset form values
+    headlineResetHandler();
+    messageResetHandler();
+    // Submit form data
+    onSubmit(data);
   };
-
-  // TODO: The following warnings are not very helpful because they appear only once
-
-  useEffect(() => {
-    if (enteredHeadlineHasErrors) {
-      setAlert('WARNING: Headline input has errors');
-    }
-  }, [enteredHeadlineHasErrors]);
-
-  useEffect(() => {
-    if (enteredMessageHasErrors) {
-      setAlert('WARNING: Message input has errors');
-    }
-  }, [enteredMessageHasErrors]);
 
   return (
     <div
@@ -112,32 +82,20 @@ const DirectMessageModal: React.FC<Props> = ({ student }) => {
         onSubmit={submitHandler}
       >
         <TextField
-          sx={{
-            mb: 20,
-            borderColor: enteredHeadlineHasErrors ? 'red' : 'gray',
-          }}
+          sx={{ mb: 20, borderColor: enteredHeadlineHasErrors && 'warning' }}
           id="headline"
           label="Headline"
           value={enteredHeadline}
-          onChange={(e) => {
-            setAlert(null);
-            headlineChangedHandler(e.currentTarget.value);
-          }}
+          onChange={(e) => headlineChangedHandler(e.currentTarget.value)}
           onBlur={headlineBlurHandler}
           autoFocus
         />
         <TextFieldArea
-          sx={{
-            mb: 20,
-            borderColor: enteredMessageHasErrors ? 'red' : 'gray',
-          }}
+          sx={{ mb: 20, borderColor: enteredMessageHasErrors && 'warning' }}
           id="message"
           label="Message"
           value={enteredMessage}
-          onChange={(e) => {
-            setAlert(null);
-            messageChangedHandler(e.currentTarget.value);
-          }}
+          onChange={(e) => messageChangedHandler(e.currentTarget.value)}
           onBlur={messageBlurHandler}
         />
         <Button
@@ -154,13 +112,6 @@ const DirectMessageModal: React.FC<Props> = ({ student }) => {
           </p>
         )}
       </form>
-      <div>
-        {alert && (
-          <p sx={{ variant: 'text.h4', color: 'info', textAlign: 'center' }}>
-            {alert}
-          </p>
-        )}
-      </div>
     </div>
   );
 };
