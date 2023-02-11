@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 import AuthLayout from 'src/layouts/AuthLayout';
-import Loader from 'src/components/common/Loader';
 import { AlertDialog, AlertDialogContent } from 'src/components/ui';
 import type { IStudentTask } from 'src/interfaces';
 import { AuthContext } from 'src/store/auth';
@@ -62,14 +61,10 @@ const LessonId: NextPageWithLayout = () => {
     router.replace(`../../${router.query.subject}/lessons`);
   };
 
-  if (!authCtx || !router) {
-    return <Loader>Loading...</Loader>;
-  }
-
   if (error) {
     // Assuming any error when fetching data means that user cookies have expired,
     // therefore logout the user from the app since they're not authenticated
-    authCtx.onLogout();
+    authCtx?.onLogout();
   }
 
   return (
