@@ -53,7 +53,21 @@ const getExercises = async (req, res) => {
         message: 'exercise not found',
       });
     }
-    return res.json(exercise);
+    // Pick exercise question set at random
+    const pickExerciseQuestionSet =
+      exercise.content.pages[
+        Math.floor(Math.random() * exercise.content.pages.length)
+      ];
+    // Transform exercise so it returns only ONE question set
+    // instead of EVERY question set from it (i.e. exercise.content.pages)
+    const transformedExercise = {
+      ...exercise,
+      content: {
+        ...exercise.content,
+        page: pickExerciseQuestionSet,
+      },
+    };
+    return res.json(transformedExercise);
   } catch (err) {
     return res.status(500).json({ error: err });
   }

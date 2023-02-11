@@ -65,8 +65,8 @@ function lessonCreate(topic, subject, content, cb) {
   });
 }
 
-function exerciseCreate(topic, subject, cb) {
-  const exerciseDetail = { topic, subject };
+function exerciseCreate(topic, subject, content, cb) {
+  const exerciseDetail = { topic, subject, content };
   console.log(exerciseDetail);
 
   const exercise = new Exercise(exerciseDetail);
@@ -157,7 +157,71 @@ function createMaterials(cb) {
         );
       },
       (callback) => {
-        exerciseCreate('Indices', subjects[1], callback);
+        exerciseCreate(
+          'Indices',
+          subjects[1],
+          {
+            pages: [
+              {
+                questions: [
+                  {
+                    prompt: 'What is 2^2?',
+                    answer: '4',
+                  },
+                  {
+                    prompt: 'What is 5^2?',
+                    answer: '25',
+                  },
+                  {
+                    prompt: 'What is 9^2?',
+                    answer: '81',
+                  },
+                  {
+                    prompt: 'What is 6^3?',
+                    answer: '216',
+                  },
+                  {
+                    prompt: 'What is 3^1?',
+                    answer: '3',
+                  },
+                  {
+                    prompt: 'What is 100^0?',
+                    answer: '1',
+                  },
+                ],
+              },
+              {
+                questions: [
+                  {
+                    prompt: 'What is 1^2?',
+                    answer: '1',
+                  },
+                  {
+                    prompt: 'What is 4^2?',
+                    answer: '16',
+                  },
+                  {
+                    prompt: 'What is 8^2?',
+                    answer: '64',
+                  },
+                  {
+                    prompt: 'What is 5^3?',
+                    answer: '125',
+                  },
+                  {
+                    prompt: 'What is 7^1?',
+                    answer: '7',
+                  },
+                  {
+                    prompt: 'What is 100^0?',
+                    answer: '1',
+                  },
+                ],
+              },
+            ],
+          },
+          callback,
+        );
       },
     ],
     // optional callback
