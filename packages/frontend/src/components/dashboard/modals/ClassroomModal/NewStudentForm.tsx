@@ -76,13 +76,16 @@ const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
     onSubmit(data);
   };
 
+  const formHasErrors =
+    enteredForenameHasErrors ||
+    enteredSurnameHasErrors ||
+    enteredEmailHasErrors;
+
   return (
     <form sx={{ minWidth: '40%' }} onSubmit={submitHandler}>
       <div sx={{ py: 3 }}>
         <TextField
-          sx={{
-            borderColor: enteredForenameHasErrors ? 'red' : 'gray',
-          }}
+          sx={{ borderColor: enteredForenameHasErrors && 'warning' }}
           placeholder="Forename"
           value={enteredForename}
           onChange={(e) => forenameChangedHandler(e.currentTarget.value)}
@@ -95,30 +98,26 @@ const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
       </div>
       <div sx={{ py: 3 }}>
         <TextField
-          sx={{
-            borderColor: enteredSurnameHasErrors ? 'red' : 'gray',
-          }}
-          placeholder="Surname"
-          value={enteredSurname}
-          onChange={(e) => surnameChangedHandler(e.currentTarget.value)}
-          onBlur={surnameBlurHandler}
+          sx={{ borderColor: enteredSurnameHasErrors && 'warning' }}
           label="Student’s Surname"
           type="text"
+          placeholder="Surname"
+          value={enteredSurname}
           required
+          onChange={(e) => surnameChangedHandler(e.currentTarget.value)}
+          onBlur={surnameBlurHandler}
         />
       </div>
       <div sx={{ py: 3 }}>
         <TextField
-          sx={{
-            borderColor: enteredEmailHasErrors ? 'red' : 'gray',
-          }}
-          placeholder="student@mail.com"
-          value={enteredEmail}
-          onChange={(e) => emailChangedHandler(e.currentTarget.value)}
-          onBlur={emailBlurHandler}
+          sx={{ borderColor: enteredEmailHasErrors && 'warning' }}
           label="Student’s E-mail"
           type="email"
+          placeholder="student@mail.com"
+          value={enteredEmail}
           required
+          onChange={(e) => emailChangedHandler(e.currentTarget.value)}
+          onBlur={emailBlurHandler}
         />
       </div>
       <div
@@ -129,7 +128,13 @@ const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
           mb: '10rem',
         }}
       >
-        <Button sx={{ width: '100%' }} type="submit" rounded={false}>
+        <Button
+          sx={{ width: '100%' }}
+          type="submit"
+          rounded={false}
+          // @ts-ignore
+          disabled={formHasErrors}
+        >
           Send Invite
         </Button>
       </div>
