@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import stc from 'string-to-color';
 
 import { fetcher } from 'src/services';
-import { ButtonLink } from 'src/components/ui';
+import { ButtonLink, Progress } from 'src/components/ui';
 import type { ISubject } from 'src/interfaces';
 
 type Props = {
@@ -22,29 +22,32 @@ const SubjectCard: React.FC<Props> = ({ subject }) => {
   const { slug, title, imageUrl } = subject;
 
   const {
-    data,
+    data: tasksData,
     // isLoading,
     // error,
     // } = useSWR<IStudentTask[]>('/api/v0/student/tasks', fetcher,);
   } = useSWR<PropsData[]>('/api/v0/student/tasks', fetcher);
 
   const percentageProgress = useMemo(() => {
-    const filterData = data?.filter(
+    if (!tasksData) {
+      return null;
+    }
+
+    const filterData = tasksData.filter(
       (task) => task.taskID.assignment.subject.slug === slug,
     );
-    const completed = filterData?.filter((task) => task.completed).length;
-    const total = filterData?.length;
-    const percentageString =
-      completed && total ? `${(completed / total) * 100}%` : '0%';
-    return percentageString;
-  }, [data, slug]);
+    const completed = filterData.filter((task) => task.completed).length;
+    const total = filterData.length;
+
+    return completed && total ? (completed / total) * 100 : 0;
+  }, [tasksData, slug]);
 
   return (
     <div
       sx={{
         display: 'grid',
         gridTemplateRows: '1fr 1fr',
-        width: '26rem',
+        width: '28rem',
         bg: 'muted',
       }}
     >
@@ -74,29 +77,20 @@ const SubjectCard: React.FC<Props> = ({ subject }) => {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          mt: 5,
+          justifyContent: 'center',
           p: 5,
         }}
       >
-        <div
+        <Progress
           sx={{
-            display: 'flex',
-            bg: 'white',
-            borderRadius: '8px',
-            overflow: 'hidden',
             mb: 4,
-          }}
-        >
-          <div
-            sx={{
+            mx: 'auto',
+            '& div': {
               bg: stc(subject),
-              height: '100%',
-              width: percentageProgress,
-            }}
-          >
-            <p>&nbsp;</p>
-          </div>
-        </div>
+            },
+          }}
+          value={percentageProgress}
+        />
         <div sx={{ display: 'flex', justifyContent: 'center', columnGap: 3 }}>
           <ButtonLink href={`./learn/${slug}/lessons`} rounded={false}>
             Lessons
