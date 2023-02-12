@@ -3,7 +3,7 @@
 exports[`<AlertDialog /> Snapshots should match snapshot 1`] = `
 .emotion-0 {
   background-color: var(--theme-ui-colors-primary);
-  color: white;
+  color: var(--theme-ui-colors-text);
   border: none;
   display: -webkit-box;
   display: -webkit-flex;
