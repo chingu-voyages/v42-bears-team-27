@@ -18,7 +18,7 @@ type Props = {
 const Spinner: React.FC<Props> = ({ svgProps }) => (
   <svg fill="none" viewBox="0 0 66 66" {...svgProps}>
     <circle
-      sx={{ color: 'muted' }}
+      sx={{ color: 'transparent' }}
       cx="33"
       cy="33"
       fill="none"
@@ -28,7 +28,7 @@ const Spinner: React.FC<Props> = ({ svgProps }) => (
     />
     <circle
       sx={{
-        color: 'primary',
+        color: 'accent',
         animation: `${animationKeyframe} 1.4s linear infinite`,
       }}
       cx="33"

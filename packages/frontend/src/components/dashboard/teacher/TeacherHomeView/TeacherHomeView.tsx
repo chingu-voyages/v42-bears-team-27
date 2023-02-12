@@ -13,9 +13,9 @@ const TeacherHomeView = () => {
   const authCtx = useContext(AuthContext);
 
   return (
-    <>
+    <div sx={{ py: 4, px: 5 }}>
       {authCtx?.user && (
-        <p sx={{ variant: 'text.h3', color: 'primary', textAlign: 'center' }}>
+        <p sx={{ variant: 'text.h3', textAlign: 'center' }}>
           {`Good Morning, ${(authCtx.user as ITeacher).title}.${
             (authCtx.user as ITeacher).surname
           }`}
@@ -47,7 +47,7 @@ const TeacherHomeView = () => {
         <TeacherCalendar />
         <StudentTable />
       </div>
-    </>
+    </div>
   );
 };
 

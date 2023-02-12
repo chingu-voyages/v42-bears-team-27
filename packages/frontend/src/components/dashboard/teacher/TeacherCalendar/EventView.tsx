@@ -33,11 +33,14 @@ const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 const containerStyles: ThemeUIStyleObject = {
   variant: 'text.label',
   position: 'relative',
-  height: 320,
-  color: 'primary',
-  border: '1px solid',
-  borderColor: 'gray',
-  p: 3,
+  minHeight: '20rem',
+  color: 'text',
+  p: 4,
+  bg: 'secondary',
+  borderTop: '3px solid',
+  borderColor: 'primary',
+  borderBottomRightRadius: 7,
+  borderBottomLeftRadius: 7,
 };
 
 type Props = {
@@ -290,12 +293,7 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
             ))}
         </div>
 
-        <div
-          sx={{
-            height: isEditMode ? '40%' : '62%',
-            overflowY: 'auto',
-          }}
-        >
+        <div sx={{ overflowY: 'auto' }}>
           {eventData?.tasks && eventData.tasks.length > 0 ? (
             eventData.tasks.map(({ _id, assignmentModel }) => (
               <TaskItem

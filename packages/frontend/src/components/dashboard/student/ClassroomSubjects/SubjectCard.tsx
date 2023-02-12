@@ -14,8 +14,8 @@ const containerStyles: ThemeUIStyleObject = {
   display: 'grid',
   gridTemplateRows: '1fr 1fr',
   width: '28rem',
-
   bg: 'muted',
+  borderRadius: 7,
 };
 
 type Props = {
@@ -79,7 +79,12 @@ const SubjectCard: React.FC<Props> = ({ subject }) => {
     <div sx={containerStyles}>
       <div sx={{ position: 'relative', height: '16rem' }}>
         <Image
-          sx={{ maxWidth: '100%', height: 'auto' }}
+          sx={{
+            maxWidth: '100%',
+            height: 'auto',
+            borderTopLeftRadius: 7,
+            borderTopRightRadius: 7,
+          }}
           src={imageUrl}
           alt={title}
           fill
@@ -91,7 +96,7 @@ const SubjectCard: React.FC<Props> = ({ subject }) => {
             position: 'absolute',
             bottom: 0,
             width: '100%',
-            color: 'white',
+            color: 'text',
             textAlign: 'center',
             bg: 'primary',
             p: 1,

@@ -12,19 +12,29 @@ export interface CalendarProps extends ReactCalenderProps {
 
 const resetStyles: ThemeUIStyleObject = {
   variant: 'text.link',
-  borderColor: 'gray',
+  color: 'text',
+  bg: 'secondary',
+  borderColor: 'primary',
+  '.react-calendar__navigation button': {
+    color: 'text',
+    '&:hover, &:focus': {
+      bg: 'secondaryShade',
+    },
+  },
   '.react-calendar__month-view__weekdays': {
     textTransform: 'none',
     '& abbr': {
       textDecoration: 'none',
     },
   },
-  '.react-calendar__month-view__days__day': {
-    color: 'primary',
-  },
-  '.react-calendar__month-view__days__day--neighboringMonth': {
-    color: 'gray',
-  },
+  '.react-calendar__month-view__days__day, .react-calendar__month-view__days__day--neighboringMonth':
+    {
+      color: 'text',
+      '&:not(.react-calendar__tile--active):not(.react-calendar__tile--now):hover':
+        {
+          bg: 'secondaryShade',
+        },
+    },
   '.react-calendar__month-view__days__day--weekend': {
     color: '#ff5c58',
   },

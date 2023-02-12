@@ -45,7 +45,27 @@ const TeacherCalendar: React.FC = () => {
   return (
     <div sx={containerStyles}>
       <Calendar
-        sx={{ width: '100%' }}
+        sx={{
+          width: '100%',
+          border: 'none',
+          borderTopRightRadius: 7,
+          borderTopLeftRadius: 7,
+          '.react-calendar__viewContainer, .react-calendar__month-view, .react-calendar__month-view > div':
+            {
+              height: 'inherit',
+            },
+          '.react-calendar__month-view > div > div': {
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            height: 'inherit',
+            p: 4,
+          },
+          '.react-calendar__tile:disabled': {
+            display: 'none',
+          },
+        }}
+        view="month"
         value={activeDay}
         onClickDay={changedActiveDayHandler}
       />

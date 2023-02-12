@@ -15,11 +15,11 @@ interface IPopulatedStudentTask extends Omit<IStudentTask, 'taskID'> {
 const containerStyles: ThemeUIStyleObject = {
   variant: 'text.label',
   position: 'relative',
-  height: 288,
-  color: 'primary',
-  border: '1px solid',
-  borderColor: 'gray',
+  minHeight: '18rem',
   p: 3,
+  bg: 'primary',
+  borderBottomRightRadius: 7,
+  borderBottomLeftRadius: 7,
 };
 
 type Props = {
