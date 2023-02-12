@@ -190,12 +190,35 @@ const StudentAppBar: React.FC = () => {
                       </IconButton>
                     </div>
                   </DialogTrigger>
-                  {/* TODO: Add display of notifications for student */}
                   <DialogContent
                     title="Notifications"
                     width={560}
                     height="min-content"
-                  />
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      pt: 3,
+                      pb: 5,
+                    }}
+                  >
+                    {inboxData?.map((message) => (
+                      <div
+                        key={message._id}
+                        sx={{
+                          varaint: 'text.h4',
+                          width: '95%',
+                          bg: 'info',
+                          color: 'black',
+                          borderRadius: 3,
+                          p: 3,
+                          my: 2,
+                        }}
+                      >
+                        {message.messageHeader}
+                      </div>
+                    ))}
+                  </DialogContent>
                 </Dialog>
               </li>
               <li>
