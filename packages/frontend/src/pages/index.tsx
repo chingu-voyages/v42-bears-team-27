@@ -21,24 +21,51 @@ const Landing: NextPageWithLayout = () => {
   }, [authCtx?.isLoggedIn]);
 
   return (
-    <>
+    <div
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignContent: 'center',
+        justifyItems: 'center',
+        minHeight: '100vh',
+      }}
+    >
       <LandingHeader />
-      <div sx={{ pt: 5, px: 2 }}>
-        <div sx={{ textAlign: 'center', mb: 4 }}>
+      <div
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          p: '3rem',
+        }}
+      >
+        <div
+          sx={{
+            aspectRatio: '5 / 3',
+            position: 'relative',
+            mb: '3rem',
+            color: 'primary',
+            boxShadow: '12px 12px 0 0 currentColor',
+            width: ['22rem', '30rem', '38rem', '44rem'],
+            mx: 'auto',
+          }}
+        >
           <Image
+            sx={{
+              maxWidth: '100%',
+              height: 'auto',
+            }}
             src={heroImg}
             alt="Boy working on school work with laptop and headphones"
-            width={560}
-            height={373}
+            fill
             priority
           />
         </div>
         <h2
           sx={{
             variant: 'text.h3',
-            width: 720,
+            maxWidth: '35ch',
             mx: 'auto',
-            color: 'primary',
             textAlign: 'center',
           }}
         >
@@ -46,7 +73,7 @@ const Landing: NextPageWithLayout = () => {
           Teachers
         </h2>
       </div>
-    </>
+    </div>
   );
 };
 

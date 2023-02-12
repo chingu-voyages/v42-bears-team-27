@@ -14,6 +14,7 @@ const LandingHeader: React.FC = () => (
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
+        columnGap: 4,
       }}
     >
       <h1
@@ -25,7 +26,15 @@ const LandingHeader: React.FC = () => (
       >
         RemoteClass
       </h1>
-      <div sx={{ display: 'flex', columnGap: 3 }}>
+
+      <div
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          gap: 3,
+        }}
+      >
         <Dialog>
           <DialogTrigger asChild>
             <Button>Login</Button>

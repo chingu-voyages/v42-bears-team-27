@@ -9,7 +9,6 @@ import {
   MdDarkMode,
   MdLightMode,
 } from 'react-icons/md';
-import { SlGraduation } from 'react-icons/sl';
 
 import {
   Button,
@@ -19,14 +18,12 @@ import {
   IconButton,
   Menu,
   MenuContent,
-  MenuItem,
   MenuRadioGroup,
   MenuRadioItem,
 } from 'src/components/ui';
 import type { IClassroom } from 'src/interfaces';
 import { AuthContext } from 'src/store/auth';
 import { fetcher } from 'src/services';
-import { ClassroomModal } from '../modals';
 
 const StudentAppBar: React.FC = () => {
   const authCtx = useContext(AuthContext);
@@ -57,7 +54,7 @@ const StudentAppBar: React.FC = () => {
 
   return (
     <>
-      <header sx={{ py: 3, px: 4, bg: 'muted' }}>
+      <header sx={{ py: 3, px: 4, bg: 'secondary', color: 'text' }}>
         <nav
           sx={{
             display: 'flex',
@@ -76,23 +73,18 @@ const StudentAppBar: React.FC = () => {
           >
             {heading}
           </p>
-          <div sx={{ display: ['none', 'flex', null], columnGap: 3 }}>
+          <div
+            sx={{
+              display: ['none', 'flex', null],
+              columnGap: 3,
+            }}
+          >
             <Menu
               ariaLabel="Notifications"
               icon={<MdOutlineNotifications size={32} />}
             >
               {/* TODO: Add display of notifications for student */}
               <MenuContent />
-            </Menu>
-            <Menu ariaLabel="Classroom" icon={<SlGraduation size={32} />}>
-              <MenuContent>
-                <MenuItem
-                  sx={{ display: 'flex', alignItems: 'center', columnGap: 3 }}
-                  asChild
-                >
-                  <ClassroomModal />
-                </MenuItem>
-              </MenuContent>
             </Menu>
             <Menu
               ariaLabel="Configuration"
@@ -125,7 +117,7 @@ const StudentAppBar: React.FC = () => {
             maxWidth: '75%',
             width: 320,
             height: '100vh',
-            bg: 'secondary',
+            bg: 'muted',
             zIndex: '10',
           }}
         >
@@ -159,7 +151,7 @@ const StudentAppBar: React.FC = () => {
                         cursor: 'pointer',
                         borderRadius: 6,
                         '&:hover': {
-                          bg: 'muted',
+                          bg: 'mutedShade',
                         },
                       }}
                     >
@@ -177,9 +169,6 @@ const StudentAppBar: React.FC = () => {
                   />
                 </Dialog>
               </li>
-              <li sx={{ '& > button': { mx: 'auto' } }}>
-                <ClassroomModal />
-              </li>
               <li>
                 <Dialog>
                   <DialogTrigger asChild>
@@ -192,7 +181,7 @@ const StudentAppBar: React.FC = () => {
                         cursor: 'pointer',
                         borderRadius: 6,
                         '&:hover': {
-                          bg: 'muted',
+                          bg: 'mutedShade',
                         },
                       }}
                     >
@@ -215,6 +204,7 @@ const StudentAppBar: React.FC = () => {
                     }}
                   >
                     <Button
+                      sx={{ color: 'text' }}
                       onClick={toggleColorModeHandler}
                       icon={
                         colorMode === 'light' ? <MdDarkMode /> : <MdLightMode />

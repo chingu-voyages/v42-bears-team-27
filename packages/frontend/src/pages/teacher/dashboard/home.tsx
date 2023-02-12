@@ -32,7 +32,13 @@ const Home: NextPageWithLayout = () => {
   }
 
   return (
-    <>
+    <div
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+      }}
+    >
       <TeacherNav
         heading={classroomData?.name ? `Classroom: ${classroomData.name}` : ''}
       />
@@ -41,7 +47,7 @@ const Home: NextPageWithLayout = () => {
       ) : (
         <TeacherHomeView />
       )}
-    </>
+    </div>
   );
 };
 

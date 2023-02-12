@@ -30,22 +30,24 @@ const TaskItem: React.FC<Props> = ({ task, completed }) => {
         alignItems: 'center',
         justifyContent: 'center',
         columnGap: 1,
-        width: '95%',
-        mx: 'auto',
       }}
     >
       <div
         sx={{
-          display: 'flex',
+          display: 'grid',
+          gridTemplateColumns: '2fr 3fr 1fr',
           alignItems: 'center',
           columnGap: 1,
+          maxWidth: '95%',
+          width: '30rem',
+          mx: 'auto',
         }}
       >
-        <p sx={{ width: 128 }}>
+        <p>
           {`${assignmentModel === 'Lesson' ? '🔵' : '🟡'} ${assignmentModel}:`}
         </p>
         <p>{`${subject.title} - ${topic}`}</p>
-        <div sx={{ width: 160, textAlign: 'center' }}>
+        <div sx={{ textAlign: 'center' }}>
           {!completed ? (
             <MdOutlineCheckBoxOutlineBlank size={24} />
           ) : (

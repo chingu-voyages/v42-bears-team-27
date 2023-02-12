@@ -82,7 +82,7 @@ const containerStyles: ThemeUIStyleObject = {
   my: 5,
   mx: 'auto',
   overflowY: 'auto',
-  bg: 'muted',
+  bg: 'secondary',
   border: '2px solid',
   borderColor: 'primary',
   borderRadius: 5,
