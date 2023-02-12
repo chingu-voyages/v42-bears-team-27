@@ -24,7 +24,7 @@ From this repo:
   # yarn
   $ yarn
   # npm
-  $ npm run install
+  $ npm i
 ```
 
 3.  Use the `populateDB.js` in script in the backend packages
