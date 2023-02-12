@@ -9,4 +9,3 @@ export * from './Menu';
 export * from './RadioGroup';
 export * from './Progress';
 export * from './AlertDialog';
-export * from './NotificationBadge';
