@@ -21,7 +21,6 @@ import {
   MenuItem,
   MenuRadioGroup,
   MenuRadioItem,
-  NotificationBadge,
 } from 'src/components/ui';
 import type { IClassroom, IMessageData } from 'src/interfaces';
 import { fetcher } from 'src/services';
@@ -79,16 +78,41 @@ const StudentAppBar: React.FC = () => {
               columnGap: 3,
             }}
           >
-            {newMessagesNumber && <NotificationBadge val={newMessagesNumber} />}
             <Menu
               ariaLabel="Notifications"
-              icon={<MdOutlineNotifications size={32} />}
+              icon={
+                <div
+                  sx={{
+                    '--alert': newMessagesNumber,
+                    position: 'relative',
+                    ...(newMessagesNumber && {
+                      '&::after': {
+                        variant: 'text.label',
+                        fontSize: 0,
+                        counterReset: 'alert var(--alert)',
+                        content: 'counter(alert)',
+                        display: 'block',
+                        position: 'absolute',
+                        top: '2px',
+                        right: '0.5px',
+                        width: 16,
+                        height: 16,
+                        bg: 'error',
+                        color: 'black',
+                        border: 'none',
+                        borderRadius: '50%',
+                      },
+                    }),
+                  }}
+                >
+                  <MdOutlineNotifications size={32} />
+                </div>
+              }
             >
               <MenuContent>
                 {inboxData?.map((message) => (
                   <MenuItem key={message._id}>{message.messageHeader}</MenuItem>
                 ))}
-                {/* TODO: Add display of notifications for student */}
               </MenuContent>
             </Menu>
             <Menu
