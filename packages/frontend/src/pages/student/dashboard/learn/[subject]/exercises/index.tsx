@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react';
-import { useContext } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -8,32 +7,19 @@ import Loader from 'src/components/common/Loader';
 import { StudentAppBar, StudentBottomNav } from 'src/components/dashboard/navs';
 import SubjectTopics from 'src/components/dashboard/student/SubjectTopics';
 import type { ISubject } from 'src/interfaces';
-import { AuthContext } from 'src/store/auth';
 import { fetcher } from 'src/services';
 import type { NextPageWithLayout } from 'src/pages/_app';
 
 const Exercises: NextPageWithLayout = () => {
   const { query } = useRouter();
 
-  const authCtx = useContext(AuthContext);
-
-  const {
-    data: subjectData,
-    isLoading,
-    error,
-  } = useSWR<ISubject[]>(
+  const { data: subjectData, isLoading } = useSWR<ISubject[]>(
     query ? `/api/v0/classroom/subjects?name=${query.subject}` : null,
     fetcher,
   );
 
   if (isLoading) {
     return <Loader>Loading Exercises...</Loader>;
-  }
-
-  if (error) {
-    // Assuming any error when fetching data means that user cookies have expired,
-    // therefore logout the user from the app since they're not authenticated
-    authCtx?.onLogout();
   }
 
   return (

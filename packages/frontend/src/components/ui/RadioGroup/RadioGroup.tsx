@@ -69,7 +69,7 @@ RadioProps & RefAttributes<HTMLButtonElement>
         }}
       />
     </RadioGroupPrimitive.Item>
-    <label sx={{ variant: 'text.label', color: 'primary' }} htmlFor={id}>
+    <label sx={{ variant: 'text.label' }} htmlFor={id}>
       {label}
     </label>
   </div>

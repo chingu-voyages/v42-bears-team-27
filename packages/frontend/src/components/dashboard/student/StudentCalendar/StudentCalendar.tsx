@@ -36,12 +36,21 @@ const StudentCalendar = () => {
   };
 
   return (
-    <div sx={{ maxWidth: '95%', width: [480, 544, 576, 640], mx: 'auto' }}>
+    <div
+      sx={{
+        maxWidth: '95%',
+        width: [480, 544, 576, 640],
+        mx: 'auto',
+      }}
+    >
       <Calendar
         sx={{
           width: '100%',
           height: 160,
           mx: 'auto',
+          border: 'none',
+          borderTopRightRadius: 7,
+          borderTopLeftRadius: 7,
           '.react-calendar__viewContainer, .react-calendar__month-view, .react-calendar__month-view > div':
             {
               height: 'inherit',

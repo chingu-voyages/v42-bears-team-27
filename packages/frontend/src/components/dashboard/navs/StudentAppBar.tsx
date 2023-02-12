@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useColorMode } from 'theme-ui';
 import useSWR from 'swr';
 import {
@@ -9,7 +9,6 @@ import {
   MdDarkMode,
   MdLightMode,
 } from 'react-icons/md';
-import { SlGraduation } from 'react-icons/sl';
 
 import {
   Button,
@@ -25,19 +24,15 @@ import {
   NotificationBadge,
 } from 'src/components/ui';
 import type { IClassroom, IMessageData } from 'src/interfaces';
-import { AuthContext } from 'src/store/auth';
 import { fetcher } from 'src/services';
-import { ClassroomModal } from '../modals';
 
 const StudentAppBar: React.FC = () => {
-  const authCtx = useContext(AuthContext);
-
-  const { data: classroomData, error } = useSWR<IClassroom>(
+  const { data: classroomData } = useSWR<IClassroom>(
     '/api/v0/classroom',
     fetcher,
   );
 
-  const { data: inboxData, error: inboxError } = useSWR<IMessageData[]>(
+  const { data: inboxData } = useSWR<IMessageData[]>(
     '/api/v0/student/inbox',
     fetcher,
   );
@@ -55,17 +50,11 @@ const StudentAppBar: React.FC = () => {
     setColorMode((prevState) => (prevState === 'light' ? 'dark' : 'light'));
   };
 
-  if (error) {
-    // Assuming any error when fetching data means that user cookies have expired,
-    // therefore logout the user from the app since they're not authenticated
-    authCtx?.onLogout();
-  }
-
   const heading = classroomData?.name ? `Classroom: ${classroomData.name}` : '';
 
   return (
     <>
-      <header sx={{ py: 3, px: 4, bg: 'muted' }}>
+      <header sx={{ py: 3, px: 4, bg: 'secondary', color: 'text' }}>
         <nav
           sx={{
             display: 'flex',
@@ -84,7 +73,12 @@ const StudentAppBar: React.FC = () => {
           >
             {heading}
           </p>
-          <div sx={{ display: ['none', 'flex', null], columnGap: 3 }}>
+          <div
+            sx={{
+              display: ['none', 'flex', null],
+              columnGap: 3,
+            }}
+          >
             {newMessagesNumber && <NotificationBadge val={newMessagesNumber} />}
             <Menu
               ariaLabel="Notifications"
@@ -95,16 +89,6 @@ const StudentAppBar: React.FC = () => {
                   <MenuItem key={message._id}>{message.messageHeader}</MenuItem>
                 ))}
                 {/* TODO: Add display of notifications for student */}
-              </MenuContent>
-            </Menu>
-            <Menu ariaLabel="Classroom" icon={<SlGraduation size={32} />}>
-              <MenuContent>
-                <MenuItem
-                  sx={{ display: 'flex', alignItems: 'center', columnGap: 3 }}
-                  asChild
-                >
-                  <ClassroomModal />
-                </MenuItem>
               </MenuContent>
             </Menu>
             <Menu
@@ -138,7 +122,7 @@ const StudentAppBar: React.FC = () => {
             maxWidth: '75%',
             width: 320,
             height: '100vh',
-            bg: 'secondary',
+            bg: 'muted',
             zIndex: '10',
           }}
         >
@@ -172,7 +156,7 @@ const StudentAppBar: React.FC = () => {
                         cursor: 'pointer',
                         borderRadius: 6,
                         '&:hover': {
-                          bg: 'muted',
+                          bg: 'mutedShade',
                         },
                       }}
                     >
@@ -190,9 +174,6 @@ const StudentAppBar: React.FC = () => {
                   />
                 </Dialog>
               </li>
-              <li sx={{ '& > button': { mx: 'auto' } }}>
-                <ClassroomModal />
-              </li>
               <li>
                 <Dialog>
                   <DialogTrigger asChild>
@@ -205,7 +186,7 @@ const StudentAppBar: React.FC = () => {
                         cursor: 'pointer',
                         borderRadius: 6,
                         '&:hover': {
-                          bg: 'muted',
+                          bg: 'mutedShade',
                         },
                       }}
                     >
@@ -228,6 +209,7 @@ const StudentAppBar: React.FC = () => {
                     }}
                   >
                     <Button
+                      sx={{ color: 'text' }}
                       onClick={toggleColorModeHandler}
                       icon={
                         colorMode === 'light' ? <MdDarkMode /> : <MdLightMode />

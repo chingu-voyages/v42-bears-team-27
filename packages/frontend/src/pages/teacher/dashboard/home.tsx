@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react';
-import { useContext } from 'react';
 import useSWR from 'swr';
 
 import AuthLayout from 'src/layouts/AuthLayout';
@@ -8,31 +7,27 @@ import { TeacherNav } from 'src/components/dashboard/navs';
 import ClassroomCreation from 'src/components/dashboard/teacher/ClassroomCreation';
 import TeacherHomeView from 'src/components/dashboard/teacher/TeacherHomeView';
 import type { IClassroom } from 'src/interfaces';
-import { AuthContext } from 'src/store/auth';
 import { fetcher } from 'src/services';
 import type { NextPageWithLayout } from 'src/pages/_app';
 
 const Home: NextPageWithLayout = () => {
-  const authCtx = useContext(AuthContext);
-
-  const {
-    data: classroomData,
-    isLoading,
-    error,
-  } = useSWR<IClassroom>('/api/v0/classroom', fetcher);
+  const { data: classroomData, isLoading } = useSWR<IClassroom>(
+    '/api/v0/classroom',
+    fetcher,
+  );
 
   if (isLoading) {
     return <Loader>Loading Dashboard...</Loader>;
   }
 
-  if (error) {
-    // Assuming any error when fetching data means that user cookies have expired,
-    // therefore logout the user from the app since they're not authenticated
-    authCtx?.onLogout();
-  }
-
   return (
-    <>
+    <div
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+      }}
+    >
       <TeacherNav
         heading={classroomData?.name ? `Classroom: ${classroomData.name}` : ''}
       />
@@ -41,7 +36,7 @@ const Home: NextPageWithLayout = () => {
       ) : (
         <TeacherHomeView />
       )}
-    </>
+    </div>
   );
 };
 

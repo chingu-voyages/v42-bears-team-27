@@ -9,6 +9,7 @@ import {
   Button,
 } from 'src/components/ui';
 import { StudentAppBar, StudentBottomNav } from 'src/components/dashboard/navs';
+import ClassroomModal from 'src/components/dashboard/modals/ClassroomModal';
 import { AuthContext } from 'src/store/auth';
 import type { NextPageWithLayout } from '../../_app';
 
@@ -26,30 +27,39 @@ const Profile: NextPageWithLayout = () => {
     >
       <StudentAppBar />
       <div sx={{ overflowY: 'auto' }}>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button sx={{ mx: 'auto' }} icon={<MdLogout />}>
-              Logout
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent
-            sx={{
-              textAlign: 'center',
-              py: 4,
-              '& button': {
-                mt: 4,
-              },
-              '& div': {
-                justifyContent: 'center !important',
-              },
-            }}
-            title="Are you sure you want to logout?"
-            description=""
-            width="32rem"
-            height="min-content"
-            onConfirm={() => authCtx?.onLogout()}
-          />
-        </AlertDialog>
+        <div
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            rowGap: 3,
+          }}
+        >
+          <AlertDialog>
+            <AlertDialogTrigger sx={{ color: 'text' }} asChild>
+              <Button icon={<MdLogout />}>Logout</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent
+              sx={{
+                textAlign: 'center',
+                py: 4,
+                '& button': {
+                  mt: 4,
+                },
+                '& div': {
+                  justifyContent: 'center !important',
+                },
+              }}
+              title="Are you sure you want to logout?"
+              description=""
+              width="32rem"
+              height="min-content"
+              onConfirm={() => authCtx?.onLogout()}
+            />
+          </AlertDialog>
+          <ClassroomModal />
+        </div>
       </div>
       <StudentBottomNav />
     </div>

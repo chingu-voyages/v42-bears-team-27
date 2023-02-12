@@ -140,5 +140,6 @@ export interface IClassroom {
 export interface IMessageData {
   _id: ID;
   messageID: ID;
+  messageHeader: string;
   hasBeenRead: boolean;
 }

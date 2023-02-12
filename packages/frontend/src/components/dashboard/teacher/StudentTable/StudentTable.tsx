@@ -34,8 +34,6 @@ const containerStyles: ThemeUIStyleObject = {
   width: [432, null, null, 480],
   height: 400,
   mt: [3, null, 0],
-  mr: [null, null, 3],
-  mx: [null, 'auto', null],
   border: '1px solid',
   borderColor: 'gray',
 };

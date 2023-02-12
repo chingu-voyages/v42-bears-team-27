@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import Image from 'next/image';
 import type { ThemeUIStyleObject } from 'theme-ui';
 import useSWR from 'swr';
@@ -7,15 +7,14 @@ import stc from 'string-to-color';
 import Loader from 'src/components/common/Loader';
 import { ButtonLink, Progress } from 'src/components/ui';
 import type { IStudentTask, ISubject } from 'src/interfaces';
-import { AuthContext } from 'src/store/auth';
 import { fetcher } from 'src/services';
 
 const containerStyles: ThemeUIStyleObject = {
   display: 'grid',
   gridTemplateRows: '1fr 1fr',
   width: '28rem',
-
   bg: 'muted',
+  borderRadius: 7,
 };
 
 type Props = {
@@ -25,13 +24,10 @@ type Props = {
 const SubjectCard: React.FC<Props> = ({ subject }) => {
   const { slug, title, imageUrl } = subject;
 
-  const authCtx = useContext(AuthContext);
-
-  const {
-    data: tasksData,
-    isLoading,
-    error,
-  } = useSWR<IStudentTask[]>('/api/v0/student/tasks', fetcher);
+  const { data: tasksData, isLoading } = useSWR<IStudentTask[]>(
+    '/api/v0/student/tasks',
+    fetcher,
+  );
 
   const percentageProgress = useMemo(() => {
     if (!tasksData) {
@@ -69,17 +65,16 @@ const SubjectCard: React.FC<Props> = ({ subject }) => {
     );
   }
 
-  if (error) {
-    // Assuming any error when fetching data means that user cookies have expired,
-    // therefore logout the user from the app since they're not authenticated
-    authCtx?.onLogout();
-  }
-
   return (
     <div sx={containerStyles}>
       <div sx={{ position: 'relative', height: '16rem' }}>
         <Image
-          sx={{ maxWidth: '100%', height: 'auto' }}
+          sx={{
+            maxWidth: '100%',
+            height: 'auto',
+            borderTopLeftRadius: 7,
+            borderTopRightRadius: 7,
+          }}
           src={imageUrl}
           alt={title}
           fill
@@ -91,7 +86,7 @@ const SubjectCard: React.FC<Props> = ({ subject }) => {
             position: 'absolute',
             bottom: 0,
             width: '100%',
-            color: 'white',
+            color: 'text',
             textAlign: 'center',
             bg: 'primary',
             p: 1,
