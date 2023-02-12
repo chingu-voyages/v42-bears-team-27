@@ -4,12 +4,15 @@ const {
   validateStudent,
   checkStudentAuthenticated,
   checkTeacherAuthenticated,
+  validateMarkMessageAsReadRequest,
   checkUserAuthenticated,
 } = require('../middlewares');
 
 const {
   createStudent,
   getStudent,
+  getStudentInbox,
+  markMessageAsRead,
   getStudentProfile,
   getStudentTasks,
   updateStudentTask,
@@ -23,6 +26,13 @@ router.post(
   createStudent,
 );
 router.get('/', checkStudentAuthenticated, getStudent);
+router.get('/inbox', checkStudentAuthenticated, getStudentInbox);
+router.post(
+  '/mark-message-as-read',
+  checkStudentAuthenticated,
+  validateMarkMessageAsReadRequest,
+  markMessageAsRead,
+);
 router.get('/profile/:id', checkUserAuthenticated, getStudentProfile);
 router.get('/tasks', checkStudentAuthenticated, getStudentTasks);
 router.put('/task', checkStudentAuthenticated, updateStudentTask);

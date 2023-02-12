@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+/* eslint-disable no-nested-ternary */
+import { useState, useMemo, useContext } from 'react';
 import type { ThemeUIStyleObject } from 'theme-ui';
 import useSWR from 'swr';
 import { isSameDay } from 'date-fns';
@@ -6,6 +7,8 @@ import { isSameDay } from 'date-fns';
 import { Calendar } from 'src/components/ui';
 import type { IEvent } from 'src/interfaces';
 import { fetcher } from 'src/services';
+import { AuthContext } from 'src/store/auth/auth-context';
+import { SocketContext } from 'src/store/socket/socket-context';
 import EventView from './EventView';
 
 const containerStyles: ThemeUIStyleObject = {
@@ -15,12 +18,20 @@ const containerStyles: ThemeUIStyleObject = {
 };
 
 const TeacherCalendar: React.FC = () => {
+  const authCtx = useContext(AuthContext);
+  const socketCtx = useContext(SocketContext);
+
   const { data: eventsData } = useSWR<IEvent[]>(
     '/api/v0/classroom/events',
     fetcher,
   );
 
   const [activeDay, setActiveDay] = useState<Date>(new Date());
+
+  socketCtx?.socket?.emit('user-logged-in', {
+    ...authCtx?.user,
+    role: authCtx?.role,
+  });
 
   const activeDayEventId = useMemo(() => {
     if (!eventsData) {

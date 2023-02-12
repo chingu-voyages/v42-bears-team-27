@@ -6,4 +6,5 @@ module.exports = {
   ...require('./validators/messageValidator'),
   ...require('./validators/directMessageValidator'),
   ...require('./validators/logInCredentialsValidator'),
+  ...require('./validators/markMessageAsReadRequestValidator'),
 };

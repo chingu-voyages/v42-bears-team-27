@@ -7,6 +7,7 @@ import NextProgress from 'next-progress';
 
 import ErrorBoundary from 'src/components/common/ErrorBoundary';
 import { AuthProvider } from 'src/store/auth';
+import { SocketProvider } from 'src/store/socket';
 import theme from '../theme';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -21,9 +22,9 @@ const App: React.FC<AppPropsWithLayout> = ({ Component, pageProps }) => {
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
-    <>
-      <NextProgress delay={300} options={{ showSpinner: false }} />
-      <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <SocketProvider>
+        <NextProgress delay={300} options={{ showSpinner: false }} />
         <AuthProvider>
           {getLayout(
             <ErrorBoundary>
@@ -31,8 +32,8 @@ const App: React.FC<AppPropsWithLayout> = ({ Component, pageProps }) => {
             </ErrorBoundary>,
           )}
         </AuthProvider>
-      </ThemeProvider>
-    </>
+      </SocketProvider>
+    </ThemeProvider>
   );
 };
 

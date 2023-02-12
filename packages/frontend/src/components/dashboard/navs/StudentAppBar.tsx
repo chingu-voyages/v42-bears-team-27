@@ -18,10 +18,11 @@ import {
   IconButton,
   Menu,
   MenuContent,
+  MenuItem,
   MenuRadioGroup,
   MenuRadioItem,
 } from 'src/components/ui';
-import type { IClassroom } from 'src/interfaces';
+import type { IClassroom, IMessageData } from 'src/interfaces';
 import { fetcher } from 'src/services';
 
 const StudentAppBar: React.FC = () => {
@@ -29,6 +30,13 @@ const StudentAppBar: React.FC = () => {
     '/api/v0/classroom',
     fetcher,
   );
+
+  const { data: inboxData } = useSWR<IMessageData[]>(
+    '/api/v0/student/inbox',
+    fetcher,
+  );
+
+  const newMessagesNumber = inboxData?.filter((msg) => !msg.hasBeenRead).length;
 
   const [colorMode, setColorMode] = useColorMode();
   const [showSidebar, setShowSidebar] = useState(false);
@@ -72,10 +80,40 @@ const StudentAppBar: React.FC = () => {
           >
             <Menu
               ariaLabel="Notifications"
-              icon={<MdOutlineNotifications size={32} />}
+              icon={
+                <div
+                  sx={{
+                    '--alert': newMessagesNumber,
+                    position: 'relative',
+                    ...(newMessagesNumber && {
+                      '&::after': {
+                        variant: 'text.label',
+                        fontSize: 0,
+                        counterReset: 'alert var(--alert)',
+                        content: 'counter(alert)',
+                        display: 'block',
+                        position: 'absolute',
+                        top: '2px',
+                        right: '0.5px',
+                        width: 16,
+                        height: 16,
+                        bg: 'error',
+                        color: 'black',
+                        border: 'none',
+                        borderRadius: '50%',
+                      },
+                    }),
+                  }}
+                >
+                  <MdOutlineNotifications size={32} />
+                </div>
+              }
             >
-              {/* TODO: Add display of notifications for student */}
-              <MenuContent />
+              <MenuContent>
+                {inboxData?.map((message) => (
+                  <MenuItem key={message._id}>{message.messageHeader}</MenuItem>
+                ))}
+              </MenuContent>
             </Menu>
             <Menu
               ariaLabel="Configuration"
@@ -152,12 +190,35 @@ const StudentAppBar: React.FC = () => {
                       </IconButton>
                     </div>
                   </DialogTrigger>
-                  {/* TODO: Add display of notifications for student */}
                   <DialogContent
                     title="Notifications"
                     width={560}
                     height="min-content"
-                  />
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      pt: 3,
+                      pb: 5,
+                    }}
+                  >
+                    {inboxData?.map((message) => (
+                      <div
+                        key={message._id}
+                        sx={{
+                          varaint: 'text.h4',
+                          width: '95%',
+                          bg: 'info',
+                          color: 'black',
+                          borderRadius: 3,
+                          p: 3,
+                          my: 2,
+                        }}
+                      >
+                        {message.messageHeader}
+                      </div>
+                    ))}
+                  </DialogContent>
                 </Dialog>
               </li>
               <li>
