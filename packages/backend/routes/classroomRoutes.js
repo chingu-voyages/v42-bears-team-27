@@ -31,7 +31,7 @@ router.get('/subjects', checkUserAuthenticated, getClassroomSubjects);
 router.get('/event/:id', checkUserAuthenticated, getClassroomEvent);
 router.get('/events', checkUserAuthenticated, getClassroomEvents);
 router.post('/events/create', checkTeacherAuthenticated, addClassroomEvent);
-router.get('/event/:id', checkTeacherAuthenticated, getClassroomEvent);
+router.put('/events/:id', checkTeacherAuthenticated, updateClassroomEvent);
 router.delete('/events/:id', checkTeacherAuthenticated, deleteClassroomEvent);
 
 router.get('/task/:id', checkUserAuthenticated, getTask);
