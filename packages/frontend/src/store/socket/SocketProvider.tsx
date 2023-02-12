@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { useSWRConfig } from 'swr';
 
 import { SocketContext, ISocketContext } from './socket-context';
 
@@ -8,6 +9,8 @@ type Props = {
 };
 
 const SocketProvider: React.FC<Props> = ({ children }) => {
+  const { mutate } = useSWRConfig();
+
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -30,6 +33,10 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
     socketIo.on('connect-error', () => {
       setIsConnected(false);
       setIsError(true);
+    });
+
+    socketIo.on('revalidate-notifications-endpoint', () => {
+      mutate('/api/v0/student/inbox');
     });
 
     socketIo.on('disconnect', () => {
