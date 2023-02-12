@@ -30,10 +30,7 @@ initializeSocketConnection(httpServer, corsOptions);
 // Database
 mongoose.set('strictQuery', false);
 mongoose
-  .connect(process.env.CONNECTION_STRING, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.CONNECTION_STRING)
   .then(() => {
     console.log('database connected!');
   })
