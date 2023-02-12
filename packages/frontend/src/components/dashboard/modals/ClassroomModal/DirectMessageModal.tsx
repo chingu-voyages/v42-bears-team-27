@@ -62,6 +62,8 @@ const DirectMessageModal: React.FC<Props> = ({ student, error, onSubmit }) => {
     onSubmit(data);
   };
 
+  const formHasErrors = enteredHeadlineHasErrors || enteredMessageHasErrors;
+
   return (
     <div
       sx={{
@@ -86,15 +88,17 @@ const DirectMessageModal: React.FC<Props> = ({ student, error, onSubmit }) => {
           id="headline"
           label="Headline"
           value={enteredHeadline}
+          autoFocus
+          required
           onChange={(e) => headlineChangedHandler(e.currentTarget.value)}
           onBlur={headlineBlurHandler}
-          autoFocus
         />
         <TextFieldArea
           sx={{ mb: 20, borderColor: enteredMessageHasErrors && 'warning' }}
           id="message"
           label="Message"
           value={enteredMessage}
+          required
           onChange={(e) => messageChangedHandler(e.currentTarget.value)}
           onBlur={messageBlurHandler}
         />
@@ -103,6 +107,8 @@ const DirectMessageModal: React.FC<Props> = ({ student, error, onSubmit }) => {
           type="submit"
           rounded={false}
           icon={<MdSend />}
+          // @ts-ignore
+          disabled={formHasErrors}
         >
           Send Message
         </Button>
