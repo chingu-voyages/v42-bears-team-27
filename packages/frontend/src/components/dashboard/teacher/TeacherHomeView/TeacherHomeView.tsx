@@ -25,7 +25,8 @@ const TeacherHomeView = () => {
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          columnGap: 3,
+          gap: 3,
+          flexWrap: 'wrap',
           mb: [4, null, 0],
         }}
       >
