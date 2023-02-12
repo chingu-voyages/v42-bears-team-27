@@ -136,3 +136,9 @@ export interface IClassroom {
   subjects: ID[];
   events: ID[];
 }
+
+export interface IMessageData {
+  _id: ID;
+  messageID: ID;
+  hasBeenRead: boolean;
+}
