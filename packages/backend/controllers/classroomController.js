@@ -78,11 +78,6 @@ const getClassroomSubjects = async (req, res) => {
       return res.status(400).json({ message: 'Classroom not found' });
     }
 
-    // NOTE: Student + Teacher need access to room
-    // if (!teacher._id.equals(teacherId)) {
-    //   return res.status(401).json({ message: 'Unauthorized access' });
-    // }
-
     let { subjects } = classroom;
 
     if (req.query.name) {
@@ -101,12 +96,17 @@ const getClassroomEvent = async (req, res) => {
   const { user } = res.locals;
   const { id: requestId } = req.params;
   try {
-    const classroom = await Classroom.findById(user.classroom);
+    // search by classroom to restrict search to only user's classroom
+    const classroom = await Classroom.findById(user.classroom).populate({
+      path: 'events',
+      populate: {
+        path: 'tasks',
+      },
+    });
     if (!classroom) {
       return res.status(400).json({ message: 'Classroom not found' });
     }
-    // TODO send only one request to DB & make sure event is inside user classroom
-    const event = await Event.findById(requestId).populate('tasks');
+    const event = classroom.events.find((e) => e._id.toString() === requestId);
     if (!event) return res.status(400).json({ message: 'event not found!' });
 
     return res.json(event);
