@@ -31,12 +31,14 @@ const Landing: NextPageWithLayout = () => {
             width={560}
             height={352}
             priority
+            sx={{
+              boxShadow: '12px 12px 0px 0px #30475Ebb',
+            }}
           />
         </div>
         <h2
           sx={{
             variant: 'text.h3',
-            width: 720,
             mx: 'auto',
             color: 'primary',
             textAlign: 'center',
