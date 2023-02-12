@@ -1,4 +1,4 @@
-import type { IClassroom, IEvent, ITask } from 'interfaces';
+import type { IClassroom, IEvent, IEventTask } from 'src/interfaces';
 
 // POST REQUESTS
 export const postClassroomEvent = (newEvent: Omit<IEvent, '_id' | 'tasks'>) =>
@@ -24,7 +24,7 @@ export const postClassroomEvent = (newEvent: Omit<IEvent, '_id' | 'tasks'>) =>
       throw error;
     });
 
-export const postClassroomTask = (newTask: Omit<ITask, '_id'>) =>
+export const postClassroomTask = (newTask: Omit<IEventTask, '_id'>) =>
   fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/classroom/tasks/create`, {
     method: 'POST',
     credentials: 'include',
