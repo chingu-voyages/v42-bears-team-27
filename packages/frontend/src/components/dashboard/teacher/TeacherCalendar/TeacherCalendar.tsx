@@ -1,5 +1,5 @@
-/* eslint-disable no-nested-ternary */
 import { useState, useMemo } from 'react';
+import type { ThemeUIStyleObject } from 'theme-ui';
 import useSWR from 'swr';
 import { isSameDay } from 'date-fns';
 
@@ -7,6 +7,14 @@ import { Calendar } from 'src/components/ui';
 import type { IEvent } from 'src/interfaces';
 import { fetcher } from 'src/services';
 import EventView from './EventView';
+
+const containerStyles: ThemeUIStyleObject = {
+  display: ['block', null, 'inline-block'],
+  maxWidth: '95%',
+  width: [480, 544, 576, 640],
+  ml: [null, null, 4],
+  mx: 'auto',
+};
 
 const TeacherCalendar: React.FC = () => {
   const { data: eventsData } = useSWR<IEvent[]>(
@@ -37,15 +45,7 @@ const TeacherCalendar: React.FC = () => {
   };
 
   return (
-    <div
-      sx={{
-        display: ['block', null, 'inline-block'],
-        maxWidth: '95%',
-        width: [480, 544, 576, 640],
-        ml: [null, null, 4],
-        mx: 'auto',
-      }}
-    >
+    <div sx={containerStyles}>
       <Calendar
         sx={{ width: '100%' }}
         value={activeDay}

@@ -1,38 +1,27 @@
-import { useContext, useState, useEffect } from 'react';
-import useSWR from 'swr';
-import { MdAdd } from 'react-icons/md';
+import { useState, useEffect } from 'react';
 
-import { fetcher } from 'src/services';
 import {
-  Avatar,
   Button,
   Dialog,
   DialogContent,
   DialogTrigger,
-  IconButton,
 } from 'src/components/ui';
 import type {
   INewStudentCredentials,
-  IClassroom,
   IStudent,
+  IDirectMessageStudent,
 } from 'src/interfaces';
-import { AuthContext } from 'src/store/auth';
-import { postCreateNewStudent } from 'src/services/student';
-import { extractStringInitials } from 'src/utils';
+import { postCreateNewStudent, postDirectMessageToStudent } from 'src/services';
 import NewStudentForm from './NewStudentForm';
 import StudentProfileModal from './StudentProfileModal';
 import DirectMessageModal from './DirectMessageModal';
+import TeacherClasroomView from './TeacherClasroomView';
 
 const ClassroomModal: React.FC = () => {
-  const authCtx = useContext(AuthContext);
-
   const [showForm, setShowForm] = useState('');
   const [selectStudent, setSelectStudent] = useState<IStudent | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<string | null>(null);
-
-  const { data } = useSWR<IClassroom>('/api/v0/classroom', fetcher);
-  const studentsData = data?.students;
 
   useEffect(() => {
     const timer = setTimeout(() => setAlert(null), 5000);
@@ -65,6 +54,23 @@ const ClassroomModal: React.FC = () => {
     }
   };
 
+  const sendMessageToStudentHandler = async (
+    newMessage: IDirectMessageStudent,
+  ) => {
+    try {
+      // Send message to student from teacher
+      const msg = await postDirectMessageToStudent(newMessage);
+      // Update alert with api response message
+      setAlert(msg);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
+
+      setError(`Unexpected error ${err}`);
+    }
+  };
+
   const modalTitle = () => {
     switch (showForm) {
       case 'newStudent':
@@ -77,22 +83,6 @@ const ClassroomModal: React.FC = () => {
         return 'Classroom';
     }
   };
-
-  if (!authCtx || !data) {
-    return (
-      <p
-        sx={{
-          variant: 'text.h3',
-          position: 'absolute',
-          top: '40%',
-          left: '50%',
-          translate: '-50% -50%',
-        }}
-      >
-        Loading Classroom...
-      </p>
-    );
-  }
 
   return (
     <Dialog>
@@ -110,7 +100,11 @@ const ClassroomModal: React.FC = () => {
       </DialogTrigger>
       <DialogContent title={modalTitle()} width="95%" height="90vh">
         <div
-          sx={{ color: 'primary', textAlign: 'center', variant: 'text.label' }}
+          sx={{
+            color: 'primary',
+            textAlign: 'center',
+            variant: 'text.label',
+          }}
         >
           {showForm === 'newStudent' && (
             <NewStudentForm
@@ -125,114 +119,21 @@ const ClassroomModal: React.FC = () => {
             />
           )}
           {showForm === 'directMessage' && (
-            <DirectMessageModal student={selectStudent} />
+            <DirectMessageModal
+              student={selectStudent as IStudent}
+              error={error}
+              onSubmit={sendMessageToStudentHandler}
+            />
           )}
-
           {showForm === '' && (
-            <>
-              <div>
-                <p sx={{ variant: 'text.h3', mt: 0, mb: 2 }}>Teacher</p>
-                <div
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <div
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Avatar
-                      width={64}
-                      height={64}
-                      alt={extractStringInitials(data.teacher.forename)}
-                    />
-                    <p
-                      sx={{ variant: 'text.h4' }}
-                    >{`${data.teacher.forename} ${data.teacher.surname}`}</p>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <p sx={{ variant: 'text.h3', mt: 1, mb: 3 }}>Students</p>
-                <div
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    columnGap: 3,
-                    flexWrap: 'wrap',
-                  }}
-                >
-                  {studentsData &&
-                    studentsData.map((student) => (
-                      <button
-                        key={student._id}
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          WebkitAppearance: 'none',
-                          borderRadius: 0,
-                          textAlign: 'inherit',
-                          background: 'none',
-                          boxShadow: 'none',
-                          padding: 0,
-                          cursor: 'pointer',
-                          border: 'none',
-                          color: 'inherit',
-                          font: 'inherit',
-                        }}
-                        type="button"
-                        onClick={() => {
-                          setSelectStudent(student);
-                          setShowForm('studentProfile');
-                        }}
-                      >
-                        <Avatar
-                          width={64}
-                          height={64}
-                          alt={extractStringInitials(student.forename)}
-                        />
-                        <p sx={{ variant: 'text.h4' }}>{student.forename}</p>
-                      </button>
-                    ))}
-                  {authCtx.role === 'teacher' && (
-                    <div
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <div
-                        sx={{
-                          width: 64,
-                          height: 64,
-                          p: 3,
-                          bg: 'gray',
-                          borderRadius: '50%',
-                        }}
-                      >
-                        <IconButton onClick={() => setShowForm('newStudent')}>
-                          <MdAdd sx={{ color: 'primary' }} size={32} />
-                        </IconButton>
-                      </div>
-                      <p sx={{ variant: 'text.h4' }}>&nbsp;</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </>
+            <TeacherClasroomView
+              onViewStudent={(student) => {
+                setSelectStudent(student);
+                setShowForm('studentProfile');
+              }}
+              onAddStudent={() => setShowForm('newStudent')}
+            />
           )}
-
           {alert && (
             <p sx={{ variant: 'text.h4', color: 'info', textAlign: 'center' }}>
               {alert}

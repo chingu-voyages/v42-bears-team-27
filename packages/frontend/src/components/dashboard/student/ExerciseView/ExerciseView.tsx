@@ -1,5 +1,6 @@
 import { useState, useReducer, useContext } from 'react';
 import { useRouter } from 'next/router';
+import type { ThemeUIStyleObject } from 'theme-ui';
 import useSWR from 'swr';
 
 import Loader from 'src/components/common/Loader';
@@ -74,6 +75,19 @@ function examineReducer(state: typeof initialExamineState, action: ACTIONTYPE) {
   return initialExamineState;
 }
 
+const containerStyles: ThemeUIStyleObject = {
+  maxWidth: '95%',
+  width: '60rem',
+  p: 3,
+  my: 5,
+  mx: 'auto',
+  overflowY: 'auto',
+  bg: 'muted',
+  border: '2px solid',
+  borderColor: 'primary',
+  borderRadius: 5,
+};
+
 type Props = {
   onExerciseComplete: () => void;
 };
@@ -135,7 +149,11 @@ const ExerciseView: React.FC<Props> = ({ onExerciseComplete }) => {
   };
 
   if (isLoading || !exerciseData) {
-    return <Loader>Loading Exercise...</Loader>;
+    return (
+      <div sx={{ position: 'relative', height: '30rem', ...containerStyles }}>
+        <Loader>Loading Exercise...</Loader>
+      </div>
+    );
   }
 
   if (error) {
@@ -145,20 +163,7 @@ const ExerciseView: React.FC<Props> = ({ onExerciseComplete }) => {
   }
 
   return (
-    <div
-      sx={{
-        maxWidth: '95%',
-        width: '60rem',
-        p: 3,
-        my: 5,
-        mx: 'auto',
-        overflowY: 'auto',
-        bg: 'muted',
-        border: '2px solid',
-        borderColor: 'primary',
-        borderRadius: 5,
-      }}
-    >
+    <div sx={containerStyles}>
       <h2 sx={{ variant: 'text.h3', textAlign: 'center', mb: 5 }}>
         {exerciseData.topic}
       </h2>
