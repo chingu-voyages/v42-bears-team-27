@@ -29,7 +29,7 @@ const Landing: NextPageWithLayout = () => {
             src={heroImg}
             alt="Boy working on school work with laptop and headphones"
             width={560}
-            height={352}
+            height={373}
             priority
           />
         </div>
