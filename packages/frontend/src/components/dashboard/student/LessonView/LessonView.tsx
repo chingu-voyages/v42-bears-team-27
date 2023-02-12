@@ -132,10 +132,16 @@ const LessonView: React.FC<Props> = ({ lessonId, onLessonEnd }) => {
           },
         }}
       >
-        <IconButton onClick={() => navigatePagesHandler(-1)}>
+        <IconButton
+          aria-label="Previous page"
+          onClick={() => navigatePagesHandler(-1)}
+        >
           <MdArrowBack size={32} />
         </IconButton>
-        <IconButton onClick={() => navigatePagesHandler(1)}>
+        <IconButton
+          aria-label="Next page"
+          onClick={() => navigatePagesHandler(1)}
+        >
           <MdArrowForward size={32} />
         </IconButton>
       </div>

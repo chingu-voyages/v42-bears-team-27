@@ -123,7 +123,10 @@ const TeacherClasroomView: React.FC<Props> = ({
                   borderRadius: '50%',
                 }}
               >
-                <IconButton onClick={onAddStudent}>
+                <IconButton
+                  aria-label="Invite student to classroom"
+                  onClick={onAddStudent}
+                >
                   <MdAdd sx={{ color: 'primary' }} size={32} />
                 </IconButton>
               </div>

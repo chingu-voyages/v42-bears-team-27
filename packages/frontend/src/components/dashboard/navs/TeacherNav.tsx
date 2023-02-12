@@ -65,11 +65,14 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
             {heading}
           </p>
           <div sx={{ display: ['none', 'flex', null], columnGap: 3 }}>
-            <Menu icon={<MdOutlineNotifications size={32} />}>
+            <Menu
+              ariaLabel="Notifications"
+              icon={<MdOutlineNotifications size={32} />}
+            >
               {/* TODO: Add display of notifications for teacher */}
               <MenuContent />
             </Menu>
-            <Menu icon={<MdOutlineAccountCircle size={32} />}>
+            <Menu ariaLabel="User" icon={<MdOutlineAccountCircle size={32} />}>
               <MenuContent>
                 <MenuItem
                   sx={{ display: 'flex', alignItems: 'center', columnGap: 3 }}
@@ -80,7 +83,10 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
                 </MenuItem>
               </MenuContent>
             </Menu>
-            <Menu icon={<MdOutlineSettings size={32} />}>
+            <Menu
+              ariaLabel="Configuration"
+              icon={<MdOutlineSettings size={32} />}
+            >
               <MenuContent>
                 <MenuRadioGroup
                   value={colorMode}

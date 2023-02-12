@@ -201,6 +201,7 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
       <Dialog>
         <DialogTrigger asChild>
           <IconButton
+            aria-label="Create task"
             onClick={() => {
               setError(null);
               setAlert(null);
