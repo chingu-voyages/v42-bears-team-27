@@ -35,11 +35,12 @@ const TeacherHomeView = () => {
       <div
         sx={{
           display: 'flex',
-          flexDirection: ['column', null, 'row'],
-          alignItems: ['center', 'start', 'center'],
-          justifyContent: 'space-between',
-          columnGap: 3,
+          flexDirection: ['column', 'row', 'row'],
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: [0, 20, '10%'],
           mt: [3, null, 4],
+          mx: [0, 20, 20],
         }}
       >
         <TeacherCalendar />

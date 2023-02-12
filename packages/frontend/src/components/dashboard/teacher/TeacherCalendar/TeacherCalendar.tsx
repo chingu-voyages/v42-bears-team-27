@@ -12,8 +12,6 @@ const containerStyles: ThemeUIStyleObject = {
   display: ['block', null, 'inline-block'],
   maxWidth: '95%',
   width: [480, 544, 576, 640],
-  ml: [null, null, 4],
-  mx: 'auto',
 };
 
 const TeacherCalendar: React.FC = () => {
