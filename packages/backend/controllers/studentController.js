@@ -1,6 +1,7 @@
 /* eslint spaced-comment: 0 */
 const Classroom = require('../models/classroomModel');
 const Student = require('../models/studentModel');
+const Message = require('../models/messageModel');
 const { generatePassword, sendEmail } = require('../utils');
 
 const createStudent = async (req, res) => {
@@ -99,7 +100,17 @@ const getStudent = async (_, res) => {
 const getStudentInbox = async (_, res) => {
   const { _id } = res.locals.user;
   const { inbox } = await Student.findById(_id);
-  return res.json(inbox);
+  const messageIDs = inbox.map((msg) => msg.messageID);
+  const allMessages = [];
+
+  await Promise.all(
+    messageIDs.map(async (id) => {
+      const msg = await Message.findById(id);
+      allMessages.push(msg);
+    }),
+  );
+
+  return res.status(200).json(allMessages);
 };
 
 const markMessageAsRead = async (req, res) => {
