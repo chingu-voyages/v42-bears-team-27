@@ -59,7 +59,10 @@ const TaskItem: React.FC<Props> = ({
         <p>{`${subject.title} - ${topic}`}</p>
       </div>
       {isEditMode && (
-        <IconButton onClick={() => onRemoveTask(taskId)}>
+        <IconButton
+          aria-label="Remove task"
+          onClick={() => onRemoveTask(taskId)}
+        >
           <BsEraser size={24} />
         </IconButton>
       )}

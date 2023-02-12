@@ -10,11 +10,19 @@ export interface MenuProps extends DropdownMenuPrimitive.DropdownMenuProps {
    */
   icon: React.ReactNode;
   sx?: ThemeUIStyleObject;
+  ariaLabel?: string;
 }
 
-export const Menu: React.FC<MenuProps> = ({ children, icon, sx, ...rest }) => (
+export const Menu: React.FC<MenuProps> = ({
+  children,
+  icon,
+  sx,
+  ariaLabel,
+  ...rest
+}) => (
   <DropdownMenuPrimitive.Root {...rest}>
     <DropdownMenuPrimitive.Trigger
+      aria-label={ariaLabel}
       sx={{ p: 0, bg: 'transparent', border: 'none', ...sx }}
     >
       <div

@@ -201,6 +201,7 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
       <Dialog>
         <DialogTrigger asChild>
           <IconButton
+            aria-label="Create task"
             onClick={() => {
               setError(null);
               setAlert(null);
@@ -237,6 +238,7 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
       >
         {eventData && !isEditMode && (
           <IconButton
+            aria-label="Edit event"
             sx={{ position: 'absolute', top: '20px', right: 3 }}
             onClick={() => setIsEditMode(true)}
           >
@@ -277,6 +279,7 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
                   />
                 </label>
                 <IconButton
+                  aria-label="Update event"
                   sx={{ position: 'absolute', top: '20px', right: 3 }}
                   // @ts-ignore
                   type="submit"

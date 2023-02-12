@@ -73,7 +73,10 @@ DialogContentProps & RefAttributes<HTMLDivElement>
         </DialogPrimitive.Description>
         {children}
         <DialogPrimitive.Close asChild>
-          <IconButton sx={{ position: 'absolute', top: 4, right: 4 }}>
+          <IconButton
+            aria-label="close"
+            sx={{ position: 'absolute', top: 4, right: 4 }}
+          >
             <MdClose size={32} />
           </IconButton>
         </DialogPrimitive.Close>

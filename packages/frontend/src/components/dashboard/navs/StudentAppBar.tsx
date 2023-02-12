@@ -77,11 +77,14 @@ const StudentAppBar: React.FC = () => {
             {heading}
           </p>
           <div sx={{ display: ['none', 'flex', null], columnGap: 3 }}>
-            <Menu icon={<MdOutlineNotifications size={32} />}>
+            <Menu
+              ariaLabel="Notifications"
+              icon={<MdOutlineNotifications size={32} />}
+            >
               {/* TODO: Add display of notifications for student */}
               <MenuContent />
             </Menu>
-            <Menu icon={<SlGraduation size={32} />}>
+            <Menu ariaLabel="Classroom" icon={<SlGraduation size={32} />}>
               <MenuContent>
                 <MenuItem
                   sx={{ display: 'flex', alignItems: 'center', columnGap: 3 }}
@@ -91,7 +94,10 @@ const StudentAppBar: React.FC = () => {
                 </MenuItem>
               </MenuContent>
             </Menu>
-            <Menu icon={<MdOutlineSettings size={32} />}>
+            <Menu
+              ariaLabel="Configuration"
+              icon={<MdOutlineSettings size={32} />}
+            >
               <MenuContent>
                 <MenuRadioGroup
                   value={colorMode}
@@ -104,7 +110,7 @@ const StudentAppBar: React.FC = () => {
             </Menu>
           </div>
           <div sx={{ display: [null, 'none', null], columnGap: 3 }}>
-            <IconButton onClick={toggleSidebarHandler}>
+            <IconButton aria-label="Open menu" onClick={toggleSidebarHandler}>
               <MdOutlineMenu size={32} />
             </IconButton>
           </div>
@@ -123,7 +129,7 @@ const StudentAppBar: React.FC = () => {
           }}
         >
           <div sx={{ position: 'absolute', top: 3, right: 3 }}>
-            <IconButton onClick={toggleSidebarHandler}>
+            <IconButton aria-label="Close menu" onClick={toggleSidebarHandler}>
               <MdOutlineClose size={32} />
             </IconButton>
           </div>
