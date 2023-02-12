@@ -99,7 +99,7 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
             </Menu>
           </div>
           <div sx={{ display: [null, 'none', null], columnGap: 3 }}>
-            <IconButton onClick={toggleSidebarHandler}>
+            <IconButton aria-label="Open menu" onClick={toggleSidebarHandler}>
               <MdOutlineMenu size={32} />
             </IconButton>
           </div>
@@ -119,7 +119,7 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
           }}
         >
           <div sx={{ position: 'absolute', top: 3, right: 3 }}>
-            <IconButton onClick={toggleSidebarHandler}>
+            <IconButton aria-label="Close menu" onClick={toggleSidebarHandler}>
               <MdOutlineClose size={32} />
             </IconButton>
           </div>
