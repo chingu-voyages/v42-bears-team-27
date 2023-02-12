@@ -22,8 +22,9 @@ import {
   MenuItem,
   MenuRadioGroup,
   MenuRadioItem,
+  NotificationBadge,
 } from 'src/components/ui';
-import type { IClassroom } from 'src/interfaces';
+import type { IClassroom, IMessageData } from 'src/interfaces';
 import { AuthContext } from 'src/store/auth';
 import { fetcher } from 'src/services';
 import { ClassroomModal } from '../modals';
@@ -35,6 +36,13 @@ const StudentAppBar: React.FC = () => {
     '/api/v0/classroom',
     fetcher,
   );
+
+  const { data: inboxData, error: inboxError } = useSWR<IMessageData[]>(
+    '/api/v0/student/inbox',
+    fetcher,
+  );
+
+  const newMessagesNumber = inboxData?.filter((msg) => !msg.hasBeenRead).length;
 
   const [colorMode, setColorMode] = useColorMode();
   const [showSidebar, setShowSidebar] = useState(false);
@@ -77,12 +85,17 @@ const StudentAppBar: React.FC = () => {
             {heading}
           </p>
           <div sx={{ display: ['none', 'flex', null], columnGap: 3 }}>
+            {newMessagesNumber && <NotificationBadge val={newMessagesNumber} />}
             <Menu
               ariaLabel="Notifications"
               icon={<MdOutlineNotifications size={32} />}
             >
-              {/* TODO: Add display of notifications for student */}
-              <MenuContent />
+              <MenuContent>
+                {inboxData?.map((message) => (
+                  <MenuItem key={message._id}>{message.messageHeader}</MenuItem>
+                ))}
+                {/* TODO: Add display of notifications for student */}
+              </MenuContent>
             </Menu>
             <Menu ariaLabel="Classroom" icon={<SlGraduation size={32} />}>
               <MenuContent>
