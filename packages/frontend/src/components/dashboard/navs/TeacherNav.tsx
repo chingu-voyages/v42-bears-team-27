@@ -51,7 +51,7 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: !heading ? 'flex-end' : 'space-between',
-            height: 48,
+            minHeight: 48,
           }}
         >
           <p
