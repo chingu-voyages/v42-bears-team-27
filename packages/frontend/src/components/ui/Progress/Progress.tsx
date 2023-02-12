@@ -9,8 +9,9 @@ export interface ProgressProps extends ProgressPrimitive.ProgressProps {
 
 export const Progress: ForwardRefExoticComponent<
 ProgressProps & RefAttributes<HTMLDivElement>
-> = forwardRef(({ value, sx, ...rest }) => (
+> = forwardRef(({ value, sx, ...rest }, ref) => (
   <ProgressPrimitive.Root
+    ref={ref}
     value={value}
     sx={{
       position: 'relative',

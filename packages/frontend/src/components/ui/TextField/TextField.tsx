@@ -37,6 +37,7 @@ export interface TextFieldProps extends HTMLAttributes<HTMLInputElement> {
   sx?: ThemeUIStyleObject;
   value?: string;
   required?: boolean;
+  autoFocus?: boolean;
 }
 
 export const TextField: ForwardRefExoticComponent<

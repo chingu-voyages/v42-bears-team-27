@@ -7,9 +7,15 @@ const TeacherSchema = new mongoose.Schema(
     title: {
       type: String,
     },
-    fullName: {
+    forename: {
       type: String,
       required: true,
+      trim: true,
+    },
+    surname: {
+      type: String,
+      required: true,
+      trim: true,
     },
     email: {
       type: String,

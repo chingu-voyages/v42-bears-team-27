@@ -19,7 +19,8 @@ const loginTeacher = async (req, res) => {
       .json({
         _id: user._id,
         title: user.title,
-        fullName: user.fullName,
+        forename: user.forename,
+        surname: user.surname,
       });
   });
 };
@@ -45,7 +46,8 @@ const loginStudent = async (req, res) => {
       .status(200)
       .json({
         _id: user._id,
-        fullName: user.fullName,
+        forename: user.forename,
+        surname: user.surname,
       });
   });
 };

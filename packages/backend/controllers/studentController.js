@@ -4,11 +4,12 @@ const Student = require('../models/studentModel');
 const { generatePassword, sendEmail } = require('../utils');
 
 const createStudent = async (req, res) => {
-  /*  fullName: 'LastName, FirstName',
+  /*  forename: 'FirstName',
+      surname: 'LastName',
       email: '123@123.com,
       From Teacher Auth:
       classroom: '63c339704aa8be1b4851e7b5'  */
-  const { fullName, email } = req.body;
+  const { forename, surname, email } = req.body;
   const { classroom } = res.locals.user;
   const password = generatePassword(6);
   const hashedPassword = await Student.hashPassword(password);
@@ -22,14 +23,17 @@ const createStudent = async (req, res) => {
     }
 
     const newStudent = await Student.create({
-      fullName,
+      forename,
+      surname,
       email,
       password: hashedPassword,
       classroom,
     });
 
     // Add Student to classroom collection DB
-    const studentClassroom = await Classroom.findById(classroom);
+    const studentClassroom = await Classroom.findById(classroom).populate(
+      'events',
+    );
     if (!studentClassroom) {
       return res.status(400).json({
         message: 'classroom not found',
@@ -38,8 +42,18 @@ const createStudent = async (req, res) => {
     studentClassroom.students.push(newStudent._id);
     await studentClassroom.save();
 
+    // Add existing tasks to Student
+    const studentTasks = [];
+    studentClassroom.events.map((event) =>
+      event.tasks.map((task) =>
+        studentTasks.push({ taskID: task, event: event._id }),
+      ),
+    );
+    newStudent.tasks = studentTasks;
+    await newStudent.save();
+
+    // Send email to student with the password
     if (process.env.NODE_ENV === 'production') {
-      // send email to student with the password
       const content = () => /*html*/ `You have been registered into
             Remote Class! Please use your email and this password to
             login.<br>Password: ${password}`;
@@ -52,7 +66,8 @@ const createStudent = async (req, res) => {
         .then(() =>
           res.status(201).json({
             message: 'Created Successfully',
-            fullName,
+            forename,
+            surname,
           }),
         )
         .catch((err) => res.status(400).json({ message: err }));
@@ -60,7 +75,8 @@ const createStudent = async (req, res) => {
     // development code:
     return res.status(201).json({
       message: 'Created Successfully',
-      fullName,
+      forename,
+      surname,
       password,
     });
   } catch (err) {
@@ -70,11 +86,13 @@ const createStudent = async (req, res) => {
 
 // To check if still authenticated when continuing the session
 const getStudent = async (_, res) => {
-  const { _id, fullName, inbox } = res.locals.user;
+  const { _id, forename, surname, inbox, tasks } = res.locals.user;
   return res.json({
     _id,
-    fullName,
+    forename,
+    surname,
     inbox,
+    tasks,
   });
 };
 
@@ -115,8 +133,123 @@ const markMessageAsRead = async (req, res) => {
     });
 };
 
+const getStudentProfile = async (req, res) => {
+  const { id: studentId } = req.params;
+  try {
+    const student = await Student.findById(studentId).populate({
+      path: 'tasks',
+      populate: {
+        path: 'taskID',
+        populate: {
+          path: 'assignment',
+          populate: 'subject',
+        },
+      },
+    });
+    if (!student) {
+      return res.status(400).json({
+        message: 'student not found',
+      });
+    }
+
+    const timeSpent = {};
+    const points = {};
+    student.tasks.map(async (task) => {
+      // Calculate timeSpent
+      if (task.timeSpent > 0) {
+        if (!timeSpent[task.taskID.assignment.subject.title]) {
+          timeSpent[task.taskID.assignment.subject.title] = task.timeSpent;
+        } else {
+          timeSpent[task.taskID.assignment.subject.title] += task.timeSpent;
+        }
+      }
+      // Calculate points
+      if (task.completed) {
+        if (!points[task.taskID.assignment.subject.title]) {
+          points[task.taskID.assignment.subject.title] =
+            task.taskID.assignment.points;
+        } else {
+          points[task.taskID.assignment.subject.title] +=
+            task.taskID.assignment.points;
+        }
+      }
+
+      return null;
+    });
+
+    return res.json({
+      _id: studentId,
+      timeSpent,
+      points,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+};
+
+const getStudentTasks = async (req, res) => {
+  const { user } = res.locals;
+  try {
+    const student = await Student.findById(user._id).populate({
+      path: 'tasks',
+      populate: {
+        path: 'taskID',
+        populate: {
+          path: 'assignment',
+          populate: 'subject',
+        },
+      },
+    });
+    // Check if student exists
+    if (!student) {
+      return res.status(400).json({ message: 'Student not found' });
+    }
+
+    let { tasks } = student;
+
+    if (req.query.eventID) {
+      // If eventID is provided in query then filter out tasks only for that event
+      tasks = student.tasks.filter(
+        (task) => task.event.valueOf() === req.query.eventID,
+      );
+    }
+
+    return res.json(tasks);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
+const updateStudentTask = async (req, res) => {
+  const { user } = res.locals;
+  const { task: taskId, addTime, completed } = req.body;
+  try {
+    const student = await Student.findById(user._id);
+    // Check if student exists
+    if (!student) {
+      return res.status(400).json({ message: 'Student not found' });
+    }
+    if (taskId) {
+      student.tasks.find((x) => x.taskID.toString() === taskId).timeSpent +=
+        addTime;
+    }
+    if (typeof completed !== 'undefined') {
+      student.tasks.find((x) => x.taskID.toString() === taskId).completed =
+        completed;
+    }
+    await student.save();
+
+    return res.json({ message: 'Student task updated!' });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
 module.exports = {
   createStudent,
   getStudent,
   markMessageAsRead,
+  getStudentProfile,
+  getStudentTasks,
+  updateStudentTask,
 };

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import useSWR from 'swr';
 import {
   createColumnHelper,
@@ -6,59 +7,78 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
-import type { IStudent } from 'src/interfaces';
+import type { IClassroom } from 'src/interfaces';
 import { fetcher } from 'src/services';
-
-// const DUMMY_STUDENTS_DATA: IStudent[] = [
-//   {
-//     id: '0',
-//     fullName: 'Smith, Lucas',
-//     tasks: 2,
-//   },
-//   {
-//     id: '2',
-//     fullName: 'Adams, John',
-//     tasks: 1,
-//   },
-// ];
+import Loader from 'src/components/common/Loader';
+import { ThemeUIStyleObject } from 'theme-ui';
 
 const columnHelper = createColumnHelper<any>();
 
+// TODO add sorting by Surname
 const columns = [
-  columnHelper.accessor('fullName', {
-    header: () => 'Full Name',
+  columnHelper.accessor('surname', {
+    header: () => 'Surname',
     cell: (info) => info.renderValue(),
   }),
-  columnHelper.accessor('tasks', {
+  columnHelper.accessor('forename', {
+    header: () => 'Forename',
+    cell: (info) => info.renderValue(),
+  }),
+  columnHelper.accessor('numberTasks', {
     header: () => 'Tasks',
     cell: (info) => info.renderValue(),
   }),
 ];
 
+const containerStyles: ThemeUIStyleObject = {
+  width: [432, null, null, 480],
+  height: 400,
+  mt: [3, null, 0],
+  mr: [null, null, 3],
+  mx: [null, 'auto', null],
+  border: '1px solid',
+  borderColor: 'gray',
+};
+
 const StudentTable: React.FC = () => {
-  const { data: studentsData } = useSWR<IStudent[]>(
-    '/api/v0/classroom/students',
+  const { data: classroomData, isLoading } = useSWR<IClassroom>(
+    '/api/v0/classroom',
     fetcher,
   );
 
+  const studentsData = useMemo(() => {
+    if (!classroomData) {
+      return [];
+    }
+
+    return [...classroomData.students].map((student) => {
+      const numberOfTaskUncompleted = student.tasks.filter(
+        (task) => task.completed === false,
+      ).length;
+
+      return {
+        ...student,
+        numberTasks: numberOfTaskUncompleted,
+      };
+    });
+  }, [classroomData]);
+
   const table = useReactTable({
-    data: studentsData || [],
+    data: studentsData,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
+  if (isLoading) {
+    return (
+      <div sx={{ position: 'relative', ...containerStyles }}>
+        <Loader>Loading Table...</Loader>
+      </div>
+    );
+  }
+
   return (
-    <div
-      sx={{
-        width: [432, null, null, 480],
-        height: 400,
-        mt: [3, null, 0],
-        mr: [null, null, 3],
-        mx: [null, 'auto', null],
-        border: '1px solid',
-        borderColor: 'gray',
-      }}
-    >
+    <div sx={containerStyles}>
       <table sx={{ width: '100%', height: '50%', borderCollapse: 'collapse' }}>
         <thead sx={{ py: 2, px: 3, bg: 'primary' }}>
           {table.getHeaderGroups().map((headerGroup) => (

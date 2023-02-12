@@ -5,15 +5,19 @@ const {
   checkStudentAuthenticated,
   checkTeacherAuthenticated,
   validateMarkMessageAsReadRequest,
+  checkUserAuthenticated,
 } = require('../middlewares');
 
 const {
   createStudent,
   getStudent,
   markMessageAsRead,
+  getStudentProfile,
+  getStudentTasks,
+  updateStudentTask,
 } = require('../controllers/studentController');
 
-// "http://localhost:5000/api/v0/student/create"
+// "http://localhost:5000/api/v0/student"
 router.post(
   '/create',
   checkTeacherAuthenticated,
@@ -27,5 +31,8 @@ router.post(
   validateMarkMessageAsReadRequest,
   markMessageAsRead,
 );
+router.get('/profile/:id', checkUserAuthenticated, getStudentProfile);
+router.get('/tasks', checkStudentAuthenticated, getStudentTasks);
+router.put('/task', checkStudentAuthenticated, updateStudentTask);
 
 module.exports = router;

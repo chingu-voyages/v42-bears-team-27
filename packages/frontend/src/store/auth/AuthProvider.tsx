@@ -5,7 +5,7 @@ import { useLocalstorageState } from 'src/hooks';
 import {
   postCreateNewTeacher,
   postLoginExistingUser,
-  postLogoutExistingUser,
+  logoutExistingUser,
 } from 'src/services';
 import type { IAuthContext, User, UserRole } from './auth-context';
 import { AuthContext } from './auth-context';
@@ -69,7 +69,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
 
   const logoutHandler = async () => {
     // NOTE: Can add feedback whether or not logout wsa successful
-    await postLogoutExistingUser();
+    await logoutExistingUser();
     setUser(null);
     setRole(null);
     setIsLoggedIn(false);

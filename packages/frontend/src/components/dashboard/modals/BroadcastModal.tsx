@@ -53,6 +53,13 @@ const BroadcastModal: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<string | null>(null);
 
+  useEffect(() => {
+    const timer = setTimeout(() => setAlert(null), 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [alert]);
+
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -82,23 +89,20 @@ const BroadcastModal: React.FC = () => {
     }
   };
 
-  // TODO: The following warnings are not very helpful because they appear only once
-  useEffect(() => {
-    if (enteredHeadlineHasErrors) {
-      setAlert('WARNING: Headline input has errors');
-    }
-  }, [enteredHeadlineHasErrors]);
-
-  useEffect(() => {
-    if (enteredMessageHasErrors) {
-      setAlert('WARNING: Message input has errors');
-    }
-  }, [enteredMessageHasErrors]);
+  const formHasErrors = enteredHeadlineHasErrors || enteredMessageHasErrors;
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outlined">Broadcast Message</Button>
+        <Button
+          onClick={() => {
+            setError(null);
+            setAlert(null);
+          }}
+          variant="outlined"
+        >
+          Broadcast Message
+        </Button>
       </DialogTrigger>
       <DialogContent
         title="Send Message to your Classroom"
@@ -126,11 +130,12 @@ const BroadcastModal: React.FC = () => {
             <TextField
               sx={{
                 mb: 20,
-                borderColor: enteredHeadlineHasErrors ? 'red' : 'gray',
+                borderColor: enteredHeadlineHasErrors && 'warning',
               }}
               id="headline"
               label="Headline"
               value={enteredHeadline}
+              required
               onChange={(e) => {
                 setAlert(null);
                 headlineChangedHandler(e.currentTarget.value);
@@ -139,12 +144,13 @@ const BroadcastModal: React.FC = () => {
             />
             <TextFieldArea
               sx={{
-                pb: 20,
-                borderColor: enteredMessageHasErrors ? 'red' : 'gray',
+                mb: 20,
+                borderColor: enteredMessageHasErrors && 'warning',
               }}
               id="message"
               label="Message"
               value={enteredMessage}
+              required
               onChange={(e) => {
                 setAlert(null);
                 messageChangedHandler(e.currentTarget.value);
@@ -156,6 +162,8 @@ const BroadcastModal: React.FC = () => {
               type="submit"
               rounded={false}
               icon={<MdSend />}
+              // @ts-ignore
+              disabled={formHasErrors}
             >
               Send Message
             </Button>

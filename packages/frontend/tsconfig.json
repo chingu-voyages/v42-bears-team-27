@@ -17,11 +17,7 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "interfaces": ["src/interfaces"],
-      "test-utils": ["test/test-utils"],
-      "components/*": ["src/components/*"],
-      "layouts/*": ["src/layouts/*"],
-      "store/*": ["src/store/*"]
+      "test-utils": ["test/test-utils"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

@@ -1,6 +1,9 @@
 const router = require('express').Router();
 
-const { checkTeacherAuthenticated } = require('../middlewares');
+const {
+  checkTeacherAuthenticated,
+  checkUserAuthenticated,
+} = require('../middlewares');
 
 const {
   getClassroom,
@@ -12,21 +15,29 @@ const {
   addClassroomEvent,
   updateClassroomEvent,
   deleteClassroomEvent,
+  getTask,
+  addTask,
+  // updateTask,
+  deleteTask,
 } = require('../controllers/classroomController');
 
-router.get('/', checkTeacherAuthenticated, getClassroom);
-
-router.get('/', checkTeacherAuthenticated, getClassroom);
+// "http://localhost:5000/api/v0/classroom"
+router.get('/', checkUserAuthenticated, getClassroom);
 router.put('/', checkTeacherAuthenticated, updateClassroom);
 router.delete('/', checkTeacherAuthenticated, deleteClassroom);
 
-router.get('/subjects', checkTeacherAuthenticated, getClassroomSubjects);
+router.get('/subjects', checkUserAuthenticated, getClassroomSubjects);
 
-router.get('/events', checkTeacherAuthenticated, getClassroomEvents);
-
+router.get('/event/:id', checkUserAuthenticated, getClassroomEvent);
+router.get('/events', checkUserAuthenticated, getClassroomEvents);
 router.post('/events/create', checkTeacherAuthenticated, addClassroomEvent);
 router.get('/event/:id', checkTeacherAuthenticated, getClassroomEvent);
 router.put('/events/:id', checkTeacherAuthenticated, updateClassroomEvent);
 router.delete('/events/:id', checkTeacherAuthenticated, deleteClassroomEvent);
+
+router.get('/task/:id', checkUserAuthenticated, getTask);
+router.post('/tasks/create', checkTeacherAuthenticated, addTask);
+// router.put('/tasks/:id', checkTeacherAuthenticated, updateTask);
+router.delete('/tasks/:id', checkTeacherAuthenticated, deleteTask);
 
 module.exports = router;

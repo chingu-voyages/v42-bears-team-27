@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
@@ -17,32 +17,13 @@ const AuthLayout: React.FC<LayoutProps> = ({
 }) => {
   const router = useRouter();
   const authCtx = useContext(AuthContext);
-  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     if (!authCtx?.isLoggedIn) {
       router.replace('/');
-    } else {
-      setIsMounted(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authCtx?.isLoggedIn]);
-
-  if (!isMounted) {
-    return (
-      <p
-        sx={{
-          variant: 'text.h3',
-          position: 'absolute',
-          top: '40%',
-          left: '50%',
-          translate: '-50% -50%',
-        }}
-      >
-        Loading...
-      </p>
-    );
-  }
 
   return (
     <>

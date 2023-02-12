@@ -1,58 +1,84 @@
 import { useState, useMemo } from 'react';
+import useSWR from 'swr';
 
-import { Button } from 'src/components/ui';
-import type { ISubject, ITask, ITopic } from 'src/interfaces';
-import { titleCase } from 'src/utils';
+import Loader from 'src/components/common/Loader';
+import { Button, Radio, RadioGroup } from 'src/components/ui';
+import type { ISubject, IEventTask, ITopic, ITopicType } from 'src/interfaces';
+import { fetcher } from 'src/services';
 
 type Props = {
-  subjects: ISubject[];
   error: string | null;
-  onSubmit: (data: Omit<ITask, 'id'>) => void;
+  onSubmit: (data: Omit<IEventTask, '_id' | 'event'>) => void;
 };
 
-// TODO: Add validators for input fields
-// subjectValidator = (value: string) => value.trim().length > 0;
-// topicValidator = (value: string) => value.trim().length > 0;
-// typeValidator = (value: string) => value.trim().length > 0;
+const CreateTaskForm: React.FC<Props> = ({ error, onSubmit }) => {
+  const { data: subjectsData, isLoading } = useSWR<ISubject[]>(
+    '/api/v0/classroom/subjects',
+    fetcher,
+  );
 
-const CreateTaskForm: React.FC<Props> = ({ subjects, error, onSubmit }) => {
-  const [subject, setSubject] = useState('');
-  const [topic, setTopic] = useState('');
-  const [type, setType] = useState('');
+  const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedTopic, setSelectedTopic] = useState('');
+  const [selectedType, setSelectedType] = useState('');
 
-  const selectedSubject = useMemo<ISubject | null>(() => {
-    const subjectIdx = subjects.findIndex((item) => item.title === subject);
+  const subject = useMemo<ISubject | null>(() => {
+    if (!subjectsData) {
+      return null;
+    }
+
+    const subjectIdx = subjectsData.findIndex(
+      (item) => item.title === selectedSubject,
+    );
 
     if (subjectIdx === -1) {
       return null;
     }
 
-    return subjects[subjectIdx];
-  }, [subject, subjects]);
+    return subjectsData[subjectIdx];
+  }, [selectedSubject, subjectsData]);
 
-  const selectedTopic = useMemo<ITopic | null>(() => {
+  const topic = useMemo<ITopic | null>(() => {
     const topicIdx =
-      selectedSubject?.topics.findIndex((item) => item.title === topic) ?? -1;
+      subject?.topics.findIndex((item) => item.slug === selectedTopic) ?? -1;
 
     if (topicIdx === -1) {
       return null;
     }
 
-    return (selectedSubject as ISubject).topics[topicIdx];
-  }, [selectedSubject, topic]);
+    return (subject as ISubject).topics[topicIdx];
+  }, [subject, selectedTopic]);
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Extract title of type of task
-    const title = (selectedTopic as ITopic).types.find((item) => item === type);
-    // Submit form data
+    if (!topic) {
+      return null;
+    }
+    // Look in material for task of topic
+    const foundMaterialIdx = topic.types.findIndex((type) => {
+      const { materialModel } = type as ITopicType;
+      return materialModel === selectedType;
+    });
+    if (foundMaterialIdx === -1) {
+      return null;
+    }
+    // Extract the id of that material
+    const { material: assignmentId, materialModel } = topic.types[
+      foundMaterialIdx
+    ] as ITopicType;
+    // Submit new task data
     const data = {
-      subject,
-      topic,
-      type: title as 'lesson' | 'exercise' | 'test',
+      assignment: assignmentId,
+      assignmentModel: materialModel,
     };
-    onSubmit(data);
+    setSelectedSubject('');
+    setSelectedTopic('');
+    setSelectedType('');
+    return onSubmit(data);
   };
+
+  if (isLoading) {
+    return <Loader>Loading Form...</Loader>;
+  }
 
   return (
     <form
@@ -60,68 +86,99 @@ const CreateTaskForm: React.FC<Props> = ({ subjects, error, onSubmit }) => {
         maxWidth: 480,
         width: '95%',
         mx: 'auto',
-        '& > fieldset': {
+        '& > label, & > p': {
           variant: 'text.label',
-          mb: 3,
+          my: 3,
         },
       }}
       onSubmit={submitHandler}
     >
-      <fieldset>
-        <legend>Choose the subject</legend>
-        {subjects.map(({ _id: id, title }) => (
-          <label key={id} sx={{ display: 'block' }} htmlFor={id}>
-            {titleCase(title)}
-            <input
+      <label htmlFor="subject-select">
+        Select the subject
+        <RadioGroup
+          id="subject-select"
+          sx={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            columnGap: 3,
+            my: 3,
+            width: '100%',
+          }}
+          onValueChange={(value) => {
+            setSelectedSubject(value);
+            setSelectedTopic('');
+          }}
+        >
+          {(subjectsData as ISubject[]).map(({ _id: id, title }) => (
+            <Radio
+              key={id}
               id={id}
-              type="radio"
-              name="subject"
+              label={title}
               value={title}
-              checked={subject === title}
-              onChange={(e) => {
-                setSubject(e.currentTarget.value);
-                setTopic('');
-              }}
+              checked={title === selectedSubject}
             />
-          </label>
-        ))}
-      </fieldset>
-      <fieldset>
-        <legend>Choose the topic</legend>
-        {selectedSubject?.topics.map(({ _id: id, title }) => (
-          <label key={id} sx={{ display: 'block' }} htmlFor={id}>
-            {titleCase(title)}
-            <input
-              id={id}
-              type="radio"
-              name="topic"
-              value={title}
-              checked={topic === title}
-              onChange={(e) => {
-                setTopic(e.currentTarget.value);
-                setType('');
-              }}
-            />
-          </label>
-        )) ?? <p>Select a subject to show a list of topics</p>}
-      </fieldset>
-      <fieldset>
-        <legend>Choose the type of task</legend>
-        {selectedTopic?.types.map((title, idx) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <label key={idx} sx={{ display: 'block' }} htmlFor={String(idx)}>
-            {titleCase(title)}
-            <input
-              id={String(idx)}
-              type="radio"
-              name="type"
-              value={title}
-              checked={type === title}
-              onChange={(e) => setType(e.currentTarget.value as typeof type)}
-            />
-          </label>
-        )) ?? <p>Select a topic to show a list of types</p>}
-      </fieldset>
+          ))}
+        </RadioGroup>
+      </label>
+      {subject ? (
+        <label htmlFor="topic-select">
+          Select the topic
+          <RadioGroup
+            id="topic-select"
+            sx={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              columnGap: 3,
+              my: 3,
+              width: '100%',
+            }}
+            onValueChange={(value) => {
+              setSelectedTopic(value);
+              setSelectedType('');
+            }}
+          >
+            {subject.topics.map(({ _id: id, slug, title }) => (
+              <Radio
+                key={id}
+                id={id}
+                label={title}
+                value={slug}
+                checked={slug === selectedTopic}
+              />
+            ))}
+          </RadioGroup>
+        </label>
+      ) : (
+        <p>Select a subject to show a list of topics</p>
+      )}
+      {topic ? (
+        <label htmlFor="task-select">
+          Choose the type of task
+          <RadioGroup
+            id="task-select"
+            sx={{ my: 3 }}
+            onValueChange={(value) => setSelectedType(value)}
+          >
+            {topic.types.map((type, idx) => {
+              if (typeof type === 'string') {
+                return null;
+              }
+
+              return (
+                <Radio
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={idx}
+                  id={String(idx)}
+                  label={type.materialModel}
+                  value={type.materialModel}
+                />
+              );
+            })}
+          </RadioGroup>
+        </label>
+      ) : (
+        <p>Select a topic to show a list of types</p>
+      )}
       <Button sx={{ width: '100%' }} rounded={false} type="submit">
         Add Task
       </Button>

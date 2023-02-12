@@ -1,16 +1,23 @@
-import { useState } from 'react';
+import validator from 'validator';
 
 import { Button, TextField } from 'src/components/ui';
 import type { INewStudentCredentials } from 'src/interfaces';
-import validator from 'validator';
 
 import useInput from 'src/hooks/use-input';
 
-const fullNameValidator = (value: string) => {
+const forenameValidator = (value: string) => {
   const trimmed = value.trim();
   return (
     !validator.isEmpty(trimmed) &&
-    validator.isLength(trimmed, { min: 3, max: 60 })
+    validator.isLength(trimmed, { min: 3, max: 25 })
+  );
+};
+
+const surnameValidator = (value: string) => {
+  const trimmed = value.trim();
+  return (
+    !validator.isEmpty(trimmed) &&
+    validator.isLength(trimmed, { min: 3, max: 25 })
   );
 };
 
@@ -26,12 +33,20 @@ type Props = {
 
 const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
   const {
-    value: enteredFullName,
-    hasErrors: enteredFullNameHasErrors,
-    inputChangeHandler: fullNameChangedHandler,
-    inputBlurHandler: fullNameBlurHandler,
-    inputResetHandler: fullNameResetHandler,
-  } = useInput(fullNameValidator, '');
+    value: enteredForename,
+    hasErrors: enteredForenameHasErrors,
+    inputChangeHandler: forenameChangedHandler,
+    inputBlurHandler: forenameBlurHandler,
+    inputResetHandler: forenameResetHandler,
+  } = useInput(forenameValidator, '');
+
+  const {
+    value: enteredSurname,
+    hasErrors: enteredSurnameHasErrors,
+    inputChangeHandler: surnameChangedHandler,
+    inputBlurHandler: surnameBlurHandler,
+    inputResetHandler: surnameResetHandler,
+  } = useInput(surnameValidator, '');
 
   const {
     value: enteredEmail,
@@ -44,43 +59,65 @@ const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    const sanitizedFullName = validator.escape(enteredFullName);
+    const sanitizedForename = validator.escape(enteredForename);
+    const sanitizedSurname = validator.escape(enteredSurname);
     const sanitizedEmail = validator.escape(enteredEmail);
 
-    const data = { fullName: sanitizedFullName, email: sanitizedEmail };
+    const data = {
+      forename: sanitizedForename,
+      surname: sanitizedSurname,
+      email: sanitizedEmail,
+    };
     // Reset form values
-    fullNameResetHandler();
+    forenameResetHandler();
+    surnameResetHandler();
     emailResetHandler();
     // Submit form data
     onSubmit(data);
   };
 
+  const formHasErrors =
+    enteredForenameHasErrors ||
+    enteredSurnameHasErrors ||
+    enteredEmailHasErrors;
+
   return (
     <form sx={{ minWidth: '40%' }} onSubmit={submitHandler}>
       <div sx={{ py: 3 }}>
         <TextField
-          sx={{
-            borderColor: enteredFullNameHasErrors ? 'red' : 'gray',
-          }}
-          placeholder="Forename, Surname"
-          value={enteredFullName}
-          onChange={(e) => fullNameChangedHandler(e.currentTarget.value)}
-          onBlur={fullNameBlurHandler}
-          label="Student’s Full Name"
+          sx={{ borderColor: enteredForenameHasErrors && 'warning' }}
+          placeholder="Forename"
+          value={enteredForename}
+          onChange={(e) => forenameChangedHandler(e.currentTarget.value)}
+          onBlur={forenameBlurHandler}
+          label="Student’s Forename"
           type="text"
+          required
+          autoFocus
         />
       </div>
       <div sx={{ py: 3 }}>
         <TextField
-          sx={{
-            borderColor: enteredEmailHasErrors ? 'red' : 'gray',
-          }}
-          placeholder="student@mail.com"
-          value={enteredEmail}
-          onChange={(e) => emailChangedHandler(e.currentTarget.value)}
-          onBlur={emailBlurHandler}
+          sx={{ borderColor: enteredSurnameHasErrors && 'warning' }}
+          label="Student’s Surname"
+          type="text"
+          placeholder="Surname"
+          value={enteredSurname}
+          required
+          onChange={(e) => surnameChangedHandler(e.currentTarget.value)}
+          onBlur={surnameBlurHandler}
+        />
+      </div>
+      <div sx={{ py: 3 }}>
+        <TextField
+          sx={{ borderColor: enteredEmailHasErrors && 'warning' }}
           label="Student’s E-mail"
           type="email"
+          placeholder="student@mail.com"
+          value={enteredEmail}
+          required
+          onChange={(e) => emailChangedHandler(e.currentTarget.value)}
+          onBlur={emailBlurHandler}
         />
       </div>
       <div
@@ -91,7 +128,13 @@ const NewStudentForm: React.FC<Props> = ({ error, onSubmit }) => {
           mb: '10rem',
         }}
       >
-        <Button sx={{ width: '100%' }} type="submit" rounded={false}>
+        <Button
+          sx={{ width: '100%' }}
+          type="submit"
+          rounded={false}
+          // @ts-ignore
+          disabled={formHasErrors}
+        >
           Send Invite
         </Button>
       </div>

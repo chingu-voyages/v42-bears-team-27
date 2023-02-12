@@ -3,6 +3,7 @@ import type { ReactElement } from 'react';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import { ThemeProvider } from 'theme-ui';
+import NextProgress from 'next-progress';
 
 import ErrorBoundary from 'src/components/common/ErrorBoundary';
 import { AuthProvider } from 'src/store/auth';
@@ -23,6 +24,7 @@ const App: React.FC<AppPropsWithLayout> = ({ Component, pageProps }) => {
   return (
     <ThemeProvider theme={theme}>
       <SocketProvider>
+        <NextProgress delay={300} options={{ showSpinner: false }} />
         <AuthProvider>
           {getLayout(
             <ErrorBoundary>
