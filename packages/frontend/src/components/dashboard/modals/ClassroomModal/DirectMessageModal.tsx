@@ -1,6 +1,9 @@
+import { useContext } from 'react';
 import validator from 'validator';
 import { MdSend } from 'react-icons/md';
 
+import { AuthContext } from 'src/store/auth/auth-context';
+import { SocketContext } from 'src/store/socket/socket-context';
 import { Button, TextField, TextFieldArea } from 'src/components/ui';
 import useInput from 'src/hooks/use-input';
 import type { IDirectMessageStudent, IStudent } from 'src/interfaces';
@@ -28,6 +31,9 @@ type Props = {
 };
 
 const DirectMessageModal: React.FC<Props> = ({ student, error, onSubmit }) => {
+  const authCtx = useContext(AuthContext);
+  const socketCtx = useContext(SocketContext);
+
   const {
     value: enteredHeadline,
     hasErrors: enteredHeadlineHasErrors,
@@ -60,6 +66,12 @@ const DirectMessageModal: React.FC<Props> = ({ student, error, onSubmit }) => {
     messageResetHandler();
     // Submit form data
     onSubmit(data);
+    socketCtx?.socket?.emit(
+      'new-message-sent',
+      false,
+      authCtx?.user?._id,
+      student._id,
+    );
   };
 
   const formHasErrors = enteredHeadlineHasErrors || enteredMessageHasErrors;

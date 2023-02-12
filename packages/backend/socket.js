@@ -1,4 +1,5 @@
 const { Server } = require('socket.io');
+const Classroom = require('./models/classroomModel');
 
 const Student = require('./models/studentModel');
 const Teacher = require('./models/teacherModel');
@@ -90,7 +91,14 @@ module.exports = {
             return;
           }
 
-          const { classroom } = teacher;
+          const classroomID = teacher.classroom;
+          const classroom = await Classroom.findById(classroomID);
+
+          if (!classroom) {
+            console.log(`classroom with id ${classroomID} not found in DB`);
+            return;
+          }
+
           const { students } = classroom;
 
           students.forEach((student) => sendNotificationToStudent(student._id));

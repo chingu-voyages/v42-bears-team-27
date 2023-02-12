@@ -4,6 +4,7 @@ import validator from 'validator';
 
 import useInput from 'src/hooks/use-input';
 
+import { AuthContext } from 'src/store/auth/auth-context';
 import { SocketContext } from 'src/store/socket/socket-context';
 import {
   Button,
@@ -32,6 +33,7 @@ const messageValidator = (value: string) => {
 };
 
 const BroadcastModal: React.FC = () => {
+  const authCtx = useContext(AuthContext);
   const socketCtx = useContext(SocketContext);
 
   const {
@@ -75,7 +77,7 @@ const BroadcastModal: React.FC = () => {
       // Submit form data
       const msg = await postBroadcastMessageToStudents(data);
       // Update alert with api response message
-      socketCtx?.socket?.emit('new-message-sent');
+      socketCtx?.socket?.emit('new-message-sent', true, authCtx?.user?._id);
       setAlert(msg);
       // Reset form values
       headlineResetHandler();
