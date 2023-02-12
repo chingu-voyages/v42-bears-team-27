@@ -83,6 +83,7 @@ const SubjectCard: React.FC<Props> = ({ subject }) => {
           src={imageUrl}
           alt={title}
           fill
+          priority
         />
         <h2
           sx={{
