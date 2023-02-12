@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import Image from 'next/image';
 import type { ThemeUIStyleObject } from 'theme-ui';
 import useSWR from 'swr';
@@ -7,7 +7,6 @@ import stc from 'string-to-color';
 import Loader from 'src/components/common/Loader';
 import { ButtonLink, Progress } from 'src/components/ui';
 import type { IStudentTask, ISubject } from 'src/interfaces';
-import { AuthContext } from 'src/store/auth';
 import { fetcher } from 'src/services';
 
 const containerStyles: ThemeUIStyleObject = {
@@ -25,13 +24,10 @@ type Props = {
 const SubjectCard: React.FC<Props> = ({ subject }) => {
   const { slug, title, imageUrl } = subject;
 
-  const authCtx = useContext(AuthContext);
-
-  const {
-    data: tasksData,
-    isLoading,
-    error,
-  } = useSWR<IStudentTask[]>('/api/v0/student/tasks', fetcher);
+  const { data: tasksData, isLoading } = useSWR<IStudentTask[]>(
+    '/api/v0/student/tasks',
+    fetcher,
+  );
 
   const percentageProgress = useMemo(() => {
     if (!tasksData) {
@@ -67,12 +63,6 @@ const SubjectCard: React.FC<Props> = ({ subject }) => {
         <Loader>Loading...</Loader>
       </div>
     );
-  }
-
-  if (error) {
-    // Assuming any error when fetching data means that user cookies have expired,
-    // therefore logout the user from the app since they're not authenticated
-    authCtx?.onLogout();
   }
 
   return (

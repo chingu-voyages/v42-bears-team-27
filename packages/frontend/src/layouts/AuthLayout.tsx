@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { AuthContext } from 'src/store/auth';
+import useUser from 'src/hooks/use-user';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -18,12 +19,24 @@ const AuthLayout: React.FC<LayoutProps> = ({
   const router = useRouter();
   const authCtx = useContext(AuthContext);
 
+  const { isError } = useUser(authCtx?.role ?? null);
+
   useEffect(() => {
     if (!authCtx?.isLoggedIn) {
       router.replace('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authCtx?.isLoggedIn]);
+
+  useEffect(() => {
+    if (isError) {
+      // If error fetching user then cookies have experied
+      // Therefore log user out of app
+      authCtx?.onLogout();
+      router.replace('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isError]);
 
   return (
     <>
