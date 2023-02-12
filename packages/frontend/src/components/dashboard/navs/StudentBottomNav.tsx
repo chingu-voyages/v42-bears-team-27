@@ -26,7 +26,7 @@ const StudentBottomNav: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            columnGap: '6.25rem',
+            columnGap: [0, '6.25rem', '6.25rem'],
             listStyle: 'none',
             m: 2,
             p: 0,
