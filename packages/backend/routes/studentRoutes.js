@@ -11,6 +11,7 @@ const {
 const {
   createStudent,
   getStudent,
+  getStudentInbox,
   markMessageAsRead,
   getStudentProfile,
   getStudentTasks,
@@ -25,6 +26,7 @@ router.post(
   createStudent,
 );
 router.get('/', checkStudentAuthenticated, getStudent);
+router.get('/inbox', checkStudentAuthenticated, getStudentInbox);
 router.post(
   '/mark-message-as-read',
   checkStudentAuthenticated,

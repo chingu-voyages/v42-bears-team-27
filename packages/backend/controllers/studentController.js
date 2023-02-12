@@ -96,6 +96,12 @@ const getStudent = async (_, res) => {
   });
 };
 
+const getStudentInbox = async (_, res) => {
+  const { _id } = res.locals.user;
+  const { inbox } = await Student.findById(_id);
+  return res.json(inbox);
+};
+
 const markMessageAsRead = async (req, res) => {
   const { messageID } = req.body;
   const { id: studentID } = res.locals.user;
@@ -248,6 +254,7 @@ const updateStudentTask = async (req, res) => {
 module.exports = {
   createStudent,
   getStudent,
+  getStudentInbox,
   markMessageAsRead,
   getStudentProfile,
   getStudentTasks,
