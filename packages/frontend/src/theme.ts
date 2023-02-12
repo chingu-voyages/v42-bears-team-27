@@ -25,11 +25,11 @@ const theme: Theme = {
     modes: {
       dark: {
         text: '#fff',
-        background: '#000',
+        background: '#1f1f1f',
         primary: '#30475E',
         primaryShade: '#2b4055',
         secondary: '#313131',
-        secondaryShade: '#313131',
+        secondaryShade: '#2c2c2c',
         muted: '#3f3f3f',
         mutedShade: '#393939',
       },
@@ -96,26 +96,23 @@ const theme: Theme = {
     primary: {
       filled: {
         bg: 'primary',
-        color: 'white',
+        color: 'text',
         border: 'none',
         '&:hover': {
           bg: 'primaryShade',
         },
       },
       outlined: {
-        bg: 'background',
-        color: 'text',
+        bg: 'transparent',
         border: '2px solid currentColor',
         borderColor: 'primary',
         '&:hover': {
-          bg: 'secondaryShade',
+          bg: 'mutedShade',
         },
       },
     },
     danger: {
       bg: 'error',
-      color: 'white',
-      border: '2px solid currentColor',
       '&:hover': {
         bg: '#dc3c31',
       },
