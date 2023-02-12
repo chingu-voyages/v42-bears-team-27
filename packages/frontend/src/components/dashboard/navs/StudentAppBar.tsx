@@ -126,6 +126,7 @@ const StudentAppBar: React.FC = () => {
             width: 320,
             height: '100vh',
             bg: 'secondary',
+            zIndex: '10',
           }}
         >
           <div sx={{ position: 'absolute', top: 3, right: 3 }}>
