@@ -1,12 +1,11 @@
 import type { ReactElement } from 'react';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 import AuthLayout from 'src/layouts/AuthLayout';
 import { AlertDialog, AlertDialogContent } from 'src/components/ui';
 import type { IStudentTask } from 'src/interfaces';
-import { AuthContext } from 'src/store/auth';
 import { useElapsedTime } from 'src/hooks';
 import { fetcher, putStudentTask } from 'src/services';
 import type { NextPageWithLayout } from 'src/pages/_app';
@@ -14,8 +13,7 @@ import LessonView from 'src/components/dashboard/student/LessonView';
 
 const LessonId: NextPageWithLayout = () => {
   const router = useRouter();
-  const authCtx = useContext(AuthContext);
-  const { data: tasksData, error } = useSWR<IStudentTask[]>(
+  const { data: tasksData } = useSWR<IStudentTask[]>(
     '/api/v0/student/tasks',
     fetcher,
   );
@@ -60,12 +58,6 @@ const LessonId: NextPageWithLayout = () => {
     // Redirect back to current subject lessons
     router.replace(`../../${router.query.subject}/lessons`);
   };
-
-  if (error) {
-    // Assuming any error when fetching data means that user cookies have expired,
-    // therefore logout the user from the app since they're not authenticated
-    authCtx?.onLogout();
-  }
 
   return (
     <>

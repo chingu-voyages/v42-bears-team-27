@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useColorMode } from 'theme-ui';
 import useSWR from 'swr';
 import {
@@ -22,13 +22,10 @@ import {
   MenuRadioItem,
 } from 'src/components/ui';
 import type { IClassroom } from 'src/interfaces';
-import { AuthContext } from 'src/store/auth';
 import { fetcher } from 'src/services';
 
 const StudentAppBar: React.FC = () => {
-  const authCtx = useContext(AuthContext);
-
-  const { data: classroomData, error } = useSWR<IClassroom>(
+  const { data: classroomData } = useSWR<IClassroom>(
     '/api/v0/classroom',
     fetcher,
   );
@@ -43,12 +40,6 @@ const StudentAppBar: React.FC = () => {
   const toggleColorModeHandler = () => {
     setColorMode((prevState) => (prevState === 'light' ? 'dark' : 'light'));
   };
-
-  if (error) {
-    // Assuming any error when fetching data means that user cookies have expired,
-    // therefore logout the user from the app since they're not authenticated
-    authCtx?.onLogout();
-  }
 
   const heading = classroomData?.name ? `Classroom: ${classroomData.name}` : '';
 

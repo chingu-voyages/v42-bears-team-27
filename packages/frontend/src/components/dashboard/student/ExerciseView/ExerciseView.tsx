@@ -1,4 +1,4 @@
-import { useState, useReducer, useContext } from 'react';
+import { useState, useReducer } from 'react';
 import { useRouter } from 'next/router';
 import type { ThemeUIStyleObject } from 'theme-ui';
 import useSWR from 'swr';
@@ -6,7 +6,6 @@ import useSWR from 'swr';
 import Loader from 'src/components/common/Loader';
 import { Button } from 'src/components/ui';
 import type { IExercise } from 'src/interfaces';
-import { AuthContext } from 'src/store/auth';
 import { fetcher } from 'src/services';
 import QuestionItem from './QuestionItem';
 import ResultsDialog from './ResultsDialog';
@@ -94,13 +93,8 @@ type Props = {
 
 const ExerciseView: React.FC<Props> = ({ onExerciseComplete }) => {
   const router = useRouter();
-  const authCtx = useContext(AuthContext);
 
-  const {
-    data: exerciseData,
-    isLoading,
-    error,
-  } = useSWR<IExercise>(
+  const { data: exerciseData, isLoading } = useSWR<IExercise>(
     router.query?.exerciseId
       ? `/api/v0/material/exercises/${router.query.exerciseId}`
       : null,
@@ -154,12 +148,6 @@ const ExerciseView: React.FC<Props> = ({ onExerciseComplete }) => {
         <Loader>Loading Exercise...</Loader>
       </div>
     );
-  }
-
-  if (error) {
-    // Assuming any error when fetching data means that user cookies have expired,
-    // therefore logout the user from the app since they're not authenticated
-    authCtx?.onLogout();
   }
 
   return (
