@@ -9,6 +9,8 @@ import {
 
 import type { IClassroom } from 'src/interfaces';
 import { fetcher } from 'src/services';
+import Loader from 'src/components/common/Loader';
+import { ThemeUIStyleObject } from 'theme-ui';
 
 const columnHelper = createColumnHelper<any>();
 
@@ -28,8 +30,18 @@ const columns = [
   }),
 ];
 
+const containerStyles: ThemeUIStyleObject = {
+  width: [432, null, null, 480],
+  height: 400,
+  mt: [3, null, 0],
+  mr: [null, null, 3],
+  mx: [null, 'auto', null],
+  border: '1px solid',
+  borderColor: 'gray',
+};
+
 const StudentTable: React.FC = () => {
-  const { data: classroomData } = useSWR<IClassroom>(
+  const { data: classroomData, isLoading } = useSWR<IClassroom>(
     '/api/v0/classroom',
     fetcher,
   );
@@ -57,18 +69,16 @@ const StudentTable: React.FC = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  if (isLoading) {
+    return (
+      <div sx={{ position: 'relative', ...containerStyles }}>
+        <Loader>Loading Table...</Loader>
+      </div>
+    );
+  }
+
   return (
-    <div
-      sx={{
-        width: [432, null, null, 480],
-        height: 400,
-        mt: [3, null, 0],
-        mr: [null, null, 3],
-        mx: [null, 'auto', null],
-        border: '1px solid',
-        borderColor: 'gray',
-      }}
-    >
+    <div sx={containerStyles}>
       <table sx={{ width: '100%', height: '50%', borderCollapse: 'collapse' }}>
         <thead sx={{ py: 2, px: 3, bg: 'primary' }}>
           {table.getHeaderGroups().map((headerGroup) => (

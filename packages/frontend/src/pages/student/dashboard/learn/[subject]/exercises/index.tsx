@@ -26,14 +26,14 @@ const Exercises: NextPageWithLayout = () => {
     fetcher,
   );
 
-  if (!authCtx || isLoading) {
+  if (isLoading) {
     return <Loader>Loading Exercises...</Loader>;
   }
 
   if (error) {
     // Assuming any error when fetching data means that user cookies have expired,
     // therefore logout the user from the app since they're not authenticated
-    authCtx.onLogout();
+    authCtx?.onLogout();
   }
 
   return (
