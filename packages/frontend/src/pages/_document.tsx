@@ -5,13 +5,13 @@ const Document = () => (
     <Head />
     <body
       sx={{
-        '::-webkit-scrollbar': {
+        '&::-webkit-scrollbar, *::-webkit-scrollbar': {
           width: 5,
         },
-        '::-webkit-scrollbar-thumb': {
+        '&::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb': {
           backgroundColor: '#888',
         },
-        '::-webkit-scrollbar-thumb:hover': {
+        '&::-webkit-scrollbar-thumb:hover, *::-webkit-scrollbar-thumb:hover': {
           backgroundColor: '#555',
         },
       }}
