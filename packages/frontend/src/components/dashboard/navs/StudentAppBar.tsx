@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useColorMode } from 'theme-ui';
 import useSWR from 'swr';
 import {
@@ -9,7 +9,6 @@ import {
   MdDarkMode,
   MdLightMode,
 } from 'react-icons/md';
-import { SlGraduation } from 'react-icons/sl';
 
 import {
   Button,
@@ -23,18 +22,21 @@ import {
   MenuRadioGroup,
   MenuRadioItem,
 } from 'src/components/ui';
-import type { IClassroom } from 'src/interfaces';
-import { AuthContext } from 'src/store/auth';
+import type { IClassroom, IMessageData } from 'src/interfaces';
 import { fetcher } from 'src/services';
-import { ClassroomModal } from '../modals';
 
 const StudentAppBar: React.FC = () => {
-  const authCtx = useContext(AuthContext);
-
-  const { data: classroomData, error } = useSWR<IClassroom>(
+  const { data: classroomData } = useSWR<IClassroom>(
     '/api/v0/classroom',
     fetcher,
   );
+
+  const { data: inboxData } = useSWR<IMessageData[]>(
+    '/api/v0/student/inbox',
+    fetcher,
+  );
+
+  const newMessagesNumber = inboxData?.filter((msg) => !msg.hasBeenRead).length;
 
   const [colorMode, setColorMode] = useColorMode();
   const [showSidebar, setShowSidebar] = useState(false);
@@ -47,17 +49,11 @@ const StudentAppBar: React.FC = () => {
     setColorMode((prevState) => (prevState === 'light' ? 'dark' : 'light'));
   };
 
-  if (error) {
-    // Assuming any error when fetching data means that user cookies have expired,
-    // therefore logout the user from the app since they're not authenticated
-    authCtx?.onLogout();
-  }
-
   const heading = classroomData?.name ? `Classroom: ${classroomData.name}` : '';
 
   return (
     <>
-      <header sx={{ py: 3, px: 4, bg: 'muted' }}>
+      <header sx={{ py: 3, px: 4, bg: 'secondary', color: 'text' }}>
         <nav
           sx={{
             display: 'flex',
@@ -76,22 +72,53 @@ const StudentAppBar: React.FC = () => {
           >
             {heading}
           </p>
-          <div sx={{ display: ['none', 'flex', null], columnGap: 3 }}>
-            <Menu icon={<MdOutlineNotifications size={32} />}>
-              {/* TODO: Add display of notifications for student */}
-              <MenuContent />
-            </Menu>
-            <Menu icon={<SlGraduation size={32} />}>
-              <MenuContent>
-                <MenuItem
-                  sx={{ display: 'flex', alignItems: 'center', columnGap: 3 }}
-                  asChild
+          <div
+            sx={{
+              display: ['none', 'flex', null],
+              columnGap: 3,
+            }}
+          >
+            <Menu
+              ariaLabel="Notifications"
+              icon={
+                <div
+                  sx={{
+                    '--alert': newMessagesNumber,
+                    position: 'relative',
+                    ...(newMessagesNumber && {
+                      '&::after': {
+                        variant: 'text.label',
+                        fontSize: 0,
+                        counterReset: 'alert var(--alert)',
+                        content: 'counter(alert)',
+                        display: 'block',
+                        position: 'absolute',
+                        top: '2px',
+                        right: '0.5px',
+                        width: 16,
+                        height: 16,
+                        bg: 'error',
+                        color: 'black',
+                        border: 'none',
+                        borderRadius: '50%',
+                      },
+                    }),
+                  }}
                 >
-                  <ClassroomModal />
-                </MenuItem>
+                  <MdOutlineNotifications size={32} />
+                </div>
+              }
+            >
+              <MenuContent>
+                {inboxData?.map((message) => (
+                  <MenuItem key={message._id}>{message.messageHeader}</MenuItem>
+                ))}
               </MenuContent>
             </Menu>
-            <Menu icon={<MdOutlineSettings size={32} />}>
+            <Menu
+              ariaLabel="Configuration"
+              icon={<MdOutlineSettings size={32} />}
+            >
               <MenuContent>
                 <MenuRadioGroup
                   value={colorMode}
@@ -104,7 +131,7 @@ const StudentAppBar: React.FC = () => {
             </Menu>
           </div>
           <div sx={{ display: [null, 'none', null], columnGap: 3 }}>
-            <IconButton onClick={toggleSidebarHandler}>
+            <IconButton aria-label="Open menu" onClick={toggleSidebarHandler}>
               <MdOutlineMenu size={32} />
             </IconButton>
           </div>
@@ -119,11 +146,12 @@ const StudentAppBar: React.FC = () => {
             maxWidth: '75%',
             width: 320,
             height: '100vh',
-            bg: 'secondary',
+            bg: 'muted',
+            zIndex: '10',
           }}
         >
           <div sx={{ position: 'absolute', top: 3, right: 3 }}>
-            <IconButton onClick={toggleSidebarHandler}>
+            <IconButton aria-label="Close menu" onClick={toggleSidebarHandler}>
               <MdOutlineClose size={32} />
             </IconButton>
           </div>
@@ -152,7 +180,7 @@ const StudentAppBar: React.FC = () => {
                         cursor: 'pointer',
                         borderRadius: 6,
                         '&:hover': {
-                          bg: 'muted',
+                          bg: 'mutedShade',
                         },
                       }}
                     >
@@ -162,16 +190,36 @@ const StudentAppBar: React.FC = () => {
                       </IconButton>
                     </div>
                   </DialogTrigger>
-                  {/* TODO: Add display of notifications for student */}
                   <DialogContent
                     title="Notifications"
                     width={560}
                     height="min-content"
-                  />
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      pt: 3,
+                      pb: 5,
+                    }}
+                  >
+                    {inboxData?.map((message) => (
+                      <div
+                        key={message._id}
+                        sx={{
+                          varaint: 'text.h4',
+                          width: '95%',
+                          bg: 'info',
+                          color: 'black',
+                          borderRadius: 3,
+                          p: 3,
+                          my: 2,
+                        }}
+                      >
+                        {message.messageHeader}
+                      </div>
+                    ))}
+                  </DialogContent>
                 </Dialog>
-              </li>
-              <li sx={{ '& > button': { mx: 'auto' } }}>
-                <ClassroomModal />
               </li>
               <li>
                 <Dialog>
@@ -185,7 +233,7 @@ const StudentAppBar: React.FC = () => {
                         cursor: 'pointer',
                         borderRadius: 6,
                         '&:hover': {
-                          bg: 'muted',
+                          bg: 'mutedShade',
                         },
                       }}
                     >
@@ -208,6 +256,7 @@ const StudentAppBar: React.FC = () => {
                     }}
                   >
                     <Button
+                      sx={{ color: 'text' }}
                       onClick={toggleColorModeHandler}
                       icon={
                         colorMode === 'light' ? <MdDarkMode /> : <MdLightMode />

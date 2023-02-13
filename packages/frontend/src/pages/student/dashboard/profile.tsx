@@ -12,6 +12,7 @@ import {
 } from 'src/components/ui';
 import { StudentAppBar, StudentBottomNav } from 'src/components/dashboard/navs';
 import BarChart from 'src/components/dashboard/student/Profile';
+import ClassroomModal from 'src/components/dashboard/modals/ClassroomModal';
 import { AuthContext } from 'src/store/auth';
 import { IStudentProfile } from 'src/interfaces';
 import type { NextPageWithLayout } from '../../_app';
@@ -33,10 +34,17 @@ const Profile: NextPageWithLayout = () => {
       }}
     >
       <StudentAppBar />
-      <div>
-        <h1>Check out your awesome profile stats 🚀</h1>
-        {data && (
-          <div>
+      <div sx={{ overflowY: 'auto' }}>
+        <div
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            rowGap: 3,
+          }}
+        >
+          {data && (
             <div
               sx={{
                 display: 'flex',
@@ -45,8 +53,8 @@ const Profile: NextPageWithLayout = () => {
                 justifyContent: 'center',
                 py: 4,
                 color: 'primary',
-                bg: 'muted',
-                minHeight: '100vh',
+                width: '400px',
+                height: '400px',
               }}
             >
               <BarChart
@@ -58,34 +66,31 @@ const Profile: NextPageWithLayout = () => {
                 dataFromAPI={data.points}
               />
             </div>
-          </div>
-        )}
-      </div>
-      <div sx={{ overflowY: 'auto' }}>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button sx={{ mx: 'auto' }} icon={<MdLogout />}>
-              Logout
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent
-            sx={{
-              textAlign: 'center',
-              py: 4,
-              '& button': {
-                mt: 4,
-              },
-              '& div': {
-                justifyContent: 'center !important',
-              },
-            }}
-            title="Are you sure you want to logout?"
-            description=""
-            width="32rem"
-            height="min-content"
-            onConfirm={() => authCtx?.onLogout()}
-          />
-        </AlertDialog>
+          )}
+          <AlertDialog>
+            <AlertDialogTrigger sx={{ color: 'text' }} asChild>
+              <Button icon={<MdLogout />}>Logout</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent
+              sx={{
+                textAlign: 'center',
+                py: 4,
+                '& button': {
+                  mt: 4,
+                },
+                '& div': {
+                  justifyContent: 'center !important',
+                },
+              }}
+              title="Are you sure you want to logout?"
+              description=""
+              width="32rem"
+              height="min-content"
+              onConfirm={() => authCtx?.onLogout()}
+            />
+          </AlertDialog>
+          <ClassroomModal />
+        </div>
       </div>
       <StudentBottomNav />
     </div>

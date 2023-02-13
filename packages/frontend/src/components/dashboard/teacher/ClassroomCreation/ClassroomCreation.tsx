@@ -126,7 +126,7 @@ const ClassroomCreation: React.FC = () => {
             alignItems: 'center',
             flexDirection: 'column',
             border: '1px solid',
-            borderColor: 'gray',
+            borderColor: 'primary',
             mt: 4,
           }}
         >
@@ -156,7 +156,7 @@ const ClassroomCreation: React.FC = () => {
           sx={{
             display: 'flex',
             justifyContent: 'center',
-            mt: 2,
+            mt: 4,
             mb: 5,
           }}
         >

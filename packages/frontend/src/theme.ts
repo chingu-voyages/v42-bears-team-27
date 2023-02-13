@@ -4,9 +4,6 @@ import '@fontsource/nunito';
 import '@fontsource/roboto';
 
 const theme: Theme = {
-  config: {
-    useColorSchemeMediaQuery: false,
-  },
   fonts: {
     body: '"Nunito", sans-serif',
     heading: '"Roboto", sans-serif',
@@ -14,11 +11,12 @@ const theme: Theme = {
   colors: {
     text: '#000',
     background: '#fff',
-    primary: '#495464',
-    primaryShade: '#424c5a',
-    secondary: '#e8e8e8',
-    secondaryShade: '#d1d1d1',
+    primary: '#79a3c1',
+    primaryShade: '#6d93ae',
+    secondary: '#f0eeed',
+    secondaryShade: '#d8d6d5',
     muted: '#f4f4f2',
+    mutedShade: '#dcdcda',
     error: '#f44336',
     warning: '#ffa726',
     info: '#29b6f6',
@@ -27,13 +25,13 @@ const theme: Theme = {
     modes: {
       dark: {
         text: '#fff',
-        background: '#000',
-        primary: '#171717',
-        primaryShade: '#151515',
-        secondary: '#444444',
-        secondaryShade: '#3d3d3d',
-        muted: '#ededed',
-        accent: '#da0037',
+        background: '#1f1f1f',
+        primary: '#30475E',
+        primaryShade: '#2b4055',
+        secondary: '#313131',
+        secondaryShade: '#2c2c2c',
+        muted: '#3f3f3f',
+        mutedShade: '#393939',
       },
     },
   },
@@ -98,26 +96,23 @@ const theme: Theme = {
     primary: {
       filled: {
         bg: 'primary',
-        color: 'white',
+        color: 'text',
         border: 'none',
         '&:hover': {
           bg: 'primaryShade',
         },
       },
       outlined: {
-        bg: 'background',
-        color: 'text',
+        bg: 'transparent',
         border: '2px solid currentColor',
         borderColor: 'primary',
         '&:hover': {
-          bg: 'secondaryShade',
+          bg: 'mutedShade',
         },
       },
     },
     danger: {
       bg: 'error',
-      color: 'white',
-      border: '2px solid currentColor',
       '&:hover': {
         bg: '#dc3c31',
       },

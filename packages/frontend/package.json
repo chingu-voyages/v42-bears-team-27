@@ -37,6 +37,7 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
     "react-markdown": "^8.0.5",
+    "socket.io-client": "^4.5.4",
     "string-to-color": "^2.2.2",
     "swr": "^2.0.2",
     "theme-ui": "^0.15.4",

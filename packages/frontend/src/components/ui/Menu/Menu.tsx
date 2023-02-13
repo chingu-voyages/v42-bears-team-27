@@ -10,11 +10,19 @@ export interface MenuProps extends DropdownMenuPrimitive.DropdownMenuProps {
    */
   icon: React.ReactNode;
   sx?: ThemeUIStyleObject;
+  ariaLabel?: string;
 }
 
-export const Menu: React.FC<MenuProps> = ({ children, icon, sx, ...rest }) => (
+export const Menu: React.FC<MenuProps> = ({
+  children,
+  icon,
+  sx,
+  ariaLabel,
+  ...rest
+}) => (
   <DropdownMenuPrimitive.Root {...rest}>
     <DropdownMenuPrimitive.Trigger
+      aria-label={ariaLabel}
       sx={{ p: 0, bg: 'transparent', border: 'none', ...sx }}
     >
       <div
@@ -53,7 +61,7 @@ MenuContentProps & RefAttributes<HTMLDivElement>
       zIndex: 1001,
       minWidth: 220,
       p: 2,
-      color: 'primary',
+      color: 'text',
       bg: 'muted',
       border: '2px solid currentColor',
       borderRadius: 6,
@@ -61,10 +69,11 @@ MenuContentProps & RefAttributes<HTMLDivElement>
       '& div[role^="menuitem"]': {
         pl: 4,
         pr: 1,
+        color: 'text',
         cursor: 'pointer',
         '&:hover': {
-          color: 'background',
-          bg: 'primary',
+          bg: 'mutedShade',
+          color: 'accent',
         },
       },
       ...sx,

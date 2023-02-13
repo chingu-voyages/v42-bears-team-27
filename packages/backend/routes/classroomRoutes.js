@@ -24,7 +24,7 @@ const {
 // "http://localhost:5000/api/v0/classroom"
 router.get('/', checkUserAuthenticated, getClassroom);
 router.put('/', checkTeacherAuthenticated, updateClassroom);
-router.delete('/:id', checkTeacherAuthenticated, deleteClassroom);
+router.delete('/', checkTeacherAuthenticated, deleteClassroom);
 
 router.get('/subjects', checkUserAuthenticated, getClassroomSubjects);
 

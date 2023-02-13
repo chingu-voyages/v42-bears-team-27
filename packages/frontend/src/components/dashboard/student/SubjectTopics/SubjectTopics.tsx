@@ -17,7 +17,7 @@ const SubjectTopics: React.FC<Props> = ({ topics, type }) => {
             ({ materialModel }) => materialModel.toLowerCase() === type,
           ) !== -1
         ) {
-          return <TopicItem key={topic._id} topic={topic} />;
+          return <TopicItem key={topic._id} topic={topic} type={type} />;
         }
 
         return null;

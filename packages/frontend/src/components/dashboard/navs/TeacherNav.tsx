@@ -1,7 +1,6 @@
 import { useState, useContext } from 'react';
 import { useColorMode } from 'theme-ui';
 import {
-  MdOutlineNotifications,
   MdOutlineAccountCircle,
   MdOutlineSettings,
   MdOutlineMenu,
@@ -51,7 +50,7 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: !heading ? 'flex-end' : 'space-between',
-            height: 48,
+            minHeight: 48,
           }}
         >
           <p
@@ -65,11 +64,7 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
             {heading}
           </p>
           <div sx={{ display: ['none', 'flex', null], columnGap: 3 }}>
-            <Menu icon={<MdOutlineNotifications size={32} />}>
-              {/* TODO: Add display of notifications for teacher */}
-              <MenuContent />
-            </Menu>
-            <Menu icon={<MdOutlineAccountCircle size={32} />}>
+            <Menu ariaLabel="User" icon={<MdOutlineAccountCircle size={32} />}>
               <MenuContent>
                 <MenuItem
                   sx={{ display: 'flex', alignItems: 'center', columnGap: 3 }}
@@ -80,7 +75,10 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
                 </MenuItem>
               </MenuContent>
             </Menu>
-            <Menu icon={<MdOutlineSettings size={32} />}>
+            <Menu
+              ariaLabel="Configuration"
+              icon={<MdOutlineSettings size={32} />}
+            >
               <MenuContent>
                 <MenuRadioGroup
                   value={colorMode}
@@ -93,7 +91,7 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
             </Menu>
           </div>
           <div sx={{ display: [null, 'none', null], columnGap: 3 }}>
-            <IconButton onClick={toggleSidebarHandler}>
+            <IconButton aria-label="Open menu" onClick={toggleSidebarHandler}>
               <MdOutlineMenu size={32} />
             </IconButton>
           </div>
@@ -113,7 +111,7 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
           }}
         >
           <div sx={{ position: 'absolute', top: 3, right: 3 }}>
-            <IconButton onClick={toggleSidebarHandler}>
+            <IconButton aria-label="Close menu" onClick={toggleSidebarHandler}>
               <MdOutlineClose size={32} />
             </IconButton>
           </div>
@@ -131,36 +129,6 @@ const TeacherNav: React.FC<Props> = ({ heading }) => {
                 '& > li': { width: '95%', m: 2 },
               }}
             >
-              <li>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <div
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        p: 2,
-                        cursor: 'pointer',
-                        borderRadius: 6,
-                        '&:hover': {
-                          bg: 'muted',
-                        },
-                      }}
-                    >
-                      <p>Notifications</p>
-                      <IconButton>
-                        <MdOutlineNotifications size={32} />
-                      </IconButton>
-                    </div>
-                  </DialogTrigger>
-                  {/* TODO: Add display of notifications for teacher */}
-                  <DialogContent
-                    title="Notifications"
-                    width={560}
-                    height="min-content"
-                  />
-                </Dialog>
-              </li>
               <li>
                 <Dialog>
                   <DialogTrigger asChild>

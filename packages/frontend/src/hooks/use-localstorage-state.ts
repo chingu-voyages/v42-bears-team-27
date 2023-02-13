@@ -13,7 +13,7 @@ function getValueFromLocalStorage(key: string) {
   try {
     return JSON.parse(storedValue);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 
   return storedValue;
@@ -91,7 +91,7 @@ function useLocalstorageState<S>(
             setValue(newValue);
           }
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       }
     },
@@ -111,7 +111,7 @@ function useLocalstorageState<S>(
         );
       };
     }
-    console.warn('useLocalstorageState: window is undefined.');
+    // console.warn('useLocalstorageState: window is undefined.');
 
     return () => {};
   }, [listenToCrossDocumentStorageEvents]);
@@ -125,7 +125,7 @@ function useLocalstorageState<S>(
           setValue(newValue);
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     },
     [value],
@@ -149,7 +149,7 @@ function useLocalstorageState<S>(
         );
       };
     }
-    console.warn('[useLocalstorageState] document is undefined.');
+    // console.warn('[useLocalstorageState] document is undefined.');
 
     return () => {};
   }, [customEventTypeName, listenToCustomEventWithinDocument]);
@@ -164,7 +164,7 @@ function useLocalstorageState<S>(
         );
         document.dispatchEvent(event);
       } else {
-        console.warn('[useLocalstorageState] document is undefined.');
+        // console.warn('[useLocalstorageState] document is undefined.');
       }
     },
     [customEventTypeName],

@@ -20,6 +20,12 @@ export interface INewStudentCredentials {
   email: string;
 }
 
+export interface IDirectMessageStudent {
+  studentID: ID;
+  messageHeader: string;
+  messageBody: string;
+}
+
 export interface ITeacher {
   _id: ID;
   title: string;
@@ -54,9 +60,22 @@ export interface IStudentProfile {
   };
 }
 
+export interface IExerciseContent {
+  _id: ID;
+  page: {
+    _id: ID;
+    questions: {
+      _id: ID;
+      prompt: string;
+      answer: string;
+    }[];
+  };
+}
+
 export interface IExercise {
   topic: string;
   subject: ID | ISubject;
+  content: IExerciseContent;
 }
 
 export interface IEventTask {
@@ -116,4 +135,11 @@ export interface IClassroom {
   students: IStudent[];
   subjects: ID[];
   events: ID[];
+}
+
+export interface IMessageData {
+  _id: ID;
+  messageID: ID;
+  messageHeader: string;
+  hasBeenRead: boolean;
 }

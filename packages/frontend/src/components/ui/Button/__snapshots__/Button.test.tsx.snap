@@ -3,7 +3,7 @@
 exports[`<Button /> Snapshots should match snapshot 1`] = `
 .emotion-0 {
   background-color: var(--theme-ui-colors-primary);
-  color: white;
+  color: var(--theme-ui-colors-text);
   border: none;
   display: -webkit-box;
   display: -webkit-flex;
@@ -59,7 +59,7 @@ exports[`<Button /> Snapshots should match snapshot 1`] = `
 exports[`<Button /> Snapshots should match snapshot when rendered as link 1`] = `
 .emotion-0 {
   background-color: var(--theme-ui-colors-primary);
-  color: white;
+  color: var(--theme-ui-colors-text);
   border: none;
   display: -webkit-box;
   display: -webkit-flex;
@@ -114,8 +114,7 @@ exports[`<Button /> Snapshots should match snapshot when rendered as link 1`] = 
 
 exports[`<Button /> Snapshots should match snapshot with outlined variant 1`] = `
 .emotion-0 {
-  background-color: var(--theme-ui-colors-background);
-  color: var(--theme-ui-colors-text);
+  background-color: transparent;
   border: 2px solid currentColor;
   border-color: var(--theme-ui-colors-primary);
   display: -webkit-box;
@@ -145,7 +144,7 @@ exports[`<Button /> Snapshots should match snapshot with outlined variant 1`] = 
 }
 
 .emotion-0:hover {
-  background-color: var(--theme-ui-colors-secondaryShade);
+  background-color: var(--theme-ui-colors-mutedShade);
 }
 
 .emotion-1 {
@@ -174,7 +173,7 @@ exports[`<Button /> Snapshots should match snapshot with outlined variant 1`] = 
 exports[`<Button /> Snapshots should match snapshot with rounded prop 1`] = `
 .emotion-0 {
   background-color: var(--theme-ui-colors-primary);
-  color: white;
+  color: var(--theme-ui-colors-text);
   border: none;
   display: -webkit-box;
   display: -webkit-flex;
@@ -232,7 +231,7 @@ exports[`<Button /> Snapshots should match snapshot with rounded prop 1`] = `
 exports[`<Button /> Snapshots should match snapshot with size prop equals lg 1`] = `
 .emotion-0 {
   background-color: var(--theme-ui-colors-primary);
-  color: white;
+  color: var(--theme-ui-colors-text);
   border: none;
   display: -webkit-box;
   display: -webkit-flex;
@@ -290,7 +289,7 @@ exports[`<Button /> Snapshots should match snapshot with size prop equals lg 1`]
 exports[`<Button /> Snapshots should match snapshot with size prop equals sm 1`] = `
 .emotion-0 {
   background-color: var(--theme-ui-colors-primary);
-  color: white;
+  color: var(--theme-ui-colors-text);
   border: none;
   display: -webkit-box;
   display: -webkit-flex;

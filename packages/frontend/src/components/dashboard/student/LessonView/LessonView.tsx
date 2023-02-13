@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMemo, useState } from 'react';
+import type { ThemeUIStyleObject } from 'theme-ui';
 import useSWR from 'swr';
 import { MdArrowBack, MdArrowForward } from 'react-icons/md';
 import ReactMarkdown from 'react-markdown';
@@ -8,6 +8,22 @@ import Loader from 'src/components/common/Loader';
 import { IconButton } from 'src/components/ui';
 import type { ILesson } from 'src/interfaces';
 import { fetcher } from 'src/services';
+
+const containerStyles: ThemeUIStyleObject = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  maxWidth: '95%',
+  width: '60rem',
+  p: 4,
+  my: 5,
+  mx: 'auto',
+  overflowY: 'auto',
+  bg: 'secondary',
+  border: '2px solid',
+  borderColor: 'primary',
+  borderRadius: 5,
+};
 
 type Props = {
   lessonId: string;
@@ -55,28 +71,16 @@ const LessonView: React.FC<Props> = ({ lessonId, onLessonEnd }) => {
     }
   };
 
-  if (!currPage || isLoading) {
-    return <Loader>Loading Lesson...</Loader>;
+  if (isLoading || !currPage) {
+    return (
+      <div sx={{ position: 'relative', height: '30rem', ...containerStyles }}>
+        <Loader>Loading Lesson...</Loader>
+      </div>
+    );
   }
 
   return (
-    <div
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        maxWidth: '95%',
-        width: '60rem',
-        p: 4,
-        my: 5,
-        mx: 'auto',
-        overflowY: 'auto',
-        bg: 'muted',
-        border: '2px solid',
-        borderColor: 'primary',
-        borderRadius: 5,
-      }}
-    >
+    <div sx={containerStyles}>
       <div
         sx={{
           display: 'flex',
@@ -128,10 +132,16 @@ const LessonView: React.FC<Props> = ({ lessonId, onLessonEnd }) => {
           },
         }}
       >
-        <IconButton onClick={() => navigatePagesHandler(-1)}>
+        <IconButton
+          aria-label="Previous page"
+          onClick={() => navigatePagesHandler(-1)}
+        >
           <MdArrowBack size={32} />
         </IconButton>
-        <IconButton onClick={() => navigatePagesHandler(1)}>
+        <IconButton
+          aria-label="Next page"
+          onClick={() => navigatePagesHandler(1)}
+        >
           <MdArrowForward size={32} />
         </IconButton>
       </div>

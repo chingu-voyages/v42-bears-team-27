@@ -8,6 +8,7 @@ const loginTeacher = async (req, res) => {
       _id: user._id,
       email: user.email,
     };
+
     return res
       .cookie('auth', JSON.stringify(payload), {
         secure: process.env.NODE_ENV === 'production',
@@ -34,6 +35,7 @@ const loginStudent = async (req, res) => {
       _id: user._id,
       email: user.email,
     };
+
     res
       .cookie('auth', JSON.stringify(payload), {
         secure: process.env.NODE_ENV === 'production',

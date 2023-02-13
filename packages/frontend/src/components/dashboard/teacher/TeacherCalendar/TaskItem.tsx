@@ -39,27 +39,29 @@ const TaskItem: React.FC<Props> = ({
       sx={{
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         columnGap: 1,
-        maxWidth: '95%',
-        width: 400,
-        mx: 'auto',
       }}
     >
       <div
         sx={{
-          display: 'flex',
+          display: 'grid',
+          gridTemplateColumns: '2fr 3fr 1fr',
           alignItems: 'center',
           columnGap: 1,
+          maxWidth: '95%',
+          width: '30rem',
+          mx: 'auto',
         }}
       >
-        <p sx={{ width: 128 }}>
-          {`${type === 'Lesson' ? '🔵' : '🟡'} ${type}:`}
-        </p>
+        <p>{`${type === 'Lesson' ? '🔵' : '🟡'} ${type}:`}</p>
         <p>{`${subject.title} - ${topic}`}</p>
       </div>
       {isEditMode && (
-        <IconButton onClick={() => onRemoveTask(taskId)}>
+        <IconButton
+          aria-label="Remove task"
+          onClick={() => onRemoveTask(taskId)}
+        >
           <BsEraser size={24} />
         </IconButton>
       )}

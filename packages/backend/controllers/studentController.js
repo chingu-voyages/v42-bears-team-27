@@ -1,6 +1,7 @@
 /* eslint spaced-comment: 0 */
 const Classroom = require('../models/classroomModel');
 const Student = require('../models/studentModel');
+const Message = require('../models/messageModel');
 const { generatePassword, sendEmail } = require('../utils');
 
 const createStudent = async (req, res) => {
@@ -96,8 +97,64 @@ const getStudent = async (_, res) => {
   });
 };
 
-// const readMessage = async (req, res) => {
-// };
+const getStudentInbox = async (_, res) => {
+  const { _id } = res.locals.user;
+  const { inbox } = await Student.findById(_id);
+  const messageIDs = inbox.map((msg) => msg.messageID);
+  const allMessages = [];
+
+  await Promise.all(
+    messageIDs.map(async (id) => {
+      const msg = await Message.findById(id);
+      allMessages.push(msg);
+    }),
+  );
+
+  return res.status(200).json(allMessages);
+};
+
+const markMessageAsRead = async (req, res) => {
+  const { messageID } = req.body;
+  const { id: studentID } = res.locals.user;
+
+  Student.findById(studentID)
+    .then((doc) => {
+      let messageFound = false;
+      doc.inbox.forEach((item) => {
+        if (item.messageID.equals(messageID)) {
+          messageFound = true;
+          // eslint-disable-next-line dot-notation
+          item['hasBeenRead'] = true; // eslint-disable-line no-param-reassign
+          doc.save();
+        }
+      });
+
+      if (messageFound) {
+        return res
+          .status(200)
+          .json({ message: 'successfully marked message as read' });
+      }
+
+      return res
+        .status(400)
+        .json({ message: `message with ID ${messageID} not found` });
+    })
+    .catch(() =>
+      res.status(500).json({
+        message: `internal server error`,
+      }),
+    );
+
+  // .catch((err) => {
+  //   console.log(
+  //     `Error while trying to update message.hasBeenRead to true for
+  //      student ${studentID} and message ${messageID}, ${err}`,
+  //   );
+  //   return res.status(500).json({
+  //     message: `internal server error`,
+  //   });
+  // });
+};
 
 const getStudentProfile = async (req, res) => {
   const { id: studentId } = req.params;
@@ -214,6 +271,8 @@ const updateStudentTask = async (req, res) => {
 module.exports = {
   createStudent,
   getStudent,
+  getStudentInbox,
+  markMessageAsRead,
   getStudentProfile,
   getStudentTasks,
   updateStudentTask,
