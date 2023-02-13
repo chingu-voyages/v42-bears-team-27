@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import useSWR, { useSWRConfig } from 'swr';
+import { useSWRConfig } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import validator from 'validator';
 
 import { Button, TextField, Checkbox } from 'src/components/ui';
@@ -23,7 +24,7 @@ const nameValidator = (value: string) => {
 const ClassroomCreation: React.FC = () => {
   const { mutate } = useSWRConfig();
 
-  const { data: subjectsData } = useSWR<ISubject[]>(
+  const { data: subjectsData } = useSWRImmutable<ISubject[]>(
     '/api/v0/classroom/subjects',
     fetcher,
   );

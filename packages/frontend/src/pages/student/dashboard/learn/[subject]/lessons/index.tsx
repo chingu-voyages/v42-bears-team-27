@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import AuthLayout from 'src/layouts/AuthLayout';
 import Loader from 'src/components/common/Loader';
@@ -13,7 +13,7 @@ import { StudentAppBar, StudentBottomNav } from 'src/components/dashboard/navs';
 const Lessons: NextPageWithLayout = () => {
   const { query } = useRouter();
 
-  const { data: subjectData, isLoading } = useSWR<ISubject[]>(
+  const { data: subjectData, isLoading } = useSWRImmutable<ISubject[]>(
     query ? `/api/v0/classroom/subjects?name=${query.subject}` : null,
     fetcher,
   );

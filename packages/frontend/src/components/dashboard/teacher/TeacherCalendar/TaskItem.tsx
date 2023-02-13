@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import { BsEraser } from 'react-icons/bs';
 
 import { IconButton } from 'src/components/ui';
@@ -19,7 +18,7 @@ const TaskItem: React.FC<Props> = ({
   isEditMode,
   onRemoveTask,
 }) => {
-  const { data: taskData } = useSWR<IEventTask>(
+  const { data: taskData } = useSWRImmutable<IEventTask>(
     `/api/v0/classroom/task/${taskId}`,
     fetcher,
   );

@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import AuthLayout from 'src/layouts/AuthLayout';
 import Loader from 'src/components/common/Loader';
@@ -10,7 +10,7 @@ import type { NextPageWithLayout } from 'src/pages/_app';
 import { fetcher } from 'src/services';
 
 const Learn: NextPageWithLayout = () => {
-  const { data: subjectsData, isLoading } = useSWR<ISubject[]>(
+  const { data: subjectsData, isLoading } = useSWRImmutable<ISubject[]>(
     '/api/v0/classroom/subjects',
     fetcher,
   );

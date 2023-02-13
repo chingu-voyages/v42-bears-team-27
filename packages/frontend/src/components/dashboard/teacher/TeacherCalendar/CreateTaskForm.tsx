@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import Loader from 'src/components/common/Loader';
 import { Button, Radio, RadioGroup } from 'src/components/ui';
@@ -12,7 +12,7 @@ type Props = {
 };
 
 const CreateTaskForm: React.FC<Props> = ({ error, onSubmit }) => {
-  const { data: subjectsData, isLoading } = useSWR<ISubject[]>(
+  const { data: subjectsData, isLoading } = useSWRImmutable<ISubject[]>(
     '/api/v0/classroom/subjects',
     fetcher,
   );

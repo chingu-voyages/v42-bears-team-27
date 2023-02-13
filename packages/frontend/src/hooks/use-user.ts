@@ -1,16 +1,13 @@
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import { fetcher } from 'src/services';
 
-const REFRESH_INTERVAL_MS = 1800000;
-
 function useUser(role: string | null) {
-  const { data, error, isLoading } = useSWR(
+  // NOTE: useSWR would need to be used once
+  // users are able to modify their data i.e. email, password,
+  const { data, error, isLoading } = useSWRImmutable(
     role ? `/api/v0/${role}` : null,
     fetcher,
-    {
-      refreshInterval: REFRESH_INTERVAL_MS,
-    },
   );
 
   return {
