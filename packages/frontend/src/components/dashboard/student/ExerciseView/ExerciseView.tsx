@@ -1,7 +1,7 @@
 import { useState, useReducer } from 'react';
 import { useRouter } from 'next/router';
 import type { ThemeUIStyleObject } from 'theme-ui';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import Loader from 'src/components/common/Loader';
 import { Button } from 'src/components/ui';
@@ -94,7 +94,7 @@ type Props = {
 const ExerciseView: React.FC<Props> = ({ onExerciseComplete }) => {
   const router = useRouter();
 
-  const { data: exerciseData, isLoading } = useSWR<IExercise>(
+  const { data: exerciseData, isLoading } = useSWRImmutable<IExercise>(
     router.query?.exerciseId
       ? `/api/v0/material/exercises/${router.query.exerciseId}`
       : null,
