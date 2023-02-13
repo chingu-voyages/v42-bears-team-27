@@ -51,8 +51,10 @@ const QuestionItem: React.FC<Props> = ({
           onChange={(e) => answerChangedHandler(e.currentTarget.value)}
           onBlur={(e) => {
             const sanitizedAnswer = e.currentTarget.value.toLowerCase().trim();
+            // Ignore case-sensitivity of answer in comparison
+            const isAnswerCorrect = sanitizedAnswer === answer.toLowerCase();
 
-            if (sanitizedAnswer === answer) {
+            if (isAnswerCorrect) {
               // If latest answer typed is correct compared to actual answer
               // Then call appropriate handler
               setIsCorrect(true);
