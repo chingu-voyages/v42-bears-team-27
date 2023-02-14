@@ -19,7 +19,7 @@ import {
   IconButton,
   Menu,
   MenuContent,
-  MenuItem,
+  // MenuItem,
   MenuRadioGroup,
   MenuRadioItem,
 } from 'src/components/ui';
@@ -49,6 +49,8 @@ const StudentAppBar: React.FC = () => {
   const toggleColorModeHandler = () => {
     setColorMode((prevState) => (prevState === 'light' ? 'dark' : 'light'));
   };
+
+  const handleMessageClick = (messageID) => {};
 
   const heading = classroomData?.name ? `Classroom: ${classroomData.name}` : '';
 
@@ -112,7 +114,37 @@ const StudentAppBar: React.FC = () => {
             >
               <MenuContent>
                 {inboxData?.map((message) => (
-                  <MenuItem key={message._id}>{message.messageHeader}</MenuItem>
+                  <Dialog key={message._id}>
+                    <DialogTrigger asChild>
+                      {/* <MenuItem>{message.messageHeader}</MenuItem> */}
+                      <Button
+                        onClick={() => handleMessageClick(message._id)}
+                        sx={{
+                          background: 'transparent',
+                          color: message.hasBeenRead
+                            ? 'transparent'
+                            : '#006edc',
+                        }}
+                      >
+                        {message.messageHeader}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent
+                      title="New Message"
+                      width="95%"
+                      height="90vh"
+                    >
+                      {/* TODO: add better styling for message */}
+                      <div>
+                        <h2>Message Header: </h2>
+                        <div>{message.messageHeader}</div>
+                      </div>
+                      <div>
+                        <h2>Message Body: </h2>
+                        <div>{message.messageBody}</div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 ))}
               </MenuContent>
             </Menu>
