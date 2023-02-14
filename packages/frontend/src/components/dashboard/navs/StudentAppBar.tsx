@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useColorMode } from 'theme-ui';
 import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import {
   MdOutlineNotifications,
   MdOutlineSettings,
@@ -26,7 +27,7 @@ import type { IClassroom, IMessageData } from 'src/interfaces';
 import { fetcher } from 'src/services';
 
 const StudentAppBar: React.FC = () => {
-  const { data: classroomData } = useSWR<IClassroom>(
+  const { data: classroomData } = useSWRImmutable<IClassroom>(
     '/api/v0/classroom',
     fetcher,
   );

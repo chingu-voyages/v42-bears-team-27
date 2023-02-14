@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import { MdAdd } from 'react-icons/md';
 
 import Loader from 'src/components/common/Loader';
@@ -20,7 +20,7 @@ const TeacherClasroomView: React.FC<Props> = ({
 }) => {
   const authCtx = useContext(AuthContext);
 
-  const { data: classroomData, isLoading } = useSWR<IClassroom>(
+  const { data: classroomData, isLoading } = useSWRImmutable<IClassroom>(
     '/api/v0/classroom',
     fetcher,
   );

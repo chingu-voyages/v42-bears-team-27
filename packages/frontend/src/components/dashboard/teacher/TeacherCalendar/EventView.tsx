@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import type { ThemeUIStyleObject } from 'theme-ui';
-import useSWR, { useSWRConfig } from 'swr';
-import { format } from 'date-fns';
+import { useSWRConfig } from 'swr';
+import useSWRImmutable from 'swr/immutable';
+import { format, isSameDay } from 'date-fns';
 import { MdAdd, MdCheck, MdEdit } from 'react-icons/md';
 
 import Loader from 'src/components/common/Loader';
@@ -54,7 +55,7 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
     data: eventData,
     isLoading,
     mutate: mutateEventData,
-  } = useSWR<IEvent>(
+  } = useSWRImmutable<IEvent>(
     eventId ? `/api/v0/classroom/event/${eventId}` : null,
     fetcher,
   );
@@ -92,6 +93,9 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
         setAlert(message);
         // Fetch updated event
         mutateEventData();
+        // NOTE: StudentTable component relies on classroom endpoint
+        // for student tasks and therefore need to revalidate classroom
+        mutate('/api/v0/classroom');
       } else {
         // Or otherwise, add a new classroom event with the data
         const newEvent = {
@@ -109,6 +113,8 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
         setAlert(message);
         // Revalidate classroom events
         mutate('/api/v0/classroom/events');
+        // NOTE: See line 96
+        mutate('/api/v0/classroom');
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -127,6 +133,8 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
       setAlert(message);
       // Fetch updated event
       mutateEventData();
+      // NOTE: See line 96
+      mutate('/api/v0/classroom');
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -139,22 +147,29 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
   const editEventHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const updatedDueDate = e.currentTarget.dueDate.value;
+    if (!eventData) {
+      return;
+    }
+
+    if (isSameDay(new Date(eventData?.dueDate), new Date(updatedDueDate))) {
+      // If due-date was not updated, then don't update event
+      setIsEditMode(false);
+      return;
+    }
 
     try {
-      if (eventData) {
-        // If there is already an event on the active
-        // then update that existing classroom event with the new data
-        const updateEvent = {
-          _id: eventData._id,
-          dueDate: updatedDueDate,
-        };
-        // Submit data to update event
-        const { message } = await putClassroomEvent(updateEvent);
-        // Update alert with api response message
-        setAlert(message);
-        // Update the local data immediately and revalidate (refetch)
-        mutateEventData({ ...eventData, dueDate: updatedDueDate });
-      }
+      // If there is already an event on the active
+      // then update that existing classroom event with the new data
+      const updateEvent = {
+        _id: eventData._id,
+        dueDate: updatedDueDate,
+      };
+      // Submit data to update event
+      const { message } = await putClassroomEvent(updateEvent);
+      // Update alert with api response message
+      setAlert(message);
+      // Update the local data immediately and revalidate (refetch)
+      mutateEventData({ ...eventData, dueDate: updatedDueDate });
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -177,6 +192,8 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
         setAlert(message);
         // Revalidate classroom events
         mutate('/api/v0/classroom/events');
+        // NOTE: See line 96
+        mutate('/api/v0/classroom');
         // Wait and close modal afterwards
         wait().then(() => setOpen(false));
         // Turn off edit mode

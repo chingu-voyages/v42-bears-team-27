@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { ThemeUIStyleObject } from 'theme-ui';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import { MdArrowBack, MdArrowForward } from 'react-icons/md';
 import ReactMarkdown from 'react-markdown';
 
@@ -31,7 +31,7 @@ type Props = {
 };
 
 const LessonView: React.FC<Props> = ({ lessonId, onLessonEnd }) => {
-  const { data: lessonData, isLoading } = useSWR<ILesson>(
+  const { data: lessonData, isLoading } = useSWRImmutable<ILesson>(
     lessonId ? `/api/v0/material/lessons/${lessonId}` : null,
     fetcher,
   );
