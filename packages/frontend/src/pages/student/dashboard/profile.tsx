@@ -24,6 +24,16 @@ const Profile: NextPageWithLayout = () => {
     fetcher,
   );
 
+  const timeSpent: {
+    [key: string]: number;
+  } = {};
+
+  if (data?.timeSpent) {
+    Object.keys(data?.timeSpent).forEach((subject) => {
+      timeSpent[subject] = data.timeSpent[subject] / 60000;
+    });
+  }
+
   return (
     <div
       sx={{
@@ -59,7 +69,7 @@ const Profile: NextPageWithLayout = () => {
             >
               <BarChart
                 chartLabel="Time Spent in Minutes on each Subject"
-                dataFromAPI={data.timeSpent}
+                dataFromAPI={timeSpent}
               />
               <BarChart
                 chartLabel="Points Gained in each Subject"
