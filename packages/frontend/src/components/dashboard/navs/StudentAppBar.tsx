@@ -24,7 +24,7 @@ import {
   MenuRadioItem,
 } from 'src/components/ui';
 import type { IClassroom, IMessageData } from 'src/interfaces';
-import { fetcher } from 'src/services';
+import { fetcher, postMarkMessageAsRead } from 'src/services';
 
 const StudentAppBar: React.FC = () => {
   const { data: classroomData } = useSWRImmutable<IClassroom>(
@@ -32,7 +32,7 @@ const StudentAppBar: React.FC = () => {
     fetcher,
   );
 
-  const { data: inboxData } = useSWR<IMessageData[]>(
+  const { data: inboxData, mutate } = useSWR<IMessageData[]>(
     '/api/v0/student/inbox',
     fetcher,
   );
@@ -50,7 +50,10 @@ const StudentAppBar: React.FC = () => {
     setColorMode((prevState) => (prevState === 'light' ? 'dark' : 'light'));
   };
 
-  const handleMessageClick = (messageID) => {};
+  const handleMessageClick = async (messageID: string) => {
+    await postMarkMessageAsRead(messageID);
+    mutate();
+  };
 
   const heading = classroomData?.name ? `Classroom: ${classroomData.name}` : '';
 
