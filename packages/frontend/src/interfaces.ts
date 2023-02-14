@@ -141,5 +141,6 @@ export interface IMessageData {
   _id: ID;
   messageID: ID;
   messageHeader: string;
+  messageBody: string;
   hasBeenRead: boolean;
 }
