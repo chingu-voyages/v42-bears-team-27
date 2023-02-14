@@ -169,6 +169,7 @@ const broadcastMessage = async (req, res) => {
           .status(400)
           .json({ message: `Student ${studentId} does not exist` });
       }
+      return null;
     });
     return res.status(200).json({ message: 'message sent!' });
   } catch (error) {

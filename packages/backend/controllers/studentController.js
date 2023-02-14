@@ -139,15 +139,21 @@ const markMessageAsRead = async (req, res) => {
         .status(400)
         .json({ message: `message with ID ${messageID} not found` });
     })
-    .catch((err) => {
-      console.log(
-        `Error while trying to update message.hasBeenRead to true for 
-         student ${studentID} and message ${messageID}, ${err}`,
-      );
-      return res.status(500).json({
+    .catch(() =>
+      res.status(500).json({
         message: `internal server error`,
-      });
-    });
+      }),
+    );
+
+  // .catch((err) => {
+  //   console.log(
+  //     `Error while trying to update message.hasBeenRead to true for
+  //      student ${studentID} and message ${messageID}, ${err}`,
+  //   );
+  //   return res.status(500).json({
+  //     message: `internal server error`,
+  //   });
+  // });
 };
 
 const getStudentProfile = async (req, res) => {
