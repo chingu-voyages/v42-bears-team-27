@@ -114,7 +114,7 @@ const getStudentInbox = async (_, res) => {
     }),
   );
 
-  return res.status(200).json(allMessages);
+  return res.status(200).json(allMessages.reverse());
 };
 
 const markMessageAsRead = async (req, res) => {
