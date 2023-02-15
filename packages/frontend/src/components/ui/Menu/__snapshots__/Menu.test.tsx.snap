@@ -8,6 +8,7 @@ exports[`<Menu /> Snapshots should match snapshot 1`] = `
 }
 
 .emotion-1 {
+  color: var(--theme-ui-colors-text);
   font-family: "Nunito",sans-serif;
   font-size: 16px;
   font-weight: 400;

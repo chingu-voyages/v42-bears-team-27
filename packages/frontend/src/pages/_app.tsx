@@ -3,9 +3,11 @@ import type { ReactElement } from 'react';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import { ThemeProvider } from 'theme-ui';
+import NextProgress from 'next-progress';
 
 import ErrorBoundary from 'src/components/common/ErrorBoundary';
 import { AuthProvider } from 'src/store/auth';
+import { SocketProvider } from 'src/store/socket';
 import theme from '../theme';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -21,13 +23,16 @@ const App: React.FC<AppPropsWithLayout> = ({ Component, pageProps }) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AuthProvider>
-        {getLayout(
-          <ErrorBoundary>
-            <Component {...pageProps} />
-          </ErrorBoundary>,
-        )}
-      </AuthProvider>
+      <SocketProvider>
+        <NextProgress delay={300} options={{ showSpinner: false }} />
+        <AuthProvider>
+          {getLayout(
+            <ErrorBoundary>
+              <Component {...pageProps} />
+            </ErrorBoundary>,
+          )}
+        </AuthProvider>
+      </SocketProvider>
     </ThemeProvider>
   );
 };

@@ -26,9 +26,9 @@ exports[`<RadioGroup /> Snapshots should match snapshot 1`] = `
 }
 
 .emotion-2 {
-  background-color: white;
-  color: var(--theme-ui-colors-primary);
+  background-color: transparent;
   border: 2px solid currentColor;
+  border-color: var(--theme-ui-colors-primary);
   width: 24px;
   height: 24px;
   border-radius: 100%;
@@ -36,15 +36,15 @@ exports[`<RadioGroup /> Snapshots should match snapshot 1`] = `
 }
 
 .emotion-2:hover {
-  background-color: #e6e6e6;
+  background-color: var(--theme-ui-colors-mutedShade);
 }
 
 .emotion-3 {
+  color: var(--theme-ui-colors-text);
   font-family: "Nunito",sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
-  color: var(--theme-ui-colors-primary);
 }
 
 <div>

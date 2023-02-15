@@ -8,13 +8,14 @@ const Subject = require('../models/subjectModel');
 const createTeacher = async (req, res) => {
   /* 
     title: 'Mrs', 
-    fullName: 'Jane Doe',
+    forename, 'Jane',
+    surname,  'Doe',
     email: 'janedoe@example.com'
     password: '123456'
     confirmPassword: '123456'
   */
 
-  const { title, fullName, email, password } = req.body;
+  const { title, forename, surname, email, password } = req.body;
 
   const passwordHash = Teacher.hashPassword(password);
 
@@ -41,13 +42,15 @@ const createTeacher = async (req, res) => {
     if (!subjects) {
       return res.status(500).json({ message: 'Internal server error' });
     }
+
     subjects.map((subject, idx) => {
       classroom.subjects[idx] = subject._id;
     });
 
     const teacher = await Teacher.create({
       title,
-      fullName,
+      forename,
+      surname,
       email,
       passwordHash,
       classroom: classroom._id,
@@ -73,7 +76,8 @@ const createTeacher = async (req, res) => {
       .json({
         _id: teacher._id,
         title: teacher.title,
-        fullName: teacher.fullName,
+        forename: teacher.forename,
+        surname: teacher.surname,
       });
   } catch (error) {
     return res.status(500).json({ message: 'Internal server error' });
@@ -82,11 +86,12 @@ const createTeacher = async (req, res) => {
 
 // To check if still authenticated when continuing the session
 const getTeacher = async (_, res) => {
-  const { _id, title, fullName } = res.locals.user;
+  const { _id, title, forename, surname } = res.locals.user;
   return res.json({
     _id,
     title,
-    fullName,
+    forename,
+    surname,
   });
 };
 
@@ -160,10 +165,11 @@ const broadcastMessage = async (req, res) => {
         });
         await student.save();
       } else {
-        res
+        return res
           .status(400)
-          .json({ message: `Student ${student._id} does not exist` });
+          .json({ message: `Student ${studentId} does not exist` });
       }
+      return null;
     });
     return res.status(200).json({ message: 'message sent!' });
   } catch (error) {

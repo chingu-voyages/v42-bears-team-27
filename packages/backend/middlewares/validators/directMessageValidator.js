@@ -38,7 +38,7 @@ exports.validateDirectMessage = [
     .escape()
 
     .notEmpty()
-    .withMessage('Stuent ID is required')
+    .withMessage('Student ID is required')
     .bail(),
 
   (req, res, next) => {

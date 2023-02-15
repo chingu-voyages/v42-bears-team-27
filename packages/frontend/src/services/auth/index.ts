@@ -46,17 +46,15 @@ export const postLoginExistingUser = (
       throw error;
     });
 
-export const postLogoutExistingUser = () =>
+// GET REQUESTS
+export const logoutExistingUser = () =>
   fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/auth/logout`, {
-    method: 'POST',
     credentials: 'include',
   })
     .then((res) => {
       if (!res.ok) {
         throw Error('Server error!');
       }
-
-      return res.json();
     })
     .catch((error) => {
       throw error;

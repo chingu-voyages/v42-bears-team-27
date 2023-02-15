@@ -8,6 +8,7 @@ const loginTeacher = async (req, res) => {
       _id: user._id,
       email: user.email,
     };
+
     return res
       .cookie('auth', JSON.stringify(payload), {
         secure: process.env.NODE_ENV === 'production',
@@ -18,7 +19,8 @@ const loginTeacher = async (req, res) => {
       .json({
         _id: user._id,
         title: user.title,
-        fullName: user.fullName,
+        forename: user.forename,
+        surname: user.surname,
       });
   });
 };
@@ -33,6 +35,7 @@ const loginStudent = async (req, res) => {
       _id: user._id,
       email: user.email,
     };
+
     res
       .cookie('auth', JSON.stringify(payload), {
         secure: process.env.NODE_ENV === 'production',
@@ -43,7 +46,8 @@ const loginStudent = async (req, res) => {
       .status(200)
       .json({
         _id: user._id,
-        fullName: user.fullName,
+        forename: user.forename,
+        surname: user.surname,
       });
   });
 };

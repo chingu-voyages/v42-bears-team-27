@@ -1,8 +1,9 @@
-import { useState, useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { AuthContext } from 'src/store/auth';
+import useUser from 'src/hooks/use-user';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -17,32 +18,25 @@ const AuthLayout: React.FC<LayoutProps> = ({
 }) => {
   const router = useRouter();
   const authCtx = useContext(AuthContext);
-  const [isMounted, setIsMounted] = useState(false);
+
+  const { isError } = useUser(authCtx?.role ?? null);
 
   useEffect(() => {
     if (!authCtx?.isLoggedIn) {
       router.replace('/');
-    } else {
-      setIsMounted(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authCtx?.isLoggedIn]);
 
-  if (!isMounted) {
-    return (
-      <p
-        sx={{
-          variant: 'text.h3',
-          position: 'absolute',
-          top: '40%',
-          left: '50%',
-          translate: '-50% -50%',
-        }}
-      >
-        Loading...
-      </p>
-    );
-  }
+  useEffect(() => {
+    if (isError) {
+      // If error fetching user then cookies have experied
+      // Therefore log user out of app
+      authCtx?.onLogout();
+      router.replace('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isError]);
 
   return (
     <>

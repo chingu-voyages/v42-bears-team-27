@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import useSWR from 'swr';
+import { useSWRConfig } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import validator from 'validator';
 
 import { Button, TextField, Checkbox } from 'src/components/ui';
@@ -21,7 +22,9 @@ const nameValidator = (value: string) => {
 };
 
 const ClassroomCreation: React.FC = () => {
-  const { data: subjectsData } = useSWR<ISubject[]>(
+  const { mutate } = useSWRConfig();
+
+  const { data: subjectsData } = useSWRImmutable<ISubject[]>(
     '/api/v0/classroom/subjects',
     fetcher,
   );
@@ -76,8 +79,9 @@ const ClassroomCreation: React.FC = () => {
       // Submit form data
       const msg = await putClassroom(data);
       // Update alert with api response message
-      setAlert(msg);
+      setAlert(JSON.stringify(msg));
       nameResetHandler();
+      mutate('/api/v0/classroom');
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -123,7 +127,7 @@ const ClassroomCreation: React.FC = () => {
             alignItems: 'center',
             flexDirection: 'column',
             border: '1px solid',
-            borderColor: 'gray',
+            borderColor: 'primary',
             mt: 4,
           }}
         >
@@ -153,7 +157,7 @@ const ClassroomCreation: React.FC = () => {
           sx={{
             display: 'flex',
             justifyContent: 'center',
-            mt: 2,
+            mt: 4,
             mb: 5,
           }}
         >

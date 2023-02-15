@@ -2,6 +2,7 @@
 
 exports[`<IconButton /> Snapshots should match snapshot 1`] = `
 .emotion-0 {
+  color: var(--theme-ui-colors-text);
   font-family: "Nunito",sans-serif;
   font-size: 16px;
   font-weight: 400;

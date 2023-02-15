@@ -1,6 +1,7 @@
+import type { IDirectMessageStudent } from 'src/interfaces';
+
 // POST REQUESTS
-// TODO: Add interface for newMessage
-export const postDirectMessageToStudent = (newMessage: any) =>
+export const postDirectMessageToStudent = (newMessage: IDirectMessageStudent) =>
   fetch(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/teacher/send-direct-message`,
     {

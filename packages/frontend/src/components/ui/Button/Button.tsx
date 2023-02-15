@@ -41,6 +41,7 @@ export interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
    */
   icon?: React.ReactNode;
   sx?: ThemeUIStyleObject;
+  autoFocus?: boolean;
 }
 
 export const Button: ForwardRefExoticComponent<

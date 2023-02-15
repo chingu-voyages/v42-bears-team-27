@@ -1,9 +1,11 @@
-import { useState } from 'react';
-import useSWR, { useSWRConfig } from 'swr';
-import { format } from 'date-fns';
+import { useState, useEffect } from 'react';
+import type { ThemeUIStyleObject } from 'theme-ui';
+import { useSWRConfig } from 'swr';
+import useSWRImmutable from 'swr/immutable';
+import { format, isSameDay } from 'date-fns';
 import { MdAdd, MdCheck, MdEdit } from 'react-icons/md';
-import { BsEraser } from 'react-icons/bs';
 
+import Loader from 'src/components/common/Loader';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -14,7 +16,7 @@ import {
   DialogTrigger,
   IconButton,
 } from 'src/components/ui';
-import type { IEvent, ITask } from 'src/interfaces';
+import type { IEvent, IEventTask } from 'src/interfaces';
 import {
   fetcher,
   postClassroomEvent,
@@ -23,11 +25,24 @@ import {
   deleteClassroomTask,
   putClassroomEvent,
 } from 'src/services';
-import { titleCase } from 'src/utils';
 import CreateTaskForm from './CreateTaskForm';
+import TaskItem from './TaskItem';
 
 // eslint-disable-next-line no-promise-executor-return
 const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
+
+const containerStyles: ThemeUIStyleObject = {
+  variant: 'text.label',
+  position: 'relative',
+  minHeight: '20rem',
+  color: 'text',
+  p: 4,
+  bg: 'secondary',
+  borderTop: '3px solid',
+  borderColor: 'primary',
+  borderBottomRightRadius: 7,
+  borderBottomLeftRadius: 7,
+};
 
 type Props = {
   eventId: string | null;
@@ -36,7 +51,11 @@ type Props = {
 
 const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
   const { mutate } = useSWRConfig();
-  const { data: eventData, mutate: mutateEventData } = useSWR<IEvent>(
+  const {
+    data: eventData,
+    isLoading,
+    mutate: mutateEventData,
+  } = useSWRImmutable<IEvent>(
     eventId ? `/api/v0/classroom/event/${eventId}` : null,
     fetcher,
   );
@@ -46,7 +65,21 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<string | null>(null);
 
-  const addTaskHandler = async (newTask: Omit<ITask, '_id' | 'event'>) => {
+  useEffect(() => {
+    const timer = setTimeout(() => setAlert(null), 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [alert]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setError(null), 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [error]);
+
+  const addTaskHandler = async (newTask: Omit<IEventTask, '_id' | 'event'>) => {
     try {
       if (eventData) {
         // If there is already an event on the active
@@ -60,6 +93,9 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
         setAlert(message);
         // Fetch updated event
         mutateEventData();
+        // NOTE: StudentTable component relies on classroom endpoint
+        // for student tasks and therefore need to revalidate classroom
+        mutate('/api/v0/classroom');
       } else {
         // Or otherwise, add a new classroom event with the data
         const newEvent = {
@@ -77,6 +113,8 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
         setAlert(message);
         // Revalidate classroom events
         mutate('/api/v0/classroom/events');
+        // NOTE: See line 96
+        mutate('/api/v0/classroom');
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -95,6 +133,8 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
       setAlert(message);
       // Fetch updated event
       mutateEventData();
+      // NOTE: See line 96
+      mutate('/api/v0/classroom');
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -107,22 +147,29 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
   const editEventHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const updatedDueDate = e.currentTarget.dueDate.value;
+    if (!eventData) {
+      return;
+    }
+
+    if (isSameDay(new Date(eventData?.dueDate), new Date(updatedDueDate))) {
+      // If due-date was not updated, then don't update event
+      setIsEditMode(false);
+      return;
+    }
 
     try {
-      if (eventData) {
-        // If there is already an event on the active
-        // then update that existing classroom event with the new data
-        const updateEvent = {
-          _id: eventData._id,
-          dueDate: updatedDueDate,
-        };
-        // Submit data to update event
-        const { message } = await putClassroomEvent(updateEvent);
-        // Update alert with api response message
-        setAlert(message);
-        // Update the local data immediately and revalidate (refetch)
-        mutateEventData({ ...eventData, dueDate: updatedDueDate });
-      }
+      // If there is already an event on the active
+      // then update that existing classroom event with the new data
+      const updateEvent = {
+        _id: eventData._id,
+        dueDate: updatedDueDate,
+      };
+      // Submit data to update event
+      const { message } = await putClassroomEvent(updateEvent);
+      // Update alert with api response message
+      setAlert(message);
+      // Update the local data immediately and revalidate (refetch)
+      mutateEventData({ ...eventData, dueDate: updatedDueDate });
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -145,6 +192,8 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
         setAlert(message);
         // Revalidate classroom events
         mutate('/api/v0/classroom/events');
+        // NOTE: See line 96
+        mutate('/api/v0/classroom');
         // Wait and close modal afterwards
         wait().then(() => setOpen(false));
         // Turn off edit mode
@@ -159,21 +208,26 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div sx={containerStyles}>
+        <Loader>Loading Event...</Loader>
+      </div>
+    );
+  }
+
   return (
-    <div
-      sx={{
-        variant: 'text.label',
-        position: 'relative',
-        height: 320,
-        color: 'primary',
-        border: '1px solid',
-        borderColor: 'gray',
-        p: 3,
-      }}
-    >
+    <div sx={containerStyles}>
       <Dialog>
         <DialogTrigger asChild>
-          <IconButton sx={{ position: 'absolute', top: 3, right: 5 }}>
+          <IconButton
+            aria-label="Create task"
+            onClick={() => {
+              setError(null);
+              setAlert(null);
+            }}
+            sx={{ position: 'absolute', top: 3, right: 5 }}
+          >
             <MdAdd size={32} />
           </IconButton>
         </DialogTrigger>
@@ -184,15 +238,27 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
         >
           <CreateTaskForm error={error} onSubmit={addTaskHandler} />
           {alert && (
-            <p sx={{ variant: 'text.h4', color: 'info', textAlign: 'center' }}>
+            <p
+              sx={{
+                variant: 'text.h4',
+                color: 'info',
+                textAlign: 'center',
+              }}
+            >
               {alert}
             </p>
           )}
         </DialogContent>
       </Dialog>
-      <div>
+
+      <div
+        sx={{
+          display: 'inline',
+        }}
+      >
         {eventData && !isEditMode && (
           <IconButton
+            aria-label="Edit event"
             sx={{ position: 'absolute', top: '20px', right: 3 }}
             onClick={() => setIsEditMode(true)}
           >
@@ -233,6 +299,7 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
                   />
                 </label>
                 <IconButton
+                  aria-label="Update event"
                   sx={{ position: 'absolute', top: '20px', right: 3 }}
                   // @ts-ignore
                   type="submit"
@@ -243,35 +310,16 @@ const EventView: React.FC<Props> = ({ eventId, currentDay }) => {
             ))}
         </div>
 
-        <div sx={{ height: '40%', overflowY: 'auto' }}>
+        <div sx={{ overflowY: 'auto' }}>
           {eventData?.tasks && eventData.tasks.length > 0 ? (
-            eventData.tasks.map(({ _id, type, subject, topic }) => (
-              <div
+            eventData.tasks.map(({ _id, assignmentModel }) => (
+              <TaskItem
                 key={_id}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  columnGap: 1,
-                  maxWidth: '95%',
-                  width: 400,
-                  mx: 'auto',
-                }}
-              >
-                <div
-                  sx={{ display: 'flex', alignItems: 'center', columnGap: 1 }}
-                >
-                  <p sx={{ width: 128 }}>
-                    {`${type === 'lesson' ? '🔵' : '🟡'} ${titleCase(type)}:`}
-                  </p>
-                  <p>{titleCase(`${subject} - ${topic}`)}</p>
-                </div>
-                {isEditMode && (
-                  <IconButton onClick={() => removeTaskHandler(_id)}>
-                    <BsEraser size={24} />
-                  </IconButton>
-                )}
-              </div>
+                taskId={_id}
+                type={assignmentModel}
+                isEditMode={isEditMode}
+                onRemoveTask={removeTaskHandler}
+              />
             ))
           ) : (
             <p sx={{ textAlign: 'center', py: 3, m: 0 }}>No tasks</p>

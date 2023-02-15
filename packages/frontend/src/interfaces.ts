@@ -1,5 +1,5 @@
 type ID = string;
-type TaskType = 'lesson' | 'exercise' | 'test';
+type TaskRef = 'Lesson' | 'Exercise';
 
 export interface IUserCredentials {
   email: string;
@@ -8,25 +8,35 @@ export interface IUserCredentials {
 
 export interface INewTeacherCredentials {
   title: string;
-  fullName: string;
+  forename: string;
+  surname: string;
   email: string;
   password: string;
 }
 
 export interface INewStudentCredentials {
-  fullName: string;
+  forename: string;
+  surname: string;
   email: string;
+}
+
+export interface IDirectMessageStudent {
+  studentID: ID;
+  messageHeader: string;
+  messageBody: string;
 }
 
 export interface ITeacher {
   _id: ID;
   title: string;
-  fullName: string;
+  forename: string;
+  surname: string;
 }
 
 export interface IStudent {
   _id: ID;
-  fullName: string;
+  forename: string;
+  surname: string;
   inbox: {
     messageID: ID;
     hasBeenRead: boolean;
@@ -37,41 +47,99 @@ export interface IStudent {
 export interface IStudentTask {
   taskID: ID;
   completed: boolean;
+  event: ID | IEvent;
 }
 
-export interface ITask {
+export interface IStudentProfile {
   _id: ID;
-  event: ID;
-  type: TaskType;
-  subject: string;
+  timeSpent: {
+    [key: string]: number;
+  };
+  points: {
+    [key: string]: number;
+  };
+}
+
+export interface IExerciseContent {
+  _id: ID;
+  page: {
+    _id: ID;
+    questions: {
+      _id: ID;
+      prompt: string;
+      answer: string;
+    }[];
+  };
+}
+
+export interface IExercise {
   topic: string;
+  subject: ID | ISubject;
+  content: IExerciseContent;
+}
+
+export interface IEventTask {
+  _id: ID;
+  event: ID | IEvent;
+  assignment: ID | ILesson | IExercise;
+  assignmentModel: TaskRef;
 }
 
 export interface IEvent {
   _id: ID;
   dueDate: string;
   setAt: string;
-  tasks: ITask[];
+  tasks: IEventTask[];
+}
+
+export interface ITopicType {
+  _id: ID;
+  material: ID | ILesson | IExercise;
+  materialModel: TaskRef;
+}
+
+export interface ILessonContent {
+  _id: ID;
+  pages: {
+    _id: ID;
+    headline: string;
+    text: string;
+  }[];
+}
+
+export interface ILesson {
+  topic: string;
+  subject: ID | ISubject;
+  content: ILessonContent;
 }
 
 export interface ITopic {
   _id: ID;
   slug: string;
   title: string;
-  types: TaskType[];
+  types: (ID | ITopicType)[];
 }
 
 export interface ISubject {
   _id: ID;
+  slug: string;
   title: string;
+  imageUrl: string;
   topics: ITopic[];
 }
 
 export interface IClassroom {
   _id: ID;
   name: string;
-  teacher: ID;
+  teacher: ITeacher;
   students: IStudent[];
   subjects: ID[];
   events: ID[];
+}
+
+export interface IMessageData {
+  _id: ID;
+  messageHeader: string;
+  messageBody: string;
+  hasBeenRead: boolean;
 }

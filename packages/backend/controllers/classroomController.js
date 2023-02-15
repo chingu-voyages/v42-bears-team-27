@@ -6,10 +6,9 @@ const Task = require('../models/taskModel');
 const getClassroom = async (_, res) => {
   const { user } = res.locals;
   try {
-    const classroom = await Classroom.findById(user.classroom).populate(
-      'students',
-      'fullName tasks',
-    );
+    const classroom = await Classroom.findById(user.classroom)
+      .populate('students', 'forename surname tasks')
+      .populate('teacher', 'title forename surname');
     if (!classroom) {
       return res.status(400).json({ message: 'Classroom not found' });
     }
@@ -69,22 +68,26 @@ const deleteClassroom = async (_, res) => {
 };
 
 /// Classroom Subjects
-const getClassroomSubjects = async (_, res) => {
-  const { id: teacherId, classroom } = res.locals.user;
+const getClassroomSubjects = async (req, res) => {
+  const { classroom: classroomId } = res.locals.user;
   try {
-    const { teacher, subjects } = await Classroom.findById(classroom).populate(
+    const classroom = await Classroom.findById(classroomId).populate(
       'subjects',
     );
-    if (!teacher) {
-      return res.status(400).json({ error: 'Classroom not found' });
+    if (!classroom) {
+      return res.status(400).json({ message: 'Classroom not found' });
     }
-    if (!teacher._id.equals(teacherId)) {
-      return res.status(401).json({ error: 'Unauthorized access' });
+
+    let { subjects } = classroom;
+
+    if (req.query.name) {
+      // If name is provided in query then find subjects with exact name
+      subjects = subjects.filter((subject) => subject.slug === req.query.name);
     }
 
     return res.json(subjects);
   } catch (err) {
-    return res.status(500).json({ err });
+    return res.status(500).json(err);
   }
 };
 
@@ -93,12 +96,17 @@ const getClassroomEvent = async (req, res) => {
   const { user } = res.locals;
   const { id: requestId } = req.params;
   try {
-    const classroom = await Classroom.findById(user.classroom);
+    // search by classroom to restrict search to only user's classroom
+    const classroom = await Classroom.findById(user.classroom).populate({
+      path: 'events',
+      populate: {
+        path: 'tasks',
+      },
+    });
     if (!classroom) {
       return res.status(400).json({ message: 'Classroom not found' });
     }
-    // TODO send only one request to DB & make sure event is inside teacher classroom
-    const event = await Event.findById(requestId).populate('tasks');
+    const event = classroom.events.find((e) => e._id.toString() === requestId);
     if (!event) return res.status(400).json({ message: 'event not found!' });
 
     return res.json(event);
@@ -232,9 +240,28 @@ const deleteClassroomEvent = async (req, res) => {
 };
 
 /// Classroom Tasks
+const getTask = async (req, res) => {
+  const { id: taskId } = req.params;
+  try {
+    const task = await Task.findById(taskId).populate({
+      path: 'assignment',
+      populate: {
+        path: 'subject',
+      },
+    });
+    if (!task) {
+      return res.status(400).json({ message: 'Task not found' });
+    }
+
+    return res.json(task);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
 const addTask = async (req, res) => {
   const { classroom: classroomId } = res.locals.user;
-  const { event: eventId, type, subject, topic } = req.body;
+  const { event: eventId, assignment, assignmentModel } = req.body;
   try {
     const event = await Event.findById(eventId);
     if (!event) {
@@ -246,9 +273,8 @@ const addTask = async (req, res) => {
 
     const newTask = await Task.create({
       event: eventId,
-      type,
-      subject,
-      topic,
+      assignment,
+      assignmentModel,
     });
     if (!newTask) {
       return res.status(500).json({ message: 'Server error' });
@@ -265,7 +291,7 @@ const addTask = async (req, res) => {
 
     classroom.students.map(async (studentId) => {
       const student = await Student.findById(studentId);
-      student.tasks.push({ taskID: newTask._id });
+      student.tasks.push({ taskID: newTask._id, event: eventId });
       await student.save();
     });
 
@@ -275,7 +301,19 @@ const addTask = async (req, res) => {
   }
 };
 
-// const updateTask = async (req, res) => {}
+// const updateTask = async (req, res) => {
+//   const { id: requestId } = req.params;
+//   try {
+//     const task = await Task.findById(requestId);
+//     if (!task) {
+//       return res.status(400).json({ message: 'task not found!' });
+//     }
+//     // TODO update task
+//     return res.json({ message: 'task updated!' });
+//   } catch (err) {
+//     return res.status(500).json(err);
+//   }
+// }
 
 const deleteTask = async (req, res) => {
   const { classroom: classroomId } = res.locals.user;
@@ -333,6 +371,8 @@ module.exports = {
   addClassroomEvent,
   updateClassroomEvent,
   deleteClassroomEvent,
+  getTask,
   addTask,
+  // updateTask,
   deleteTask,
 };

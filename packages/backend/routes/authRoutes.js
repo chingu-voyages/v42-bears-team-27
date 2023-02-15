@@ -12,6 +12,7 @@ const {
   logout,
 } = require('../controllers/authController');
 
+// "http://localhost:5000/api/v0/auth"
 router.post(
   '/teacher',
   validateLoginCredentials,
@@ -24,7 +25,6 @@ router.post(
   authenticateStudent,
   loginStudent,
 );
-// "http://localhost:5000/api/v0/auth/logout"
 router.get('/logout', logout);
 
 module.exports = router;

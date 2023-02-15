@@ -4,7 +4,12 @@ const bcrypt = require('bcrypt');
 
 const StudentSchema = new mongoose.Schema(
   {
-    fullName: {
+    forename: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    surname: {
       type: String,
       required: true,
       trim: true,
@@ -18,7 +23,6 @@ const StudentSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      trim: true,
     },
     classroom: {
       type: mongoose.Schema.Types.ObjectId,
@@ -50,8 +54,21 @@ const StudentSchema = new mongoose.Schema(
           type: Boolean,
           default: false,
         },
+        timeSpent: {
+          type: Number,
+          default: 0,
+        },
+        event: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Event',
+          required: true,
+        },
       },
     ],
+    socketID: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,

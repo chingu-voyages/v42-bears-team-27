@@ -11,15 +11,29 @@ const theme: Theme = {
   colors: {
     text: '#000',
     background: '#fff',
-    primary: '#495464',
-    secondary: '#e8e8e8',
+    primary: '#79a3c1',
+    primaryShade: '#6d93ae',
+    secondary: '#f0eeed',
+    secondaryShade: '#d8d6d5',
     muted: '#f4f4f2',
-    gray: '#bbbfca',
+    mutedShade: '#dcdcda',
     error: '#f44336',
     warning: '#ffa726',
     info: '#29b6f6',
     success: '#66bb6a',
     accent: '#664e88',
+    modes: {
+      dark: {
+        text: '#fff',
+        background: '#1f1f1f',
+        primary: '#30475E',
+        primaryShade: '#2b4055',
+        secondary: '#313131',
+        secondaryShade: '#2c2c2c',
+        muted: '#3f3f3f',
+        mutedShade: '#393939',
+      },
+    },
   },
   fontSizes: [12, 14, 16, 20, 24, 32, 48, 64],
   fontWeights: {
@@ -36,36 +50,42 @@ const theme: Theme = {
   },
   text: {
     label: {
+      color: 'text',
       fontFamily: 'body',
       fontSize: 16,
       fontWeight: 'body',
       lineHeight: 'body',
     },
     link: {
+      color: 'text',
       fontFamily: 'body',
       fontSize: 18,
       fontWeight: 'semibold',
       lineHeight: 'auto',
     },
     h1: {
+      color: 'text',
       fontFamily: 'heading',
       fontSize: 48.83,
       fontWeight: 'medium',
       lineHeight: 'heading',
     },
     h2: {
+      color: 'text',
       fontFamily: 'heading',
       fontSize: 39.06,
       fontWeight: 'medium',
       lineHeight: 'heading',
     },
     h3: {
+      color: 'text',
       fontFamily: 'heading',
       fontSize: 31.25,
       fontWeight: 'medium',
       lineHeight: 1.3,
     },
     h4: {
+      color: 'text',
       fontFamily: 'heading',
       fontSize: 21,
       fontWeight: 'medium',
@@ -76,25 +96,23 @@ const theme: Theme = {
     primary: {
       filled: {
         bg: 'primary',
-        color: 'white',
+        color: 'text',
         border: 'none',
         '&:hover': {
-          bg: '#424c5a',
+          bg: 'primaryShade',
         },
       },
       outlined: {
-        bg: 'white',
-        color: 'primary',
-        border: '2px solid currentColor ',
+        bg: 'transparent',
+        border: '2px solid currentColor',
+        borderColor: 'primary',
         '&:hover': {
-          bg: '#e6e6e6',
+          bg: 'mutedShade',
         },
       },
     },
     danger: {
       bg: 'error',
-      color: 'white',
-      border: '2px solid currentColor ',
       '&:hover': {
         bg: '#dc3c31',
       },

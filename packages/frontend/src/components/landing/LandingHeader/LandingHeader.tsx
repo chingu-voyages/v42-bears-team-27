@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 import {
   Button,
   ButtonLink,
@@ -5,6 +7,7 @@ import {
   DialogTrigger,
   DialogContent,
 } from 'src/components/ui';
+import logoImg from 'public/logo.png';
 import Login from './Login';
 
 const LandingHeader: React.FC = () => (
@@ -14,9 +17,20 @@ const LandingHeader: React.FC = () => (
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
+        columnGap: 4,
       }}
     >
-      <h1
+      <Image
+        sx={{
+          maxWidth: '100%',
+          height: 'auto',
+        }}
+        src={logoImg}
+        alt="RemoteClass logo"
+        width={320}
+        height={160}
+      />
+      {/* <h1
         sx={{
           variant: 'text.h2',
           m: 0,
@@ -24,8 +38,16 @@ const LandingHeader: React.FC = () => (
         }}
       >
         RemoteClass
-      </h1>
-      <div sx={{ display: 'flex', columnGap: 3 }}>
+      </h1> */}
+
+      <div
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          gap: 3,
+        }}
+      >
         <Dialog>
           <DialogTrigger asChild>
             <Button>Login</Button>

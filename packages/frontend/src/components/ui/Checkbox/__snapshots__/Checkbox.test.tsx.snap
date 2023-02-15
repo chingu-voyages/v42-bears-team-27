@@ -14,9 +14,9 @@ exports[`<Checkbox /> Snapshots should match snapshot 1`] = `
 }
 
 .emotion-1 {
-  background-color: white;
-  color: var(--theme-ui-colors-primary);
+  background-color: transparent;
   border: 2px solid currentColor;
+  border-color: var(--theme-ui-colors-primary);
   padding: 0;
   width: calc(18px + 4px);
   height: calc(18px + 4px);
@@ -24,7 +24,7 @@ exports[`<Checkbox /> Snapshots should match snapshot 1`] = `
 }
 
 .emotion-1:hover {
-  background-color: #e6e6e6;
+  background-color: var(--theme-ui-colors-mutedShade);
 }
 
 <div>
@@ -57,9 +57,9 @@ exports[`<Checkbox /> Snapshots should match snapshot with label prop equals Foo
 }
 
 .emotion-1 {
-  background-color: white;
-  color: var(--theme-ui-colors-primary);
+  background-color: transparent;
   border: 2px solid currentColor;
+  border-color: var(--theme-ui-colors-primary);
   padding: 0;
   width: calc(18px + 4px);
   height: calc(18px + 4px);
@@ -67,10 +67,11 @@ exports[`<Checkbox /> Snapshots should match snapshot with label prop equals Foo
 }
 
 .emotion-1:hover {
-  background-color: #e6e6e6;
+  background-color: var(--theme-ui-colors-mutedShade);
 }
 
 .emotion-2 {
+  color: var(--theme-ui-colors-text);
   font-family: "Roboto",sans-serif;
   font-size: 14px;
   font-weight: 400;
