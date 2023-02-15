@@ -19,7 +19,6 @@ import {
   IconButton,
   Menu,
   MenuContent,
-  // MenuItem,
   MenuRadioGroup,
   MenuRadioItem,
 } from 'src/components/ui';
@@ -119,32 +118,49 @@ const StudentAppBar: React.FC = () => {
                 {inboxData?.map((message) => (
                   <Dialog key={message._id}>
                     <DialogTrigger asChild>
-                      {/* <MenuItem>{message.messageHeader}</MenuItem> */}
                       <Button
                         onClick={() => handleMessageClick(message._id)}
                         sx={{
                           background: 'transparent',
-                          color: message.hasBeenRead
-                            ? 'transparent'
-                            : '#006edc',
+                          color: message.hasBeenRead ? 'transparent' : 'info',
                         }}
                       >
                         {message.messageHeader}
                       </Button>
                     </DialogTrigger>
                     <DialogContent
-                      title="New Message"
-                      width="95%"
-                      height="90vh"
+                      title="Message From Your Teacher"
+                      width="60vw"
+                      height="min-content"
                     >
-                      {/* TODO: add better styling for message */}
                       <div>
-                        <h2>Message Header: </h2>
-                        <div>{message.messageHeader}</div>
+                        <p
+                          sx={{
+                            variant: 'text.h3',
+                            textAlign: 'center',
+                            fontSize: 4,
+                          }}
+                        >
+                          {message.messageHeader}
+                        </p>
                       </div>
-                      <div>
-                        <h2>Message Body: </h2>
-                        <div>{message.messageBody}</div>
+                      <div
+                        sx={{
+                          maxWidth: '55ch',
+                          minHeight: '16rem',
+                          m: 4,
+                          mx: 'auto',
+                          p: 4,
+                          pb: 5,
+                          border: '2px solid',
+                          borderColor: 'accent',
+                          borderRadius: 5,
+                          bg: 'mutedShade',
+                        }}
+                      >
+                        <p sx={{ variant: 'text.label' }}>
+                          {message.messageBody}
+                        </p>
                       </div>
                     </DialogContent>
                   </Dialog>
