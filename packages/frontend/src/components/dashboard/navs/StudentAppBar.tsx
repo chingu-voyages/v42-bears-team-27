@@ -19,12 +19,11 @@ import {
   IconButton,
   Menu,
   MenuContent,
-  MenuItem,
   MenuRadioGroup,
   MenuRadioItem,
 } from 'src/components/ui';
 import type { IClassroom, IMessageData } from 'src/interfaces';
-import { fetcher } from 'src/services';
+import { fetcher, postMarkMessageAsRead } from 'src/services';
 
 const StudentAppBar: React.FC = () => {
   const { data: classroomData } = useSWRImmutable<IClassroom>(
@@ -32,7 +31,7 @@ const StudentAppBar: React.FC = () => {
     fetcher,
   );
 
-  const { data: inboxData } = useSWR<IMessageData[]>(
+  const { data: inboxData, mutate } = useSWR<IMessageData[]>(
     '/api/v0/student/inbox',
     fetcher,
   );
@@ -48,6 +47,11 @@ const StudentAppBar: React.FC = () => {
 
   const toggleColorModeHandler = () => {
     setColorMode((prevState) => (prevState === 'light' ? 'dark' : 'light'));
+  };
+
+  const handleMessageClick = async (messageID: string) => {
+    await postMarkMessageAsRead(messageID);
+    mutate();
   };
 
   const heading = classroomData?.name ? `Classroom: ${classroomData.name}` : '';
@@ -112,7 +116,54 @@ const StudentAppBar: React.FC = () => {
             >
               <MenuContent>
                 {inboxData?.map((message) => (
-                  <MenuItem key={message._id}>{message.messageHeader}</MenuItem>
+                  <Dialog key={message._id}>
+                    <DialogTrigger asChild>
+                      <Button
+                        onClick={() => handleMessageClick(message._id)}
+                        sx={{
+                          background: 'transparent',
+                          color: message.hasBeenRead ? 'transparent' : 'info',
+                        }}
+                      >
+                        {message.messageHeader}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent
+                      title="Message From Your Teacher"
+                      width="60vw"
+                      height="min-content"
+                    >
+                      <div>
+                        <p
+                          sx={{
+                            variant: 'text.h3',
+                            textAlign: 'center',
+                            fontSize: 4,
+                          }}
+                        >
+                          {message.messageHeader}
+                        </p>
+                      </div>
+                      <div
+                        sx={{
+                          maxWidth: '55ch',
+                          minHeight: '16rem',
+                          m: 4,
+                          mx: 'auto',
+                          p: 4,
+                          pb: 5,
+                          border: '2px solid',
+                          borderColor: 'accent',
+                          borderRadius: 5,
+                          bg: 'mutedShade',
+                        }}
+                      >
+                        <p sx={{ variant: 'text.label' }}>
+                          {message.messageBody}
+                        </p>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 ))}
               </MenuContent>
             </Menu>
@@ -199,24 +250,30 @@ const StudentAppBar: React.FC = () => {
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
+                      maxHeight: '95vh',
                       pt: 3,
                       pb: 5,
+                      overflowY: 'auto',
                     }}
                   >
                     {inboxData?.map((message) => (
                       <div
                         key={message._id}
                         sx={{
-                          varaint: 'text.h4',
                           width: '95%',
                           bg: 'info',
-                          color: 'black',
+                          color: 'text',
                           borderRadius: 3,
                           p: 3,
                           my: 2,
                         }}
                       >
-                        {message.messageHeader}
+                        <p sx={{ variant: 'text.h4' }}>
+                          {message.messageHeader}
+                        </p>
+                        <p sx={{ variant: 'text.label' }}>
+                          {message.messageBody}
+                        </p>
                       </div>
                     ))}
                   </DialogContent>

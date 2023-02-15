@@ -60,8 +60,6 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
     [socket, isConnected, isError, disconnect],
   );
 
-  console.log({ socketContext });
-
   return (
     <SocketContext.Provider value={socketContext}>
       {children}

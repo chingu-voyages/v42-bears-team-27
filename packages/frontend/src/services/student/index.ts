@@ -16,6 +16,23 @@ export const postCreateNewStudent = (newStudent: any) =>
       throw error;
     });
 
+export const postMarkMessageAsRead = (messageID: string) =>
+  fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/student/mark-message-as-read`,
+    {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ messageID }),
+    },
+  )
+    .then(() => 'Success: Message was marked as read!')
+    .catch((error) => {
+      throw error;
+    });
+
 // PUT REQUESTS
 
 // task = {

@@ -100,17 +100,21 @@ const getStudent = async (_, res) => {
 const getStudentInbox = async (_, res) => {
   const { _id } = res.locals.user;
   const { inbox } = await Student.findById(_id);
-  const messageIDs = inbox.map((msg) => msg.messageID);
   const allMessages = [];
 
   await Promise.all(
-    messageIDs.map(async (id) => {
-      const msg = await Message.findById(id);
-      allMessages.push(msg);
+    inbox.map(async (msg) => {
+      const fullMessage = await Message.findById(msg.messageID);
+      allMessages.push({
+        _id: fullMessage._id,
+        messageHeader: fullMessage.messageHeader,
+        messageBody: fullMessage.messageBody,
+        hasBeenRead: msg.hasBeenRead,
+      });
     }),
   );
 
-  return res.status(200).json(allMessages);
+  return res.status(200).json(allMessages.reverse());
 };
 
 const markMessageAsRead = async (req, res) => {
