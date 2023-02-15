@@ -58,7 +58,7 @@ const TeacherClasroomView: React.FC<Props> = ({
               />
               <p
                 sx={{ variant: 'text.h4' }}
-              >{`${classroomData.teacher.forename} ${classroomData.teacher.surname}`}</p>
+              >{`${classroomData.teacher.title}. ${classroomData.teacher.surname}`}</p>
             </div>
           )}
         </div>
