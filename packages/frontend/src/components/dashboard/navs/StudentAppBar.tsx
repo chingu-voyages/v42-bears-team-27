@@ -250,24 +250,30 @@ const StudentAppBar: React.FC = () => {
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
+                      maxHeight: '95vh',
                       pt: 3,
                       pb: 5,
+                      overflowY: 'auto',
                     }}
                   >
                     {inboxData?.map((message) => (
                       <div
                         key={message._id}
                         sx={{
-                          varaint: 'text.h4',
                           width: '95%',
                           bg: 'info',
-                          color: 'black',
+                          color: 'text',
                           borderRadius: 3,
                           p: 3,
                           my: 2,
                         }}
                       >
-                        {message.messageHeader}
+                        <p sx={{ variant: 'text.h4' }}>
+                          {message.messageHeader}
+                        </p>
+                        <p sx={{ variant: 'text.label' }}>
+                          {message.messageBody}
+                        </p>
                       </div>
                     ))}
                   </DialogContent>
