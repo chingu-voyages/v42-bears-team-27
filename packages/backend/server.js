@@ -20,6 +20,8 @@ const corsOptions = () => {
   return {
     origin: 'http://localhost:3000',
     credentials: true,
+    // Cache preflights to avoid extra preflight requests
+    maxAge: 600, // in seconds, max value allowed in Chrome
   };
 };
 
