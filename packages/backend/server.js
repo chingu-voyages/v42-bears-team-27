@@ -27,7 +27,7 @@ const corsOptions = () => {
 
 const app = express();
 const httpServer = createServer(app);
-initializeSocketConnection(httpServer, corsOptions);
+initializeSocketConnection(httpServer, corsOptions());
 
 // Database
 mongoose.set('strictQuery', false);
