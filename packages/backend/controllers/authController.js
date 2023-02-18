@@ -11,7 +11,7 @@ const loginTeacher = async (req, res) => {
       email: user.email,
     };
 
-    return res.cookie('auth', JSON.stringify(payload), { cookieOptions }).json({
+    return res.cookie('auth', JSON.stringify(payload), cookieOptions).json({
       _id: user._id,
       title: user.title,
       forename: user.forename,
@@ -32,7 +32,7 @@ const loginStudent = async (req, res) => {
     };
 
     res
-      .cookie('auth', JSON.stringify(payload), { cookieOptions })
+      .cookie('auth', JSON.stringify(payload), cookieOptions)
       .status(200)
       .json({
         _id: user._id,
@@ -48,6 +48,7 @@ const logout = async (_, res) => {
       secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
       signed: true,
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
     })
     .end();
 };

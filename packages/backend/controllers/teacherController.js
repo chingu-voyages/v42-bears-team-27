@@ -67,7 +67,7 @@ const createTeacher = async (req, res) => {
       _id: teacher._id,
       email: teacher.email,
     };
-    return res.cookie('auth', JSON.stringify(payload), { cookieOptions }).json({
+    return res.cookie('auth', JSON.stringify(payload), cookieOptions).json({
       _id: teacher._id,
       title: teacher.title,
       forename: teacher.forename,
