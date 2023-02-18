@@ -1,4 +1,5 @@
 /* eslint-disable array-callback-return */
+const { cookieOptions } = require('../utils');
 const Teacher = require('../models/teacherModel');
 const Student = require('../models/studentModel');
 const Message = require('../models/messageModel');
@@ -66,19 +67,12 @@ const createTeacher = async (req, res) => {
       _id: teacher._id,
       email: teacher.email,
     };
-    return res
-      .cookie('auth', JSON.stringify(payload), {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        signed: true,
-        expires: new Date(Date.now() + 2592000000), // 30 days
-      })
-      .json({
-        _id: teacher._id,
-        title: teacher.title,
-        forename: teacher.forename,
-        surname: teacher.surname,
-      });
+    return res.cookie('auth', JSON.stringify(payload), { cookieOptions }).json({
+      _id: teacher._id,
+      title: teacher.title,
+      forename: teacher.forename,
+      surname: teacher.surname,
+    });
   } catch (error) {
     return res.status(500).json({ message: 'Internal server error' });
   }

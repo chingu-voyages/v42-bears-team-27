@@ -1,3 +1,5 @@
+const { cookieOptions } = require('../utils');
+
 const loginTeacher = async (req, res) => {
   const { user } = res.locals;
   req.login(user, { session: false }, (error) => {
@@ -9,19 +11,12 @@ const loginTeacher = async (req, res) => {
       email: user.email,
     };
 
-    return res
-      .cookie('auth', JSON.stringify(payload), {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        signed: true,
-        expires: new Date(Date.now() + 2592000000), // 30 days
-      })
-      .json({
-        _id: user._id,
-        title: user.title,
-        forename: user.forename,
-        surname: user.surname,
-      });
+    return res.cookie('auth', JSON.stringify(payload), { cookieOptions }).json({
+      _id: user._id,
+      title: user.title,
+      forename: user.forename,
+      surname: user.surname,
+    });
   });
 };
 
@@ -37,12 +32,7 @@ const loginStudent = async (req, res) => {
     };
 
     res
-      .cookie('auth', JSON.stringify(payload), {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        signed: true,
-        expires: new Date(Date.now() + 2592000000), // 30 days
-      })
+      .cookie('auth', JSON.stringify(payload), { cookieOptions })
       .status(200)
       .json({
         _id: user._id,
