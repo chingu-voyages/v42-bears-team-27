@@ -15,13 +15,14 @@ const corsOptions = () => {
     return {
       origin: process.env.FRONTEND,
       credentials: true,
+      // Cache preflights to avoid extra preflight requests
+      maxAge: 600, // in seconds, max value allowed in Chrome
     };
   }
   return {
     origin: 'http://localhost:3000',
     credentials: true,
-    // Cache preflights to avoid extra preflight requests
-    maxAge: 600, // in seconds, max value allowed in Chrome
+    maxAge: 600,
   };
 };
 
