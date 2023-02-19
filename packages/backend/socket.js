@@ -35,7 +35,7 @@ async function removeSocketIDsFromDB(userData) {
 module.exports = {
   initializeSocketConnection: (httpServer, corsOptions) => {
     io = new Server(httpServer, {
-      cors: corsOptions(),
+      cors: corsOptions,
     });
 
     io.on('connection', (socket) => {
