@@ -1,5 +1,11 @@
 # RemoteClass
 
+![(Logo thumbnail ](./assets/logo-thumbnail.png)
+
+## [Live Demo](https://chingu-v42-bears-team-27-remoteclass-frontend-l3jp6ji1f-henokkh.vercel.app/)
+
+<br />
+
 ## Overview
 
 The aim of this project is to deliver an education platform for both teachers and students, where students can progress outside of class via lessons, exercises and tests set by teachers, as well as provide an overall fun, learning experience for them.
