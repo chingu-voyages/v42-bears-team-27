@@ -15,17 +15,21 @@ const corsOptions = () => {
     return {
       origin: process.env.FRONTEND,
       credentials: true,
+      // Cache preflights to avoid extra preflight requests
+      maxAge: 600, // in seconds, max value allowed in Chrome
+      preflightContinue: false,
     };
   }
   return {
     origin: 'http://localhost:3000',
     credentials: true,
+    maxAge: 600,
   };
 };
 
 const app = express();
 const httpServer = createServer(app);
-initializeSocketConnection(httpServer, corsOptions);
+initializeSocketConnection(httpServer, corsOptions());
 
 // Database
 mongoose.set('strictQuery', false);
